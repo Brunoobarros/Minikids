@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Product, Order, Banner } from '../types';
-import { DollarSign, ShoppingBag, Layers, AlertCircle, Plus, Eye, Sparkles, TrendingUp, RefreshCcw, GripVertical, Upload, ArrowUp, ArrowDown, Trash2, Paintbrush, Save, RotateCcw, Type, Settings } from 'lucide-react';
+import { DollarSign, ShoppingBag, Layers, AlertCircle, Plus, Eye, Sparkles, TrendingUp, RefreshCcw, GripVertical, Upload, ArrowUp, ArrowDown, Trash2, Paintbrush, Save, RotateCcw, Type, Settings, Edit, Sliders } from 'lucide-react';
 import { compressImage } from '../utils';
 import { SalesChart } from './SalesChart';
 
@@ -209,6 +209,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [prodImageMode, setProdImageMode] = useState<'upload' | 'url'>('upload');
   const [isDraggingProdImage, setIsDraggingProdImage] = useState(false);
 
+  // Full product edit states
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
   // Quick Stock adjustment states
   const [editingStockId, setEditingStockId] = useState<string | null>(null);
   const [confirmDeleteProductId, setConfirmDeleteProductId] = useState<string | null>(null);
@@ -327,6 +330,50 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setProdImage('');
     setProdStock('10');
     setProdDesc('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+    setProdName('');
+    setProdPrice('');
+    setProdDiscountPrice('');
+    setProdImage('');
+    setProdStock('10');
+    setProdDesc('');
+  };
+
+  const executeSaveProduct = () => {
+    if (!editingProduct) return;
+    if (!prodName || !prodPrice || !prodStock) {
+      triggerNotification("Erro de Edição", "Nome, preço e estoque inicial são obrigatórios.", "alert");
+      return;
+    }
+
+    const priceNum = parseFloat(prodPrice);
+    const discNum = prodDiscountPrice ? parseFloat(prodDiscountPrice) : undefined;
+    const stockNum = parseInt(prodStock);
+
+    onUpdateProduct(editingProduct.id, {
+      name: prodName,
+      category: prodCategory,
+      description: prodDesc || "Uma camisa esportiva com acabamento de alta fidelidade e respirabilidade premium.",
+      price: priceNum,
+      discountPrice: discNum,
+      images: prodImage ? [prodImage] : ["https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80"],
+      stock: stockNum
+    });
+
+    triggerNotification("Produto Atualizado", `Camisa "${prodName}" atualizada com sucesso!`, "success");
+    handleCancelEdit();
+  };
+
+  const handleSubmitProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingProduct) {
+      executeSaveProduct();
+    } else {
+      executeAddProduct(e);
+    }
   };
 
   const handleRowSave = (id: string) => {
@@ -560,11 +607,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             
             {/* Cadastro de Produtos (Left Col) */}
             <div className="lg:col-span-5 bg-zinc-50 border border-zinc-200 p-4 rounded-xl">
-              <h3 className="text-xs uppercase tracking-wider font-mono text-zinc-500 mb-3 flex items-center gap-1.5 font-bold">
-                <Plus className="w-4 h-4 text-red-600" /> CADASTRAR NOVA CAMISA
+              <h3 className="text-xs uppercase tracking-wider font-mono text-zinc-500 mb-3 flex items-center justify-between font-bold">
+                <span className="flex items-center gap-1.5">
+                  {editingProduct ? <Edit className="w-4 h-4 text-red-600 animate-pulse" /> : <Plus className="w-4 h-4 text-red-600" />}
+                  {editingProduct ? 'EDITAR CAMISA' : 'CADASTRAR NOVA CAMISA'}
+                </span>
+                {editingProduct && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="text-[9px] bg-zinc-200 hover:bg-zinc-300 text-zinc-700 px-2 py-0.5 rounded font-mono uppercase font-black cursor-pointer transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                )}
               </h3>
               
-              <form onSubmit={executeAddProduct} className="space-y-3.5 text-xs text-left">
+              <form id="admin-product-form" onSubmit={handleSubmitProduct} className="space-y-3.5 text-xs text-left">
                 <div>
                   <label className="block text-zinc-500 font-bold uppercase font-mono mb-1 text-[10px]">Nome Comercial</label>
                   <input
@@ -761,8 +820,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   type="submit"
                   className="w-full py-2.5 bg-red-600 hover:bg-black text-white font-black uppercase tracking-wider rounded transition-colors shadow cursor-pointer"
                 >
-                  Cadastrar Camisa no Catálogo
+                  {editingProduct ? 'Salvar Alterações' : 'Cadastrar Camisa no Catálogo'}
                 </button>
+                {editingProduct && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="w-full mt-2 py-2.5 bg-zinc-200 hover:bg-zinc-300 text-slate-800 font-black uppercase tracking-wider rounded transition-colors shadow cursor-pointer"
+                  >
+                    Cancelar Edição
+                  </button>
+                )}
               </form>
             </div>
 
@@ -891,9 +959,32 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   setTempDiscountPrice(p.discountPrice ? String(p.discountPrice) : '');
                                 }}
                                 className="p-1.5 hover:bg-zinc-100 text-zinc-400 hover:text-black rounded border border-zinc-200 cursor-pointer transition-colors"
-                                title="Editar Preços & Estoque"
+                                title="Editar Rápido (Estoque/Preços)"
                               >
-                                <RefreshCcw className="w-3.5 h-3.5" />
+                                <Sliders className="w-3.5 h-3.5" />
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  setEditingProduct(p);
+                                  setProdName(p.name);
+                                  setProdCategory(p.category as any);
+                                  setProdPrice(String(p.price));
+                                  setProdDiscountPrice(p.discountPrice ? String(p.discountPrice) : '');
+                                  setProdImage(p.images[0] || '');
+                                  setProdImageMode(p.images[0]?.startsWith('data:') ? 'upload' : 'url');
+                                  setProdStock(String(p.stock));
+                                  setProdDesc(p.description);
+                                  document.getElementById('admin-product-form')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                                className={`p-1.5 rounded border cursor-pointer transition-colors ${
+                                  editingProduct?.id === p.id 
+                                    ? 'bg-red-50 text-red-650 border-red-200' 
+                                    : 'hover:bg-zinc-100 text-zinc-400 hover:text-black border-zinc-200'
+                                }`}
+                                title="Editar Detalhes do Produto"
+                              >
+                                <Edit className="w-3.5 h-3.5" />
                               </button>
 
                             {onDeleteProduct && (

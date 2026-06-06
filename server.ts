@@ -797,7 +797,7 @@ app.post("/api/products/reorder", (req, res) => {
 // Update Product Stock or Details (Admin action)
 app.put("/api/products/:id", (req, res) => {
   const { id } = req.params;
-  const { stock, price, discountPrice, name } = req.body;
+  const { name, category, description, price, discountPrice, images, sizes, colors, stock } = req.body;
   const productIndex = products.findIndex(p => p.id === id);
 
   if (productIndex === -1) {
@@ -805,10 +805,15 @@ app.put("/api/products/:id", (req, res) => {
   }
 
   const updatedProduct = { ...products[productIndex] };
-  if (stock !== undefined) updatedProduct.stock = Number(stock);
+  if (name !== undefined) updatedProduct.name = name;
+  if (category !== undefined) updatedProduct.category = category;
+  if (description !== undefined) updatedProduct.description = description;
   if (price !== undefined) updatedProduct.price = Number(price);
   if (discountPrice !== undefined) updatedProduct.discountPrice = discountPrice ? Number(discountPrice) : undefined;
-  if (name !== undefined) updatedProduct.name = name;
+  if (images !== undefined) updatedProduct.images = images;
+  if (sizes !== undefined) updatedProduct.sizes = sizes;
+  if (colors !== undefined) updatedProduct.colors = colors;
+  if (stock !== undefined) updatedProduct.stock = Number(stock);
 
   products[productIndex] = updatedProduct;
   saveData(PRODUCTS_FILE, products);
@@ -820,8 +825,13 @@ app.put("/api/products/:id", (req, res) => {
       if (supabase) {
         await supabase.from("products").update({
           name: updatedProduct.name,
+          category: updatedProduct.category,
+          description: updatedProduct.description,
           price: updatedProduct.price,
           discount_price: updatedProduct.discountPrice || null,
+          images: updatedProduct.images,
+          sizes: updatedProduct.sizes,
+          colors: updatedProduct.colors,
           stock: updatedProduct.stock
         }).eq("id", id);
         console.log(`[SUPABASE] Produto ${id} editado sincronizado.`);
