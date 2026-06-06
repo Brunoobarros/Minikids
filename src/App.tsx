@@ -980,6 +980,11 @@ export default function App() {
             return next;
           });
         }}
+        onLogoClick={() => {
+          setTab('camisas');
+          setSelectedCategory('todos');
+          setSearchQuery('');
+        }}
       />
 
       {/* Compact Administrative Bar (collapsible) */}

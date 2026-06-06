@@ -14,6 +14,7 @@ interface HeaderProps {
   setSelectedCategory: (cat: 'todos' | 'masculino' | 'feminino' | 'promocoes' | 'esportivo') => void;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
+  onLogoClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,7 +29,8 @@ export const Header: React.FC<HeaderProps> = ({
   selectedCategory,
   setSelectedCategory,
   isDarkMode,
-  onToggleDarkMode
+  onToggleDarkMode,
+  onLogoClick
 }) => {
   const [showAuthDropdown, setShowAuthDropdown] = useState(false);
   const [typedEmail, setTypedEmail] = useState('');
@@ -70,7 +72,11 @@ export const Header: React.FC<HeaderProps> = ({
         
         {/* Brand Logo & Brand Slogan */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div
+            onClick={onLogoClick}
+            className="flex items-center gap-2 cursor-pointer select-none hover:opacity-90 active:scale-[0.98] transition-all"
+            title="Ir para a página inicial"
+          >
             <span className="text-2xl font-black tracking-tighter uppercase font-sans italic">
               CAMISA <span className="text-red-600 font-extrabold text-2xl">7</span>
             </span>
