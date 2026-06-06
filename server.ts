@@ -106,10 +106,10 @@ const saveData = <T>(filePath: string, data: T) => {
   }
 };
 
-// Initialize in-memory store with local JSON files
-let products: Product[] = loadData(PRODUCTS_FILE, INITIAL_PRODUCTS);
-let banners: Banner[] = loadData(BANNERS_FILE, INITIAL_BANNERS);
-let orders: Order[] = loadData(ORDERS_FILE, INITIAL_ORDERS);
+// Initialize in-memory store - In production (Vercel), start empty and load from Supabase
+let products: Product[] = IS_PRODUCTION ? [] : loadData(PRODUCTS_FILE, INITIAL_PRODUCTS);
+let banners: Banner[] = IS_PRODUCTION ? [] : loadData(BANNERS_FILE, INITIAL_BANNERS);
+let orders: Order[] = IS_PRODUCTION ? [] : loadData(ORDERS_FILE, INITIAL_ORDERS);
 
 const APPEARANCE_FILE = path.join(process.cwd(), "config_appearance.json");
 const DEFAULT_APPEARANCE = {
@@ -600,9 +600,12 @@ app.post("/api/auth/login", (req, res) => {
   return res.status(401).json({ success: false, message: "E-mail ou senha inválidos." });
 });
 
-// Products API
+// Products API - Always fetch from Supabase in production (Vercel serverless)
 app.get("/api/products", async (req, res) => {
-  if (products.length === 0) {
+  if (IS_PRODUCTION && HAS_SUPABASE) {
+    // On Vercel, always reload from Supabase since memory is not shared between instances
+    await syncFromSupabase();
+  } else if (products.length === 0) {
     await syncFromSupabase();
   }
   res.json(products);
@@ -633,8 +636,8 @@ app.post("/api/products", (req, res) => {
   products.unshift(newProduct);
   saveData(PRODUCTS_FILE, products);
 
-  // Sync to Supabase and broadcast
-  const syncToSupabase = async () => {
+  // Sync to Supabase synchronous (await) to ensure data persistence across instances
+  (async () => {
     try {
       const supabase = getSupabaseClient();
       if (supabase) {
@@ -659,8 +662,7 @@ app.post("/api/products", (req, res) => {
     } catch (err) {
       console.warn("[SUPABASE] Erro ao sincronizar novo produto:", err);
     }
-  };
-  syncToSupabase();
+  })();
 
   res.status(201).json(newProduct);
 });
