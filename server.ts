@@ -689,14 +689,12 @@ app.post("/api/products", async (req, res) => {
     reviews: []
   };
 
-  products.unshift(newProduct);
-  saveData(PRODUCTS_FILE, products);
-
-  // CRITICAL: Aguardar a sincronização com o Supabase antes de responder ao cliente
+  // 1. Try to sync to Supabase first
   try {
     const supabase = getSupabaseClient();
     if (supabase) {
-      const rows = products.map((p, idx) => ({
+      // Sincroniza catálogo completo atualizado com o novo item temporariamente no início
+      const rows = [newProduct, ...products].map((p, idx) => ({
         id: p.id,
         name: p.name,
         category: p.category,
@@ -711,10 +709,15 @@ app.post("/api/products", async (req, res) => {
         reviews: p.reviews,
         order_index: idx
       }));
-      await supabase.from("products").upsert(rows);
+      const { error: upsertErr1 } = await supabase.from("products").upsert(rows);
+      if (upsertErr1) {
+        console.error("[SUPABASE ERROR] Erro ao sincronizar catálogo:", upsertErr1.message);
+        return res.status(500).json({ error: "Erro ao sincronizar catálogo de produtos no Supabase: " + upsertErr1.message });
+      }
+
       // IMPORTANTE: Upsert apenas do NOVO produto, não do array inteiro.
       // Em serverless, o array local pode estar incompleto.
-      await supabase.from("products").upsert({
+      const { error: upsertErr2 } = await supabase.from("products").upsert({
         id: newProduct.id,
         name: newProduct.name,
         category: newProduct.category,
@@ -729,11 +732,20 @@ app.post("/api/products", async (req, res) => {
         reviews: newProduct.reviews,
         order_index: 0 // Novo item no topo
       });
+      if (upsertErr2) {
+        console.error("[SUPABASE ERROR] Erro ao sincronizar novo produto:", upsertErr2.message);
+        return res.status(500).json({ error: "Erro ao salvar o produto no Supabase: " + upsertErr2.message });
+      }
       console.log(`[SUPABASE] Produto ${newProduct.id} persistido com sucesso.`);
     }
-  } catch (err) {
-    console.warn("[SUPABASE] Erro ao sincronizar novo produto:", err);
+  } catch (err: any) {
+    console.error("[SUPABASE EXCEPTION] Erro ao sincronizar novo produto:", err);
+    return res.status(500).json({ error: "Erro inesperado ao sincronizar produto: " + err.message });
   }
+
+  // 2. Only if Supabase succeeds, commit to local memory & files
+  products.unshift(newProduct);
+  saveData(PRODUCTS_FILE, products);
 
   res.status(201).json(newProduct);
 });
@@ -928,14 +940,11 @@ app.post("/api/banners", async (req, res) => {
     orderIndex: banners.length
   };
 
-  banners.push(newBanner);
-  saveData(BANNERS_FILE, banners);
-
-  // CRITICAL: Aguardar a gravação no Supabase
+  // 1. Try to sync to Supabase first
   try {
     const supabase = getSupabaseClient();
     if (supabase) {
-      await supabase.from("banners").upsert({
+      const { error: upsertErr } = await supabase.from("banners").upsert({
         id: newBanner.id,
         title: newBanner.title,
         subtitle: newBanner.subtitle,
@@ -945,10 +954,19 @@ app.post("/api/banners", async (req, res) => {
         link_to_category: newBanner.linkToCategory,
         order_index: newBanner.orderIndex
       });
+      if (upsertErr) {
+        console.error("[SUPABASE ERROR] Erro ao sincronizar novo banner:", upsertErr.message);
+        return res.status(500).json({ error: "Erro ao salvar o banner no Supabase: " + upsertErr.message });
+      }
     }
-  } catch (err) {
-    console.warn("[SUPABASE] Erro ao sincronizar novo banner:", err);
+  } catch (err: any) {
+    console.error("[SUPABASE EXCEPTION] Erro ao sincronizar novo banner:", err);
+    return res.status(500).json({ error: "Erro inesperado ao sincronizar banner: " + err.message });
   }
+
+  // 2. Only if Supabase succeeds, commit to local memory & files
+  banners.push(newBanner);
+  saveData(BANNERS_FILE, banners);
 
   res.status(201).json(newBanner);
 });
@@ -1194,7 +1212,7 @@ app.get("/api/orders", async (req, res) => {
   res.json(orders);
 });
 
-app.post("/api/orders", (req, res) => {
+app.post("/api/orders", async (req, res) => {
   const { customerName, customerEmail, customerPhone, items, totalPrice } = req.body;
 
   if (!customerName || !customerEmail || !items || items.length === 0) {
@@ -1223,45 +1241,59 @@ app.post("/api/orders", (req, res) => {
     date: new Date().toISOString()
   };
 
-  orders.unshift(newOrder);
-  saveData(ORDERS_FILE, orders);
-  saveData(PRODUCTS_FILE, products);
-
-  // Sync the order and product stock updates to Supabase
-  const syncOrderAndStockToSupabase = async () => {
-    try {
-      const supabase = getSupabaseClient();
-      if (supabase) {
-        // Safe write order to Supabase
-        await supabase.from("orders").insert({
-          id: newOrder.id,
-          customer_name: newOrder.customerName,
-          customer_email: newOrder.customerEmail,
-          customer_phone: newOrder.customerPhone,
-          items: newOrder.items,
-          total_price: newOrder.totalPrice,
-          status: newOrder.status,
-          status_history: [],
-          created_at: newOrder.date
-        });
-        console.log(`[SUPABASE] Pedido ${newOrder.id} salvo de forma sincronizada.`);
-
-        // Sync individual product stocks in Supabase
+  // 1. Sync the order and product stock updates to Supabase first
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      // Safe write order to Supabase
+      const { error: ordErr } = await supabase.from("orders").insert({
+        id: newOrder.id,
+        customer_name: newOrder.customerName,
+        customer_email: newOrder.customerEmail,
+        customer_phone: newOrder.customerPhone,
+        items: newOrder.items,
+        total_price: newOrder.totalPrice,
+        status: newOrder.status,
+        status_history: [],
+        created_at: newOrder.date
+      });
+      if (ordErr) {
+        console.error("[SUPABASE ERROR] Erro ao sincronizar pedido:", ordErr.message);
+        // revert local stock deduction if failed
         for (const item of items) {
-          const prodUpdated = products.find(p => p.id === item.productId);
-          if (prodUpdated) {
-            await supabase.from("products").update({
-              stock: prodUpdated.stock
-            }).eq("id", prodUpdated.id);
-            console.log(`[SUPABASE] Estoque do produto ${prodUpdated.id} atualizado para ${prodUpdated.stock}`);
+          const prod = products.find(p => p.id === item.productId);
+          if (prod) prod.stock += item.quantity;
+        }
+        return res.status(500).json({ error: "Erro ao criar pedido no Supabase: " + ordErr.message });
+      }
+
+      // Sync individual product stocks in Supabase
+      for (const item of items) {
+        const prodUpdated = products.find(p => p.id === item.productId);
+        if (prodUpdated) {
+          const { error: prodErr } = await supabase.from("products").update({
+            stock: prodUpdated.stock
+          }).eq("id", prodUpdated.id);
+          if (prodErr) {
+            console.error("[SUPABASE ERROR] Erro ao atualizar estoque no Supabase:", prodErr.message);
           }
         }
       }
-    } catch (err) {
-      console.warn("[SUPABASE] Erro salvando pedido/atualizando estoque:", err);
     }
-  };
-  syncOrderAndStockToSupabase();
+  } catch (err: any) {
+    console.error("[SUPABASE EXCEPTION] Erro ao criar pedido:", err);
+    // revert local stock
+    for (const item of items) {
+      const prod = products.find(p => p.id === item.productId);
+      if (prod) prod.stock += item.quantity;
+    }
+    return res.status(500).json({ error: "Erro inesperado ao criar pedido: " + err.message });
+  }
+
+  // 2. Only on success, commit to local memory and files
+  orders.unshift(newOrder);
+  saveData(ORDERS_FILE, orders);
+  saveData(PRODUCTS_FILE, products);
 
   res.status(201).json(newOrder);
 });

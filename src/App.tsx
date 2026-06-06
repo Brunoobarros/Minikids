@@ -455,19 +455,24 @@ export default function App() {
       };
 
       // 1. Persist to Express backend memorydb & disk
-      try {
-        await fetch('/api/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newProduct)
-        });
-        await fetch('/api/banners', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newBanner)
-        });
-      } catch (backendErr) {
-        console.warn("Express backend sync warning:", backendErr);
+      const pRes = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct)
+      });
+      if (!pRes.ok) {
+        const errData = await pRes.json();
+        throw new Error(errData.error || "Erro ao salvar o produto no servidor");
+      }
+
+      const bRes = await fetch('/api/banners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newBanner)
+      });
+      if (!bRes.ok) {
+        const errData = await bRes.json();
+        throw new Error(errData.error || "Erro ao criar banner automático no servidor");
       }
 
       // 2. React optimistic state updates (must-have for offline/sandbox/placeholder modes)
@@ -475,8 +480,8 @@ export default function App() {
       setBanners(prev => [...prev, newBanner]);
 
       triggerNotification("Produto Cadastrado", "Camisa e Poster adicionados com sucesso ao catálogo!", "success");
-    } catch (err) {
-      triggerNotification("Produto Cadastrado", "Camisa e Poster adicionados com sucesso ao catálogo!", "success");
+    } catch (err: any) {
+      triggerNotification("Erro ao cadastrar", err.message || "Falha ao salvar item.", "alert");
     }
   };
 
@@ -642,14 +647,17 @@ export default function App() {
           body: JSON.stringify(newBanner)
         });
 
-      if (!response.ok) throw new Error("Erro ao salvar no servidor");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Erro ao salvar no servidor");
+      }
 
       // 2. React state update
       setBanners(prev => [...prev, newBanner]);
 
       triggerNotification("Campanha Criada", `O banner "${newBanner.title}" foi publicado!`, "success");
-    } catch (err) {
-      triggerNotification("Campanha Criada", `O banner "${newBannerData.title}" foi publicado!`, "success");
+    } catch (err: any) {
+      triggerNotification("Erro ao criar campanha", err.message || "Falha na sincronização do banner.", "alert");
     }
   };
 
