@@ -12,9 +12,8 @@ dotenv.config();
 const IS_VERCEL = !!process.env.VERCEL;
 const IS_PRODUCTION = process.env.NODE_ENV === "production" || IS_VERCEL;
 
-// Default hardcoded initial state mirroring initialData.ts (safely avoids .png loader server-side crashes)
-import { INITIAL_PRODUCTS, INITIAL_BANNERS, INITIAL_ORDERS } from "./src/initialData.js";
-import { Product, Banner, Order, Review } from "./src/types.js";
+// Removidas importações problemáticas do src para evitar erro de path no Vercel
+// As interfaces serão tratadas como 'any' ou definidas localmente para o server
 
 const app = express();
 const PORT = 3000;
@@ -79,24 +78,24 @@ const ORDERS_FILE = path.resolve(process.cwd(), "orders.json");
 
 // Helper function to read from JSON file or write defaults
 const loadData = <T>(filePath: string, fallback: T): T => {
+  if (IS_VERCEL) return fallback; // Não tenta ler arquivos locais no Vercel para evitar crash
   try {
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, "utf-8");
       return JSON.parse(data);
     }
   } catch (err) {
-    console.error(`Error reading ${filePath}:`, err);
+    console.warn(`Could not read ${filePath}, using fallback.`);
   }
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(fallback, null, 2), "utf-8");
-  } catch (err) {
-    console.error(`Error initializing ${filePath}:`, err);
+  if (!IS_VERCEL) {
+    try { fs.writeFileSync(filePath, JSON.stringify(fallback, null, 2), "utf-8"); } catch (e) {}
   }
   return fallback;
 };
 
 // Modificado para garantir salvamento mesmo em ambientes de desenvolvimento
 const saveData = <T>(filePath: string, data: T) => {
+  if (IS_VERCEL) return; // Silent return no Vercel
   try {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
   } catch (err) {
@@ -105,9 +104,9 @@ const saveData = <T>(filePath: string, data: T) => {
 };
 
 // Para a apresentação: Inicializar como arrays vazios se não houver arquivo salvo
-let products: Product[] = loadData(PRODUCTS_FILE, []);
-let banners: Banner[] = loadData(BANNERS_FILE, []);
-let orders: Order[] = loadData(ORDERS_FILE, []);
+let products: any[] = loadData(PRODUCTS_FILE, []);
+let banners: any[] = loadData(BANNERS_FILE, []);
+let orders: any[] = loadData(ORDERS_FILE, []);
 
 const APPEARANCE_FILE = path.resolve(process.cwd(), "config_appearance.json");
 const DEFAULT_APPEARANCE = {
@@ -123,12 +122,16 @@ const DEFAULT_APPEARANCE = {
 let appearanceConfig = loadData(APPEARANCE_FILE, { ...DEFAULT_APPEARANCE });
 
 // Sincronização inicial com Supabase
-if (HAS_SUPABASE) syncFromSupabase();
+// No Vercel, evitamos rodar isso no escopo global para não causar timeout na função
+if (HAS_SUPABASE && !IS_PRODUCTION) syncFromSupabase();
 
 /* ===== SUPABASE REALTIME SUBSCRIPTIONS ===== */
 function setupRealtimeSubscriptions() {
   const supabase = getSupabaseClient();
   if (!supabase) return;
+  
+  // Desativa realtime no Vercel (não suportado em serverless functions)
+  if (IS_VERCEL) return;
 
   console.log("[REALTIME] Configurando subscriptions Realtime do Supabase...");
 
@@ -996,9 +999,12 @@ app.post("/api/banners/reorder", (req, res) => {
 
 // Appearance Config API
 app.get("/api/config/appearance", async (req, res) => {
-  // Garante sincronização com o banco de dados antes de entregar a configuração
-  if (HAS_SUPABASE) {
-    await syncFromSupabase(); 
+  try {
+    if (HAS_SUPABASE) {
+      await syncFromSupabase(); 
+    }
+  } catch (err) {
+    console.error("Erro ao sincronizar aparência do Supabase:", err);
   }
   res.json(appearanceConfig);
 });

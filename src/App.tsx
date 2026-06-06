@@ -121,16 +121,17 @@ export default function App() {
         const res = await fetch('/api/config/appearance');
         if (res.ok) {
           const data = await res.json();
-          // Apenas atualiza se os dados forem diferentes do que temos agora para evitar o "flicker" de retorno
-          if (data.primaryColor && data.primaryColor !== themeColor) setThemeColor(data.primaryColor);
-          if (data.primaryColorHover) setThemeColorHover(data.primaryColorHover);
-          if (data.bgDark) setBgDarkColor(data.bgDark);
-          if (data.bgLight) setBgLightColor(data.bgLight);
-          if (data.displayFont) setDisplayFont(data.displayFont);
-          if (data.sansFont) setSansFont(data.sansFont);
-          if (data.pixKey) setPixKey(data.pixKey);
+          
+          // Atualiza os estados
+          setThemeColor(data.primaryColor || '#d12229');
+          setThemeColorHover(data.primaryColorHover || '#aa1a1e');
+          setBgDarkColor(data.bgDark || '#09090b');
+          setBgLightColor(data.bgLight || '#fafafa');
+          setDisplayFont(data.displayFont || 'Space Grotesk');
+          setSansFont(data.sansFont || 'Inter');
+          setPixKey(data.pixKey || 'barrosbruno.ti@gmail.com');
 
-          // Update local backup
+          // Persiste no localStorage para evitar o flash de cor padrão no próximo F5
           localStorage.setItem('camisa7_theme_color', data.primaryColor || '#d12229');
           localStorage.setItem('camisa7_theme_color_hover', data.primaryColorHover || '#aa1a1e');
           localStorage.setItem('camisa7_bg_dark_color', data.bgDark || '#09090b');
