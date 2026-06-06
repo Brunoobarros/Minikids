@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
         return;
       }
       if (p !== "admin" && p !== "camisa7pass") {
-        setErrorMessage("Senha incorreta! Use 'admin' ou 'camisa7pass'.");
+        setErrorMessage("Senha incorreta! Tente novamente.");
         return;
       }
     }
@@ -323,7 +323,7 @@ export const Header: React.FC<HeaderProps> = ({
                           <label className={`block text-[10px] uppercase font-mono mb-1 ${isDarkMode ? "text-zinc-400" : "text-zinc-500"}`}>Senha de Administrador</label>
                           <input
                             type="password"
-                            placeholder="Digite a senha (ex: admin ou camisa7pass)"
+                            placeholder="Digite a senha de administrador"
                             value={typedPassword}
                             onChange={(e) => setTypedPassword(e.target.value)}
                             className={`w-full px-3 py-1.5 border rounded text-xs focus:outline-none focus:border-red-600 transition-colors ${
@@ -353,7 +353,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                       <p className={`text-[9px] text-center leading-relaxed font-mono ${isDarkMode ? "text-zinc-500" : "text-zinc-400"}`}>
                         {simulatedRole === 'admin' 
-                          ? "*Dica: A senha padrão de administrador é 'admin' ou 'camisa7pass'"
+                          ? "*Acesso restrito ao administrador da loja"
                           : "*Nota: Nenhum login social ou senha é exigido para clientes usarem o site"
                         }
                       </p>
@@ -448,7 +448,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <label className={`block text-[9px] uppercase font-mono mb-1 ${isDarkMode ? "text-zinc-400" : "text-zinc-500"}`}>Senha de Administrador</label>
                     <input
                       type="password"
-                      placeholder="Password admin ou camisa7pass"
+                      placeholder="Digite a senha de administrador"
                       value={typedPassword}
                       onChange={(e) => setTypedPassword(e.target.value)}
                       className={`w-full px-3 py-1.5 border rounded text-xs focus:outline-none focus:border-red-600 transition-colors ${

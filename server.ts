@@ -1982,14 +1982,87 @@ if (IS_PRODUCTION) {
 
   app.get('*', (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
-    res.sendFile(path.join(distPath, 'index.html'), (err) => {
+    
+    const htmlPath = path.join(distPath, 'index.html');
+    fs.readFile(htmlPath, 'utf8', (err, html) => {
       if (err) {
-        res.status(200).send(`
+        return res.status(200).send(`
           <!DOCTYPE html>
           <html><head><title>Camisa 7 Store</title></head>
           <body><h1>Camisa 7 Store</h1><p>API está funcionando. Aguarde o build do frontend.</p></body>
         </html>`);
       }
+
+      // Inject server-side appearance values directly in index.html to prevent flash of default theme (FOUC)
+      const themeColor = appearanceConfig.primaryColor || '#d12229';
+      const themeColorHover = appearanceConfig.primaryColorHover || '#aa1a1e';
+      const bgDarkColor = appearanceConfig.bgDark || '#09090b';
+      const bgLightColor = appearanceConfig.bgLight || '#fafafa';
+      const displayFont = appearanceConfig.displayFont || 'Space Grotesk';
+      const sansFont = appearanceConfig.sansFont || 'Inter';
+
+      const injectedScript = `
+    <script>
+      (function() {
+        const themeColor = "${themeColor}";
+        const themeColorHover = "${themeColorHover}";
+        const bgDarkColor = "${bgDarkColor}";
+        const bgLightColor = "${bgLightColor}";
+        const displayFont = "${displayFont}";
+        const sansFont = "${sansFont}";
+
+        const root = document.documentElement;
+        root.style.setProperty('--color-primary', themeColor);
+        root.style.setProperty('--color-primary-hover', themeColorHover);
+        root.style.setProperty('--color-bg-dark', bgDarkColor);
+        root.style.setProperty('--color-bg-light', bgLightColor);
+        root.style.setProperty('--font-display-custom', displayFont);
+        root.style.setProperty('--font-sans-custom', sansFont);
+
+        const styleEl = document.createElement('style');
+        styleEl.id = 'custom-appearance-styles';
+        styleEl.innerHTML = \`
+          @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@450;500;700&family=Inter:wght@400;500;600;850&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@400;500;750&family=JetBrains+Mono:wght@400;700&family=Cabin:wght@500;700&family=Roboto:wght@400;500;800&family=Poppins:wght@450;600;850&family=Open+Sans:wght@450;650&display=swap');
+          
+          :root {
+            --color-primary: \${themeColor};
+            --color-primary-hover: \${themeColorHover};
+            --color-bg-dark: \${bgDarkColor};
+            --color-bg-light: \${bgLightColor};
+          }
+          
+          .bg-red-500, .bg-red-650, .bg-red-600, .hover\\\\:bg-red-750:hover, .hover\\\\:bg-red-700:hover, .hover\\\\:bg-red-850:hover {
+            background-color: var(--color-primary) !important;
+          }
+          
+          button.bg-red-600:hover, button.bg-red-650:hover {
+            background-color: var(--color-primary-hover) !important;
+          }
+          
+          .text-red-500, .text-red-655, .text-red-650, .text-red-600, .text-red-700, .hover\\\\:text-red-500:hover, .hover\\\\:text-red-655:hover, .hover\\\\:text-red-600:hover, .hover\\\\:text-red-700:hover, .group:hover .group-hover\\\\:text-red-500, .group:hover .group-hover\\\\:text-red-650, .group:hover .group-hover\\\\:text-red-600 {
+            color: var(--color-primary) !important;
+          }
+          
+          .border-red-600, .border-red-900\\\\/40, .hover\\\\:border-red-600\\\\/20:hover, .hover\\\\:border-red-650\\\\/40:hover {
+            border-color: var(--color-primary) !important;
+          }
+
+          h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: "\${displayFont}", "Space Grotesk", sans-serif !important;
+          }
+
+          body, select, input, button, textarea, p, span, li, blockquote, label, .font-sans {
+            font-family: "\${sansFont}", "Inter", sans-serif;
+          }
+        \`;
+        document.head.appendChild(styleEl);
+      })();
+    </script>
+      `;
+
+      const updatedHtml = html.replace('<head>', '<head>' + injectedScript);
+      res.setHeader('Content-Type', 'text/html');
+      res.status(200).send(updatedHtml);
     });
   });
 }
