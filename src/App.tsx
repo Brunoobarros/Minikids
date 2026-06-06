@@ -175,7 +175,7 @@ export default function App() {
       }
       
       /* Overrides dynamically selected branding across component styles! */
-      .bg-red-650, .bg-red-600, .hover\\:bg-red-750:hover, .hover\\:bg-red-700:hover, .hover\\:bg-red-850:hover {
+      .bg-red-500, .bg-red-600, .bg-red-650, .hover\\:bg-red-750:hover, .hover\\:bg-red-700:hover, .hover\\:bg-red-850:hover {
         background-color: var(--color-primary) !important;
       }
       
@@ -183,11 +183,11 @@ export default function App() {
         background-color: var(--color-primary-hover) !important;
       }
       
-      .text-red-650, .text-red-600, .hover\\:text-red-600:hover, .hover\\:text-red-700:hover {
+      .text-red-500, .text-red-650, .text-red-600, .text-red-700, .hover\\:text-red-500:hover, .hover\\:text-red-600:hover, .hover\\:text-red-700:hover, .group:hover .group-hover\\:text-red-500, .group:hover .group-hover\\:text-red-600 {
         color: var(--color-primary) !important;
       }
       
-      .border-red-600, .border-red-900\\/40 {
+      .border-red-600, .border-red-900\\/40, .hover\\:border-red-600\\/20:hover, .hover\\:border-red-656\\/40:hover {
         border-color: var(--color-primary) !important;
       }
 

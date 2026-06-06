@@ -37,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => onSelect(product)}
       className={`group relative border rounded-2xl p-3.5 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-lg cursor-pointer flex flex-col justify-between ${
         isDarkMode 
-          ? 'bg-zinc-950 border-white/5 hover:border-red-656/40 hover:shadow-red-950/15' 
+          ? 'bg-zinc-950 border-white/5 hover:border-red-650/40 hover:shadow-red-950/15' 
           : 'bg-white border-zinc-200 shadow-sm hover:border-red-600/20 hover:shadow-slate-250/50'
       }`}
     >
