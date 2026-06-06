@@ -4,9 +4,13 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import fs from "fs";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 dotenv.config();
+
+// Detect if running on Vercel (serverless) environment
+const IS_VERCEL = !!process.env.VERCEL;
+const IS_PRODUCTION = process.env.NODE_ENV === "production" || IS_VERCEL;
 
 // Default hardcoded initial state mirroring initialData.ts (safely avoids .png loader server-side crashes)
 import { INITIAL_PRODUCTS, INITIAL_BANNERS, INITIAL_ORDERS } from "./src/initialData.js";
@@ -17,7 +21,58 @@ const PORT = 3000;
 
 app.use(express.json());
 
-// Persistent JSON Database Paths
+// ===== SSE (Server-Sent Events) - Real-time Broadcasting =====
+interface SSEClient {
+  id: number;
+  res: express.Response;
+}
+
+let sseClients: SSEClient[] = [];
+let sseClientId = 0;
+
+function broadcastSSE(event: string, data: any) {
+  const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+  sseClients.forEach(client => {
+    try {
+      client.res.write(payload);
+    } catch (err) {
+      // Client disconnected, will be cleaned up on next close
+    }
+  });
+}
+
+function addSSEClient(res: express.Response): number {
+  const id = ++sseClientId;
+  sseClients.push({ id, res });
+  return id;
+}
+
+function removeSSEClient(id: number) {
+  sseClients = sseClients.filter(c => c.id !== id);
+}
+
+// ===== Supabase Client Setup =====
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
+const SUPABASE_KEY = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
+const HAS_SUPABASE = SUPABASE_URL.trim() !== "" && SUPABASE_KEY.trim() !== "";
+
+let supabaseClient: any = null;
+
+function getSupabaseClient() {
+  if (supabaseClient) return supabaseClient;
+  if (HAS_SUPABASE) {
+    try {
+      supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+      console.log("[SUPABASE] Cliente inicializado com sucesso.");
+      return supabaseClient;
+    } catch (err) {
+      console.error("[SUPABASE] Erro ao inicializar cliente Supabase:", err);
+    }
+  }
+  return null;
+}
+
+// Persistent JSON Database Paths (fallback for local dev)
 const PRODUCTS_FILE = path.join(process.cwd(), "products.json");
 const BANNERS_FILE = path.join(process.cwd(), "banners.json");
 const ORDERS_FILE = path.join(process.cwd(), "orders.json");
@@ -40,16 +95,18 @@ const loadData = <T>(filePath: string, fallback: T): T => {
   return fallback;
 };
 
-// Helper function to write back updates in real-time
+// Helper function to write back updates
 const saveData = <T>(filePath: string, data: T) => {
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.error(`Error saving ${filePath}:`, err);
+  if (!IS_VERCEL) {
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+    } catch (err) {
+      console.error(`Error saving ${filePath}:`, err);
+    }
   }
 };
 
-// Initialize database with clean local JSON files
+// Initialize in-memory store with local JSON files
 let products: Product[] = loadData(PRODUCTS_FILE, INITIAL_PRODUCTS);
 let banners: Banner[] = loadData(BANNERS_FILE, INITIAL_BANNERS);
 let orders: Order[] = loadData(ORDERS_FILE, INITIAL_ORDERS);
@@ -67,25 +124,151 @@ const DEFAULT_APPEARANCE = {
 
 let appearanceConfig = loadData(APPEARANCE_FILE, DEFAULT_APPEARANCE);
 
-// Supabase Client lazy-initialization
-let supabaseClient: any = null;
+/* ===== SUPABASE REALTIME SUBSCRIPTIONS ===== */
+function setupRealtimeSubscriptions() {
+  const supabase = getSupabaseClient();
+  if (!supabase) return;
 
-function getSupabaseClient() {
-  if (supabaseClient) return supabaseClient;
-  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (url && key && url.trim() !== "" && key.trim() !== "") {
-    try {
-      supabaseClient = createClient(url, key);
-      console.log("[SUPABASE] Cliente inicializado com sucesso.");
-      return supabaseClient;
-    } catch (err) {
-      console.error("[SUPABASE] Erro ao inicializar cliente Supabase:", err);
-    }
-  }
-  return null;
+  console.log("[REALTIME] Configurando subscriptions Realtime do Supabase...");
+
+  const tables = ["products", "banners", "orders", "appearance"];
+  
+  tables.forEach(table => {
+    supabase
+      .channel(`public:${table}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table },
+        (payload: RealtimePostgresChangesPayload) => {
+          console.log(`[REALTIME] Mudança detectada em ${table}:`, payload.eventType);
+          
+          // Broadcast to all SSE clients
+          broadcastSSE("db-change", {
+            table,
+            eventType: payload.eventType,
+            new: payload.new,
+            old: payload.old
+          });
+
+          // Also refresh the in-memory data
+          refreshFromSupabase(table);
+        }
+      )
+      .subscribe();
+  });
 }
 
+async function refreshFromSupabase(table: string) {
+  const supabase = getSupabaseClient();
+  if (!supabase) return;
+
+  try {
+    if (table === "products") {
+      const { data } = await supabase.from("products").select("*").order("order_index", { ascending: true });
+      if (data) {
+        products = data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          category: p.category,
+          description: p.description || "",
+          price: Number(p.price),
+          discountPrice: p.discount_price ? Number(p.discount_price) : undefined,
+          images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" && p.images ? JSON.parse(p.images) : []),
+          sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" && p.sizes ? JSON.parse(p.sizes) : []),
+          colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" && p.colors ? JSON.parse(p.colors) : []),
+          stock: Number(p.stock),
+          ratingValue: Number(p.rating_value || 5.0),
+          reviews: Array.isArray(p.reviews) ? p.reviews : (typeof p.reviews === "string" ? JSON.parse(p.reviews) : [])
+        }));
+        if (!IS_VERCEL) saveData(PRODUCTS_FILE, products);
+      }
+    } else if (table === "banners") {
+      const { data } = await supabase.from("banners").select("*").order("order_index", { ascending: true });
+      if (data) {
+        banners = data.map((b: any) => ({
+          id: b.id,
+          title: b.title,
+          subtitle: b.subtitle,
+          image: b.image,
+          tag: b.tag || "NOVIDADE",
+          buttonText: b.button_text || "Comprar Agora",
+          linkToCategory: b.link_to_category || "masculino",
+          orderIndex: b.order_index
+        }));
+        if (!IS_VERCEL) saveData(BANNERS_FILE, banners);
+      }
+    } else if (table === "orders") {
+      const { data } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+      if (data) {
+        orders = data.map((o: any) => ({
+          id: o.id,
+          customerName: o.customer_name,
+          customerEmail: o.customer_email,
+          customerPhone: o.customer_phone || "(11) 99999-9999",
+          items: Array.isArray(o.items) ? o.items : (typeof o.items === "string" && o.items ? JSON.parse(o.items) : []),
+          totalPrice: Number(o.total_price),
+          status: o.status,
+          statusHistory: Array.isArray(o.status_history) ? o.status_history : (typeof o.status_history === "string" && o.status_history ? JSON.parse(o.status_history) : []),
+          paymentMethod: o.payment_method,
+          paymentId: o.payment_id,
+          date: o.created_at,
+          pixQrCode: o.pix_qr_code,
+          pixCopiaCola: o.pix_copia_cola
+        }));
+        if (!IS_VERCEL) saveData(ORDERS_FILE, orders);
+      }
+    } else if (table === "appearance") {
+      const { data } = await supabase.from("appearance").select("*").eq("id", "default").maybeSingle();
+      if (data) {
+        appearanceConfig = {
+          primaryColor: data.primary_color,
+          primaryColorHover: data.primary_color_hover,
+          bgDark: data.bg_dark,
+          bgLight: data.bg_light,
+          displayFont: data.display_font,
+          sansFont: data.sans_font,
+          pixKey: data.pix_key
+        };
+        if (!IS_VERCEL) saveData(APPEARANCE_FILE, appearanceConfig);
+      }
+    }
+  } catch (e) {
+    console.error(`[REALTIME] Erro ao recarregar ${table} do Supabase:`, e);
+  }
+}
+
+/* ===== SSE ENDPOINT (Real-time Events) ===== */
+app.get("/api/realtime", (req, res) => {
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "Access-Control-Allow-Origin": "*"
+  });
+
+  // Send initial connected event
+  res.write(`event: connected\ndata: {"message":"Conectado ao servidor em tempo real"}\n\n`);
+
+  const clientId = addSSEClient(res);
+  console.log(`[SSE] Cliente ${clientId} conectado. Total: ${sseClients.length}`);
+
+  // Keep alive every 30 seconds
+  const keepAlive = setInterval(() => {
+    try {
+      res.write(`event: ping\ndata: {}\n\n`);
+    } catch {
+      clearInterval(keepAlive);
+    }
+  }, 30000);
+
+  req.on("close", () => {
+    clearInterval(keepAlive);
+    removeSSEClient(clientId);
+    console.log(`[SSE] Cliente ${clientId} desconectado. Total: ${sseClients.length}`);
+  });
+});
+
+/* ===== EXISTING API ROUTES (with real-time broadcasting) ===== */
 const syncFromSupabase = async () => {
   const supabase = getSupabaseClient();
   if (supabase) {
@@ -102,9 +285,9 @@ const syncFromSupabase = async () => {
           description: p.description || "",
           price: Number(p.price),
           discountPrice: p.discount_price ? Number(p.discount_price) : undefined,
-          images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" ? JSON.parse(p.images) : []),
-          sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" ? JSON.parse(p.sizes) : []),
-          colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" ? JSON.parse(p.colors) : []),
+          images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" && p.images ? JSON.parse(p.images) : []),
+          sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" && p.sizes ? JSON.parse(p.sizes) : []),
+          colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" && p.colors ? JSON.parse(p.colors) : []),
           stock: Number(p.stock),
           ratingValue: Number(p.rating_value || 5.0),
           reviews: Array.isArray(p.reviews) ? p.reviews : (typeof p.reviews === "string" ? JSON.parse(p.reviews) : [])
@@ -138,10 +321,10 @@ const syncFromSupabase = async () => {
           customerName: o.customer_name,
           customerEmail: o.customer_email,
           customerPhone: o.customer_phone || "(11) 99999-9999",
-          items: Array.isArray(o.items) ? o.items : (typeof o.items === "string" ? JSON.parse(o.items) : []),
+          items: Array.isArray(o.items) ? o.items : (typeof o.items === "string" && o.items ? JSON.parse(o.items) : []),
           totalPrice: Number(o.total_price),
           status: o.status,
-          statusHistory: Array.isArray(o.status_history) ? o.status_history : (typeof o.status_history === "string" ? JSON.parse(o.status_history) : []),
+          statusHistory: Array.isArray(o.status_history) ? o.status_history : (typeof o.status_history === "string" && o.status_history ? JSON.parse(o.status_history) : []),
           paymentMethod: o.payment_method,
           paymentId: o.payment_id,
           date: o.created_at,
@@ -280,6 +463,10 @@ const migrateToSupabase = async () => {
 function getSupabaseSqlScript() {
   return `-- EXECUTE ESTE SCRIPT NO EDITOR SQL DO SUPABASE (SQL Editor -> New Query)
 
+-- HABILITAR EXTENSÃO REALTIME
+-- Acesse: Database > Replication e ative a replicação para as tabelas abaixo
+-- Ou execute os comandos no SQL Editor:
+
 -- 1. TABELA DE PRODUTOS
 CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY,
@@ -346,7 +533,13 @@ ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appearance ENABLE ROW LEVEL SECURITY;
 
 -- Políticas de acesso livre para facilitar o teste / desenvolvimento sem chaves privadas expostas
-CREATE POLICY "Acesso publico produtos" ON products FOR ALL USING (true);
+-- IMPORTANTE: Use DROP POLICY IF EXISTS para evitar erro se já existir
+DROP POLICY IF EXISTS "Acesso publico products" ON products;
+DROP POLICY IF EXISTS "Acesso publico banners" ON banners;
+DROP POLICY IF EXISTS "Acesso publico orders" ON orders;
+DROP POLICY IF EXISTS "Acesso publico appearance" ON appearance;
+
+CREATE POLICY "Acesso publico products" ON products FOR ALL USING (true);
 CREATE POLICY "Acesso publico banners" ON banners FOR ALL USING (true);
 CREATE POLICY "Acesso publico orders" ON orders FOR ALL USING (true);
 CREATE POLICY "Acesso publico appearance" ON appearance FOR ALL USING (true);
@@ -440,7 +633,7 @@ app.post("/api/products", (req, res) => {
   products.unshift(newProduct);
   saveData(PRODUCTS_FILE, products);
 
-  // Sync to Supabase
+  // Sync to Supabase and broadcast
   const syncToSupabase = async () => {
     try {
       const supabase = getSupabaseClient();
@@ -1170,8 +1363,8 @@ function generatePixPayload(key: string, name: string, city: string, amount: num
 
 // Endpoint 0: Safe public credentials config retrieval at runtime
 app.get("/api/config", (req, res) => {
-  const publicKey = process.env.VITE_MERCADO_PAGO_PUBLIC_KEY || process.env.MERCADO_PAGO_PUBLIC_KEY || process.env.VI || "";
-  const token = process.env.MERCADO_PAGO_ACCESS_TOKEN || process.env.ME || "";
+  const publicKey = process.env.VITE_MERCADO_PAGO_PUBLIC_KEY || process.env.MERCADO_PAGO_PUBLIC_KEY || "";
+  const token = process.env.MERCADO_PAGO_ACCESS_TOKEN || "";
   const isReal = !!(token && token !== "YOUR_MERCADO_PAGO_ACCESS_TOKEN" && token.trim() !== "");
   
   res.json({
@@ -1648,10 +1841,17 @@ app.post("/api/ai/recommend", async (req, res) => {
 /* --- VITE MIDDLEWARE SETUP --- */
 
 async function startServer() {
+  console.log(`[SERVER] Iniciando servidor... (VERCEL=${IS_VERCEL}, PRODUCTION=${IS_PRODUCTION})`);
+
   // Se houver banco Supabase ativo, ele tem precedência para carregar dados atualizados
   await syncFromSupabase();
 
-  if (process.env.NODE_ENV !== "production") {
+  // Setup realtime subscriptions if Supabase is configured
+  if (HAS_SUPABASE) {
+    setupRealtimeSubscriptions();
+  }
+
+  if (!IS_PRODUCTION) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -1665,9 +1865,17 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
-  });
+  // In Vercel serverless environment, don't listen - export the app instead
+  if (!IS_VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
+    });
+  }
 }
 
-startServer();
+// Only start the server locally; for Vercel, the app is exported as default
+if (!IS_VERCEL) {
+  startServer();
+}
+
+export default app;
