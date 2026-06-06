@@ -1159,18 +1159,18 @@ app.get("/api/config/supabase-status", async (req, res) => {
     try {
       // Ping tables
       const { error: prodErr } = await supabase.from("products").select("id").limit(1);
-      tables.products = !prodErr || (prodErr.code !== "P0001" && prodErr.code !== "42P01" && prodErr.code !== "42703");
+      tables.products = !prodErr || (prodErr.code !== undefined && prodErr.code !== "P0001" && prodErr.code !== "42P01" && prodErr.code !== "42703");
 
       const { error: banErr } = await supabase.from("banners").select("id").limit(1);
-      tables.banners = !banErr || (banErr.code !== "P0001" && banErr.code !== "42P01" && banErr.code !== "42703");
+      tables.banners = !banErr || (banErr.code !== undefined && banErr.code !== "P0001" && banErr.code !== "42P01" && banErr.code !== "42703");
 
       const { error: ordErr } = await supabase.from("orders").select("id").limit(1);
-      tables.orders = !ordErr || (ordErr.code !== "P0001" && ordErr.code !== "42P01" && ordErr.code !== "42703");
+      tables.orders = !ordErr || (ordErr.code !== undefined && ordErr.code !== "P0001" && ordErr.code !== "42P01" && ordErr.code !== "42703");
 
       const { error: appErr } = await supabase.from("appearance").select("id").limit(1);
-      tables.appearance = !appErr || (appErr.code !== "P0001" && appErr.code !== "42P01" && appErr.code !== "42703");
+      tables.appearance = !appErr || (appErr.code !== undefined && appErr.code !== "P0001" && appErr.code !== "42P01" && appErr.code !== "42703");
 
-      connected = true;
+      connected = !prodErr || prodErr.code !== undefined;
     } catch (err) {
       console.warn("[SUPABASE STATUS] Falha ao verificar tabelas:", err);
     }
