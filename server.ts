@@ -1962,6 +1962,19 @@ if (IS_PRODUCTION) {
   const distPath = path.join(process.cwd(), 'dist');
   app.use(express.static(distPath));
   
+  // Return a self-healing reload script for missing JS assets to recover outdated client cache
+  app.get('/assets/*.js', (req, res) => {
+    const filePath = path.join(distPath, req.path);
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        res.setHeader('Content-Type', 'application/javascript');
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        return res.send('console.warn("Asset em cache desatualizado. Recarregando pagina..."); window.location.reload();');
+      }
+      res.sendFile(filePath);
+    });
+  });
+
   // Return 404 for missing assets or files with extensions instead of serving index.html
   app.get(['/assets/*', '/*.*'], (req, res) => {
     res.status(404).send('Asset not found');

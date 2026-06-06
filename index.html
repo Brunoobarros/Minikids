@@ -3,12 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Camisa 7 Store</title>
+    <title>Camisa7store</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Camisa 7" />
+    <meta name="apple-mobile-web-app-title" content="Camisa7store" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#111111" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <script>
+      // Automatically reload the page if a script or stylesheet fails to load (due to deployment cache/updates)
+      window.addEventListener('error', function(e) {
+        if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+          const url = e.target.src || e.target.href;
+          if (url && (url.includes('/assets/') || url.includes('index-'))) {
+            const lastReload = sessionStorage.getItem('c7_reload_timestamp');
+            const now = Date.now();
+            // Prevent infinite reload loop if offline (minimum 15 seconds between reloads)
+            if (!lastReload || now - parseInt(lastReload) > 15000) {
+              sessionStorage.setItem('c7_reload_timestamp', String(now));
+              window.location.reload();
+            }
+          }
+        }
+      }, true); // Capturing phase to intercept resource load errors
+    </script>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
   </head>
   <body>

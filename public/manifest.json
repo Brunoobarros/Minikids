@@ -1,0 +1,22 @@
+{
+  "short_name": "Camisa7store",
+  "name": "Camisa7store",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#111111",
+  "display": "standalone",
+  "theme_color": "#111111",
+  "orientation": "portrait"
+}
