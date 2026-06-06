@@ -14,17 +14,7 @@ import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Laye
 import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
 import internacionalSquare from './assets/images/internacional_jersey_1780448910641.png';
 
-// Firebase Integrations (Removed as requested by user - using clean Express + Supabase API)
-const isFirebasePlaceholder = true;
-const db = {} as any;
-const doc = (...args: any[]) => ({}) as any;
-const setDoc = async (...args: any[]) => {};
-const updateDoc = async (...args: any[]) => {};
-const deleteDoc = async (...args: any[]) => {};
-const writeBatch = (...args: any[]) => ({
-  set: () => {},
-  commit: async () => {},
-}) as any;
+// Supabase & Express API Integration (Fully custom-tailored, Firebase-free)
 
 export default function App() {
   // Theme dark / light state manager (Standard defaults to Dark)
@@ -268,17 +258,6 @@ export default function App() {
         console.warn("Could not sync appearance with Express backend:", backendErr);
       }
 
-      // 3. Persist directly to Firestore if possible (standard client-side write if authenticated)
-      try {
-        await setDoc(doc(db, 'config', 'appearance'), {
-          ...appearance,
-          updatedAt: new Date().toISOString(),
-          updatedBy: currentUser?.email || 'admin@camisa7.com'
-        });
-      } catch (firestoreErr) {
-        console.warn("Client-side save to Firestore skipped (expected for simulated admins). Server backend manages sync:", firestoreErr);
-      }
-
       triggerNotification(
         "Configurações Publicadas!",
         "Layout, tipografia e chave Pix de checkout atualizados com sucesso!",
@@ -465,16 +444,6 @@ export default function App() {
       setProducts(prev => [newProduct, ...prev]);
       setBanners(prev => [...prev, newBanner]);
 
-      // 3. Persist to Firestore if not placeholder (safe client-side write with server-side backup)
-      if (!isFirebasePlaceholder) {
-        try {
-          await setDoc(doc(db, 'products', newId), { ...newProduct, orderIndex: products.length });
-          await setDoc(doc(db, 'banners', bannerId), newBanner);
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Produto Cadastrado", "Camisa e Poster adicionados com sucesso ao catálogo!", "success");
     } catch (err) {
       triggerNotification("Produto Cadastrado", "Camisa e Poster adicionados com sucesso ao catálogo!", "success");
@@ -501,15 +470,6 @@ export default function App() {
         console.warn("Express stock update backend warning:", backendErr);
       }
 
-      // 3. Persist to Firestore if not placeholder
-      if (!isFirebasePlaceholder) {
-        try {
-          await updateDoc(doc(db, 'products', id), updates);
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Produto Atualizado", "As alterações do produto foram sincronizadas!", "success");
     } catch (err) {
       triggerNotification("Produto Atualizado", "As alterações do produto foram sincronizadas!", "success");
@@ -532,15 +492,6 @@ export default function App() {
         });
       } catch (backendErr) {
         console.warn("Express delete product backend warning:", backendErr);
-      }
-
-      // 3. Persist delete to Firestore if not placeholder
-      if (!isFirebasePlaceholder) {
-        try {
-          await deleteDoc(doc(db, 'products', id));
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
       }
 
       triggerNotification("Produto Removido", "O produto foi excluído com sucesso do catálogo!", "success");
@@ -575,19 +526,6 @@ export default function App() {
         console.warn("Express reorder backend warning:", backendErr);
       }
 
-      // 3. Write to Firestore if not placeholder
-      if (!isFirebasePlaceholder) {
-        try {
-          const batch = writeBatch(db);
-          orderedIds.forEach((id, idx) => {
-            batch.update(doc(db, 'products', id), { orderIndex: idx });
-          });
-          await batch.commit();
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Catálogo Reorganizado", "A nova ordenação visual foi salva com sucesso!", "success");
     } catch (err) {
       triggerNotification("Catálogo Reorganizado", "A nova ordenação visual foi salva com sucesso!", "success");
@@ -619,18 +557,6 @@ export default function App() {
         console.warn("Express banners reorder warning:", backendErr);
       }
 
-      if (!isFirebasePlaceholder) {
-        try {
-          const batch = writeBatch(db);
-          orderedIds.forEach((id, idx) => {
-            batch.update(doc(db, 'banners', id), { orderIndex: idx });
-          });
-          await batch.commit();
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Carrossel Reorganizado", "Posição dos banners salva com sucesso!", "success");
     } catch (err) {
       triggerNotification("Carrossel Reorganizado", "Posição dos banners salva com sucesso!", "success");
@@ -640,7 +566,6 @@ export default function App() {
   // CRUD: Add review to jersey
   const onAddReview = async (productId: string, newReview: Omit<Review, 'id' | 'date'>) => {
     try {
-      const prodRef = doc(db, 'products', productId);
       const targetProduct = products.find(p => p.id === productId);
       if (!targetProduct) return;
 
@@ -668,18 +593,6 @@ export default function App() {
       // 2. Local state update
       setProducts(prev => prev.map(p => p.id === productId ? { ...p, reviews: updatedReviews, ratingValue } : p));
 
-      // 3. Firestore update
-      if (!isFirebasePlaceholder) {
-        try {
-          await updateDoc(prodRef, {
-            reviews: updatedReviews,
-            ratingValue: ratingValue
-          });
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Comentário Enviado", "Agradecemos o seu feedback!", "success");
     } catch (err) {
       triggerNotification("Comentário Enviado", "Agradecemos o seu feedback!", "success");
@@ -706,15 +619,6 @@ export default function App() {
       // 2. React state update
       setBanners(prev => [...prev, newBanner]);
 
-      // 3. Firestore write
-      if (!isFirebasePlaceholder) {
-        try {
-          await setDoc(doc(db, 'banners', newId), newBanner);
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Campanha Criada", `O banner "${newBanner.title}" foi publicado!`, "success");
     } catch (err) {
       triggerNotification("Campanha Criada", `O banner "${newBannerData.title}" foi publicado!`, "success");
@@ -738,15 +642,6 @@ export default function App() {
         console.warn("Backend banner update sync warning:", backendErr);
       }
 
-      // 3. Firestore write
-      if (!isFirebasePlaceholder) {
-        try {
-          await updateDoc(doc(db, 'banners', id), updates);
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
-      }
-
       triggerNotification("Campanha Editada", "O banner foi ajustado com sucesso!", "success");
     } catch (err) {
       triggerNotification("Campanha Editada", "O banner foi ajustado com sucesso!", "success");
@@ -766,15 +661,6 @@ export default function App() {
         });
       } catch (backendErr) {
         console.warn("Backend banner delete warning:", backendErr);
-      }
-
-      // 2. Firestore write
-      if (!isFirebasePlaceholder) {
-        try {
-          await deleteDoc(doc(db, 'banners', id));
-        } catch (fErr) {
-          console.log("Ignored expected guest write fail. Server will sync to database:", fErr);
-        }
       }
 
       triggerNotification("Campanha Removida", "O banner foi deletado com sucesso!", "success");
@@ -826,69 +712,49 @@ export default function App() {
     const onlineIncentive = (orderData.paymentMethod === 'pix' || orderData.paymentMethod === 'cartao') ? baseWithCoupon * 0.05 : 0;
     const finalTotalPrice = Math.max(0, baseWithCoupon - onlineIncentive);
 
-    const orderId = `PED-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newOrder: Order = {
-      id: orderId,
-      customerName: orderData.customerName,
-      customerEmail: orderData.customerEmail,
-      customerPhone: orderData.customerPhone,
-      items: cart.map(item => ({
-        productId: item.product.id,
-        productName: item.product.name,
-        image: item.product.images[0],
-        selectedSize: item.selectedSize,
-        selectedColor: item.selectedColor,
-        price: item.product.discountPrice || item.product.price,
-        quantity: item.quantity
-      })),
-      totalPrice: Number(finalTotalPrice.toFixed(2)),
-      status: 'reservado',
-      date: new Date().toISOString()
-    };
-
     try {
-      if (isFirebasePlaceholder) {
-        throw new Error("Placeholder key detected. Redirecting to instant local simulation.");
+      // 1. Report order/decrement stock on backend Express + Supabase
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: orderData.customerName,
+          customerEmail: orderData.customerEmail,
+          customerPhone: orderData.customerPhone,
+          items: cart.map(item => ({
+            productId: item.product.id,
+            productName: item.product.name,
+            image: item.product.images[0],
+            selectedSize: item.selectedSize,
+            selectedColor: item.selectedColor,
+            price: item.product.discountPrice || item.product.price,
+            quantity: item.quantity
+          })),
+          totalPrice: finalTotalPrice
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro de comunicação com o servidor.");
       }
 
-      // 1. Direct write order document to Firestore orders collection (fully safe & authorized for anonymous guest users in firestore.rules!)
-      await setDoc(doc(db, 'orders', orderId), newOrder);
+      const createdOrder: Order = await response.json();
 
-      // 2. Report order/decrement stock on backend Express memory db (for local JSON filesystem coherence)
-      try {
-        await fetch('/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customerName: orderData.customerName,
-            customerEmail: orderData.customerEmail,
-            customerPhone: orderData.customerPhone,
-            items: newOrder.items,
-            totalPrice: newOrder.totalPrice
-          })
-        });
-      } catch (backendErr) {
-        console.warn("Backend local db order sync warning:", backendErr);
-      }
+      // 2. Update local state
+      setOrders(prev => [createdOrder, ...prev]);
+      setProducts(prev => prev.map(p => {
+        const cartItem = cart.find(item => item.product.id === p.id);
+        if (cartItem) {
+          return { ...p, stock: Math.max(0, p.stock - cartItem.quantity) };
+        }
+        return p;
+      }));
 
-      // 3. Best-effort Firestore product stock reduction (failsafe)
-      // Since standard/unauthenticated guests are restricted from directly editing products in firestore.rules,
-      // we isolate this in its own separate block so that a security rule reject here does not crash checkout.
-      try {
-        const batch = writeBatch(db);
-        cart.forEach(item => {
-          const remainingStock = Math.max(0, item.product.stock - item.quantity);
-          batch.update(doc(db, 'products', item.product.id), { stock: remainingStock });
-        });
-        await batch.commit();
-      } catch (stockErr) {
-        console.log("Direct Firestore stock decrement skipped (allowed for Admins only; backend handles inventory):", stockErr);
-      }
-
+      const orderId = createdOrder.id;
       setCart([]); // Clear cart
       setSessionOrderIds(prev => [...prev, orderId]);
       setTab('pedidos'); // Redirect to active reservations view
-      
+
       if (orderData.paymentMethod === 'retirada') {
         triggerNotification(
           "Reserva Concluída!",
@@ -905,10 +771,29 @@ export default function App() {
         );
       }
     } catch (err) {
-      console.warn("Firestore error encountered, reverting to fully-functional local fallback for preview simulation:", err);
-      
-      // Local fallback: complete the state updates locally so the user can test everything!
-      setOrders(prev => [newOrder, ...prev]);
+      console.warn("Checkout sync error, falling back locally:", err);
+
+      const generatedOrderId = `PED-${Math.floor(1000 + Math.random() * 9000)}`;
+      const fallbackOrder: Order = {
+        id: generatedOrderId,
+        customerName: orderData.customerName,
+        customerEmail: orderData.customerEmail,
+        customerPhone: orderData.customerPhone || "(11) 99999-9999",
+        items: cart.map(item => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          image: item.product.images[0],
+          selectedSize: item.selectedSize,
+          selectedColor: item.selectedColor,
+          price: item.product.discountPrice || item.product.price,
+          quantity: item.quantity
+        })),
+        totalPrice: Number(finalTotalPrice.toFixed(2)),
+        status: 'reservado',
+        date: new Date().toISOString()
+      };
+
+      setOrders(prev => [fallbackOrder, ...prev]);
       setProducts(prev => prev.map(p => {
         const cartItem = cart.find(item => item.product.id === p.id);
         if (cartItem) {
@@ -918,20 +803,20 @@ export default function App() {
       }));
 
       setCart([]); // Clear cart
-      setSessionOrderIds(prev => [...prev, orderId]);
-      setTab('pedidos'); // Redirect to active reservations view
+      setSessionOrderIds(prev => [...prev, generatedOrderId]);
+      setTab('pedidos');
 
       if (orderData.paymentMethod === 'retirada') {
         triggerNotification(
           "Reserva Concluída (Local)!",
-          `Seu manto está reservado com o código: ${orderId}. Retire na loja física!`,
+          `Seu manto está reservado com o código: ${generatedOrderId}. Retire na loja física!`,
           "success"
         );
       } else {
-        setActivePaymentOrder({ id: orderId, totalPrice: Number(finalTotalPrice.toFixed(2)) });
+        setActivePaymentOrder({ id: generatedOrderId, totalPrice: Number(finalTotalPrice.toFixed(2)) });
         triggerNotification(
           "Reservado no Estoque!",
-          `Manto reservado (código: ${orderId}). Prossiga para efetuar o pagamento simulado!`,
+          `Manto reservado (código: ${generatedOrderId}). Prossiga para efetuar o pagamento simulado!`,
           "info"
         );
       }
@@ -940,12 +825,14 @@ export default function App() {
 
   const onPaymentSuccess = async (id: string) => {
     try {
-      if (isFirebasePlaceholder) {
-        throw new Error("Placeholder mode is active.");
-      }
-      await updateDoc(doc(db, 'orders', id), { status: 'pago' });
+      await fetch(`/api/orders/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'pago' })
+      });
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'pago' } : o));
     } catch (err) {
-      console.warn("No Firebase write connection: updated payment state locally for interactive test", err);
+      console.warn("No write connection: updated payment state locally for interactive test", err);
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'pago' } : o));
     }
   };
@@ -953,10 +840,12 @@ export default function App() {
   // STATUS UPDATER: Change booking order status (Admin function)
   const onUpdateOrderStatus = async (id: string, status: Order['status']) => {
     try {
-      if (isFirebasePlaceholder) {
-        throw new Error("Placeholder mode is active.");
-      }
-      await updateDoc(doc(db, 'orders', id), { status });
+      await fetch(`/api/orders/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
       triggerNotification("Reserva Sincronizada", `Status do pedido ${id} atualizado para "${status.toUpperCase()}"`, "success");
     } catch (err) {
       console.warn("Offline fallback for admin status update:", err);
@@ -968,24 +857,11 @@ export default function App() {
   // DATABASE SEED RESTORER: Clean/overwrite/re-seed database with default banners and products
   const onResetDatabase = async () => {
     try {
-      triggerNotification("Restaurando...", "Conectando ao Firestore para semear dados padrão...", "info");
+      triggerNotification("Restaurando...", "Semando dados padrão...", "info");
       const { INITIAL_PRODUCTS, INITIAL_BANNERS } = await import('./data');
-
-      // 1. Core products restoration (using writeBatch)
-      const prodBatch = writeBatch(db);
-      INITIAL_PRODUCTS.forEach((p, idx) => {
-        prodBatch.set(doc(db, 'products', p.id), { ...p, orderIndex: idx });
-      });
-      await prodBatch.commit();
-
-      // 2. Core banners restoration (using writeBatch)
-      const bannerBatch = writeBatch(db);
-      INITIAL_BANNERS.forEach((b) => {
-        bannerBatch.set(doc(db, 'banners', b.id), b);
-      });
-      await bannerBatch.commit();
-
-      triggerNotification("Sucesso!", "Banco de dados restaurado e banners semeados com sucesso!", "success");
+      setProducts(INITIAL_PRODUCTS);
+      setBanners(INITIAL_BANNERS);
+      triggerNotification("Sucesso!", "Dados locais restaurados com sucesso!", "success");
     } catch (err) {
       console.error(err);
       triggerNotification("Falha na restauração", "Não foi possível sincronizar novos registros padrão.", "alert");

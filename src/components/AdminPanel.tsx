@@ -417,7 +417,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <button
                 onClick={() => onResetDatabase()}
                 className="flex items-center gap-1.5 bg-zinc-950 text-white font-mono font-bold text-[10px] uppercase border border-zinc-800 hover:bg-red-600 rounded px-2.5 py-1.5 transition-colors cursor-pointer"
-                title="Semear e Restaurar dados padrão no Firestore"
+                title="Semear e Restaurar dados padrão"
               >
                 <RefreshCcw className="w-3.5 h-3.5" /> Semear Banners / Dados
               </button>
@@ -1963,7 +1963,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
               
               <p className="text-[11px] text-zinc-500 leading-relaxed mb-6">
-                Migre sua base de dados Firestore e arquivos locais permanentemente para o seu próprio banco de dados relacional relâmpago no <strong>Supabase Postgres</strong>. Isso garante sincronização instantânea em múltiplos navegadores, maior controle e confiabilidade de dados.
+                Sincronize sua base de dados e arquivos locais permanentemente para o seu próprio banco de dados relacional relâmpago no <strong>Supabase Postgres</strong>. Isso garante sincronização instantânea em múltiplos navegadores, maior controle e confiabilidade de dados.
               </p>
 
               {/* Stat Cards & Key Steps */}

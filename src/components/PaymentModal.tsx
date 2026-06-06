@@ -357,7 +357,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     };
   }, [isOpen, method, step, paymentId]);
 
-// API-based real-time status checker (replaces Firebase listener, fully offline/Supabase-compatible)
+// API-based real-time status checker (fully offline/Supabase-compatible)
   useEffect(() => {
     let intervalId: any;
     if (isOpen && orderId && step !== 'success') {
@@ -419,7 +419,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       const finalPaymentId = comprovanteId.trim() || `mp-sim-pix-manual-${Date.now()}`;
       setPaymentId(finalPaymentId);
 
-      // 1. Direct client-side Firestore/State update to ensure instant database synchronization
+      // 1. Direct client-side State update to ensure instant database synchronization
       await onPaymentSuccess(orderId);
 
       // 2. Direct Webhook simulation request to backend Express routing (failsafe)

@@ -1,8 +1,7 @@
 /**
  * Utility to compress and downscale an image file client-side.
- * This ensures that when images are converted to base64 strings and stored in Firestore,
- * they remain well under the 1MB document limit, avoiding Quota and write failures,
- * and stay within firestore.rules size limits.
+ * This ensures that when images are converted to base64 strings and stored in the database,
+ * they remain highly optimized, avoiding Quota and write failures.
  */
 export function compressImage(
   file: File,
