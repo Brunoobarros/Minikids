@@ -663,6 +663,7 @@ app.get("/api/products", async (req, res) => {
   } else if (products.length === 0) {
     await syncFromSupabase();
   }
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.json(products);
 });
 
@@ -905,6 +906,7 @@ app.get("/api/banners", async (req, res) => {
   if (banners.length === 0) {
     await syncFromSupabase();
   }
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.json(banners);
 });
 
@@ -1075,6 +1077,7 @@ app.get("/api/config/appearance", async (req, res) => {
   } catch (err) {
     console.error("Erro ao sincronizar aparência do Supabase:", err);
   }
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.json(appearanceConfig);
 });
 
@@ -1187,6 +1190,7 @@ app.get("/api/orders", async (req, res) => {
   if (orders.length === 0) {
     await syncFromSupabase();
   }
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.json(orders);
 });
 

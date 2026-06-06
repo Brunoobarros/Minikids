@@ -117,7 +117,7 @@ export default function App() {
   // Callback to fetch store appearance/branding configuration
   const loadAppearance = useCallback(async () => {
     try {
-      const res = await fetch('/api/config/appearance');
+      const res = await fetch('/api/config/appearance?t=' + Date.now());
       if (res.ok) {
         const data = await res.json();
         
@@ -272,7 +272,7 @@ export default function App() {
   // Callbacks to fetch individual tables from backend
   const loadProducts = useCallback(async () => {
     try {
-      const res = await fetch('/api/products');
+      const res = await fetch('/api/products?t=' + Date.now());
       if (res.ok) {
         const pData = await res.json() as Product[];
         setProducts(pData || []);
@@ -284,7 +284,7 @@ export default function App() {
 
   const loadBanners = useCallback(async () => {
     try {
-      const res = await fetch('/api/banners');
+      const res = await fetch('/api/banners?t=' + Date.now());
       if (res.ok) {
         const bData = await res.json() as Banner[];
         setBanners(bData || []);
@@ -296,7 +296,7 @@ export default function App() {
 
   const loadOrders = useCallback(async () => {
     try {
-      const res = await fetch('/api/orders');
+      const res = await fetch('/api/orders?t=' + Date.now());
       if (res.ok) {
         const oData = await res.json() as Order[];
         const sorted = (oData || []).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
