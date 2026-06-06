@@ -10,7 +10,7 @@ import { PaymentModal } from './components/PaymentModal';
 import { BottomMenu } from './components/BottomMenu';
 import { ProductCard } from './components/ProductCard';
 import { MobileShortcutModal } from './components/MobileShortcutModal';
-import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Layers, Star, Info, ChevronRight, X, Send, Smartphone } from 'lucide-react';
+import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Layers, Star, Info, ChevronRight, X, Send, Smartphone, GripVertical } from 'lucide-react';
 import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
 
 // Supabase & Express API Integration (Fully custom-tailored, Firebase-free)
@@ -88,8 +88,39 @@ export default function App() {
   // Notifications toasts queue
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
+  // PWA version update check state
+  const [isUpdateAvailable, setIsUpdateAvailable] = useState<boolean>(false);
+
   // Mobile install/shortcut assistant toggle simulation
   const [showShortcutModal, setShowShortcutModal] = useState(false);
+
+  // Admin drag-and-drop reorder on home grid
+  const [homeDragIdx, setHomeDragIdx] = useState<number | null>(null);
+  const [homeDragOverIdx, setHomeDragOverIdx] = useState<number | null>(null);
+
+  const handleHomeDragStart = (e: React.DragEvent, index: number) => {
+    setHomeDragIdx(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(index));
+  };
+
+  const handleHomeDragOver = (e: React.DragEvent, targetIdx: number) => {
+    e.preventDefault();
+    if (homeDragIdx === null || homeDragIdx === targetIdx) return;
+    setHomeDragOverIdx(targetIdx);
+    const list = [...products];
+    const [removed] = list.splice(homeDragIdx, 1);
+    list.splice(targetIdx, 0, removed);
+    setHomeDragIdx(targetIdx);
+    setProducts(list);
+  };
+
+  const handleHomeDragEnd = () => {
+    setHomeDragIdx(null);
+    setHomeDragOverIdx(null);
+    // Persistir a nova ordem no backend
+    onReorderProducts(products.map(p => p.id));
+  };
 
   // Local supportive simulator chat overlay
   const [showSupportWidget, setShowSupportWidget] = useState(false);
@@ -314,6 +345,60 @@ export default function App() {
     loadOrders();
     loadAppearance();
   }, [loadProducts, loadBanners, loadOrders, loadAppearance]);
+
+  // Function to check for updates by fetching index.html and comparing asset hashes
+  const checkForUpdates = useCallback(async () => {
+    try {
+      // Fetch index.html bypassing cache
+      const response = await fetch('/index.html?cb=' + Date.now(), {
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (!response.ok) return;
+      const htmlText = await response.text();
+      
+      // Encontra a URL do script principal gerado pelo Vite
+      const match = htmlText.match(/src=["'](\/assets\/[a-zA-Z0-9_-]+(?:-[a-zA-Z0-9_-]+)?\.js)["']/);
+      
+      if (match && match[1]) {
+        const latestJsUrl = match[1];
+        
+        // Compara com os scripts da página atual
+        const scripts = Array.from(document.getElementsByTagName('script'));
+        const hasLatestScript = scripts.some(s => s.src && s.src.includes(latestJsUrl));
+        
+        if (!hasLatestScript) {
+          console.log('[PWA UPDATE] Nova versão detectada:', latestJsUrl);
+          setIsUpdateAvailable(true);
+        }
+      }
+    } catch (err) {
+      console.warn('[PWA UPDATE] Falha ao verificar atualizações:', err);
+    }
+  }, []);
+
+  // Periodic and event-driven update checking
+  useEffect(() => {
+    checkForUpdates();
+
+    // Verifica quando o app volta ao primeiro plano (PWA resumido)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        checkForUpdates();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', checkForUpdates);
+
+    // Verifica a cada 5 minutos
+    const interval = setInterval(checkForUpdates, 300000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', checkForUpdates);
+      clearInterval(interval);
+    };
+  }, [checkForUpdates]);
 
   // Real-time Event Stream (SSE) listener
   useEffect(() => {
@@ -960,6 +1045,36 @@ export default function App() {
       {/* Absolute Push alerts queue */}
       <PushNotification toasts={toasts} removeToast={removeToast} />
 
+      {/* Update Available Banner */}
+      {isUpdateAvailable && (
+        <div className="fixed bottom-20 left-4 right-4 md:bottom-6 md:right-6 md:left-auto z-[9998] max-w-md bg-zinc-900/95 border border-red-650/40 text-white rounded-2xl p-4 shadow-2xl backdrop-blur-md animate-fade-in pointer-events-auto">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-red-600/10 rounded-lg text-red-500 mt-0.5 animate-pulse">
+              <RefreshCw className="w-5 h-5" />
+            </div>
+            <div className="flex-grow">
+              <h4 className="font-semibold text-sm tracking-wide font-display">Atualização Disponível!</h4>
+              <p className="text-xs text-gray-400 mt-0.5">Uma nova versão do Camisa7store está disponível para você.</p>
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-750 text-white text-xs font-semibold rounded-lg flex items-center gap-1 transition-all duration-200 shadow-lg shadow-red-600/25 cursor-pointer font-sans"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Atualizar Agora
+                </button>
+                <button
+                  onClick={() => setIsUpdateAvailable(false)}
+                  className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer font-sans"
+                >
+                  Depois
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Primary Navigation Logo & search banner */}
       <Header
         searchQuery={searchQuery}
@@ -971,7 +1086,13 @@ export default function App() {
         onLogout={onLogout}
         onGoogleLogin={onGoogleLogin}
         selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
+        setSelectedCategory={(cat) => {
+          setSelectedCategory(cat);
+          setTab('camisas');
+          setTimeout(() => {
+            document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }}
         isDarkMode={isDarkMode}
         onToggleDarkMode={() => {
           setIsDarkMode(prev => {
@@ -1042,7 +1163,7 @@ export default function App() {
             />
 
             {/* Featured Product Section description header */}
-            <div>
+            <div id="products-section">
               <div className={`flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b pb-4 mb-6 ${
                 isDarkMode ? 'border-white/10' : 'border-zinc-200'
               }`}>
@@ -1113,14 +1234,37 @@ export default function App() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredProducts.map((p) => (
-                    <ProductCard
-                      key={p.id}
-                      product={p}
-                      isDarkMode={isDarkMode}
-                      onSelect={setSelectedProduct}
-                    />
-                  ))}
+                  {filteredProducts.map((p, idx) => {
+                    const isAdmin = isAdminMode || currentUser?.role === 'admin';
+                    const isDragging = homeDragIdx === idx;
+                    return (
+                      <div
+                        key={p.id}
+                        draggable={isAdmin}
+                        onDragStart={isAdmin ? (e) => handleHomeDragStart(e, idx) : undefined}
+                        onDragOver={isAdmin ? (e) => handleHomeDragOver(e, idx) : undefined}
+                        onDragEnd={isAdmin ? handleHomeDragEnd : undefined}
+                        className={`relative transition-all duration-150 ${
+                          isAdmin ? 'cursor-grab active:cursor-grabbing' : ''
+                        } ${
+                          isDragging ? 'opacity-50 scale-[0.97]' : ''
+                        }`}
+                      >
+                        {isAdmin && (
+                          <div className={`absolute top-2 left-2 z-10 p-1 rounded ${
+                            isDarkMode ? 'bg-black/60 text-white/60' : 'bg-white/80 text-zinc-400'
+                          } hover:text-red-600 transition-colors`}>
+                            <GripVertical className="w-4 h-4" />
+                          </div>
+                        )}
+                        <ProductCard
+                          product={p}
+                          isDarkMode={isDarkMode}
+                          onSelect={setSelectedProduct}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

@@ -624,7 +624,7 @@ app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
   
   // High-fidelity validation: standard admin/customer credentials for presentation
-  if (email === "admin@camisa7.com.br" && password === "camisa7pass") {
+  if (email === "admin@camisa7.com.br" && password === "camisa72026*") {
     return res.json({
       success: true,
       token: "simulated-jwt-header.payload-admin.signature",
@@ -1960,7 +1960,18 @@ app.post("/api/ai/recommend", async (req, res) => {
 // Serve static files in production
 if (IS_PRODUCTION) {
   const distPath = path.join(process.cwd(), 'dist');
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, {
+    index: false, // Prevents serving index.html for '/' so it falls through to our custom app.get('*') handler
+    setHeaders: (res, filePath) => {
+      // Check if the file is in the /assets/ directory
+      if (/[\\/]assets[\\/]/.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      } else {
+        // Root config files like manifest.json should not be cached aggressively
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+      }
+    }
+  }));
   
   // Return a self-healing reload script for missing JS assets to recover outdated client cache
   app.get('/assets/*.js', (req, res) => {

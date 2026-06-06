@@ -48,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
         setErrorMessage("Por favor, digite a senha de administrador.");
         return;
       }
-      if (p !== "admin" && p !== "camisa7pass") {
+      if (p !== "camisa72026*") {
         setErrorMessage("Senha incorreta! Tente novamente.");
         return;
       }
@@ -302,7 +302,7 @@ export const Header: React.FC<HeaderProps> = ({
                       </button>
                     </div>
 
-                    <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
+                    <form onSubmit={(e) => { e.preventDefault(); submitLogin(e, simulatedRole); }} className="space-y-3">
                       {simulatedRole === 'customer' ? (
                         <div>
                           <label className={`block text-[10px] uppercase font-mono mb-1 ${isDarkMode ? "text-zinc-400" : "text-zinc-500"}`}>E-mail (Opcional)</label>
@@ -343,8 +343,7 @@ export const Header: React.FC<HeaderProps> = ({
                       
                       <div className="pt-1">
                         <button
-                          type="button"
-                          onClick={(e) => submitLogin(e, simulatedRole)}
+                          type="submit"
                           className="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
                         >
                           {simulatedRole === 'admin' ? 'Entrar como Admin' : 'Entrar no Site'}
@@ -427,7 +426,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               </div>
 
-              <div className="space-y-2">
+              <form onSubmit={(e) => { e.preventDefault(); submitLogin(e, simulatedRole); }} className="space-y-2">
                 {simulatedRole === 'customer' ? (
                   <div>
                     <label className={`block text-[9px] uppercase font-mono mb-1 ${isDarkMode ? "text-zinc-400" : "text-zinc-500"}`}>E-mail (Opcional)</label>
@@ -459,23 +458,22 @@ export const Header: React.FC<HeaderProps> = ({
                     />
                   </div>
                 )}
-              </div>
 
-              {errorMessage && (
-                <p className="text-[10px] text-red-500 font-mono font-bold text-center mt-1">
-                  {errorMessage}
-                </p>
-              )}
+                {errorMessage && (
+                  <p className="text-[10px] text-red-500 font-mono font-bold text-center mt-1">
+                    {errorMessage}
+                  </p>
+                )}
 
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={(e) => submitLogin(e, simulatedRole)}
-                  className="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
-                >
-                  {simulatedRole === 'admin' ? 'Entrar como Admin' : 'Entrar no Site'}
-                </button>
-              </div>
+                <div className="pt-1">
+                  <button
+                    type="submit"
+                    className="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    {simulatedRole === 'admin' ? 'Entrar como Admin' : 'Entrar no Site'}
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>

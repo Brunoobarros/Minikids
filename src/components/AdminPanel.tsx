@@ -837,25 +837,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             {/* Controle de Estoque de camisas (Right Col) */}
             <div className="lg:col-span-7 bg-zinc-50 border border-zinc-200 p-4 rounded-xl">
               <h3 className="text-xs uppercase tracking-wider font-mono text-zinc-500 mb-3 flex items-center justify-between font-bold">
-                <span>ESTOQUE ATUAL & PREÇOS (Arraste para reordenar)</span>
+                <span>ESTOQUE ATUAL & PREÇOS (Ordenado por estoque)</span>
                 <span className="text-[10px] bg-white text-slate-800 font-bold px-2 py-0.5 rounded border border-zinc-200">{products.length} itens</span>
               </h3>
 
               <div className="space-y-2 h-[410px] overflow-y-auto pr-1">
-                {localProducts.map((p, index) => {
-                  const isDragging = draggedIdx === index;
+                {[...localProducts].sort((a, b) => a.stock - b.stock).map((p, index) => {
                   return (
                     <div
                       key={p.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, index)}
-                      onDragOver={(e) => handleDragOver(e, index)}
-                      onDragEnd={handleDragEnd}
-                      className={`bg-white p-2.5 rounded-lg border flex items-center transition-all duration-150 select-none ${
-                        isDragging
-                          ? 'border-red-500 bg-red-50/40 opacity-50 scale-[0.99] shadow-inner'
-                          : 'border-zinc-200/60 hover:shadow-sm hover:border-zinc-300'
-                      }`}
+                      className={`bg-white p-2.5 rounded-lg border flex items-center transition-all duration-150 select-none border-zinc-200/60 hover:shadow-sm hover:border-zinc-300`}
                     >
                       <div className="flex items-center gap-2 w-full">
                         {editingStockId === p.id ? (
@@ -911,9 +902,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <>
                             {/* Product Info (Left) */}
                             <div className="flex items-center gap-3 flex-grow min-w-0">
-                              <div className="text-zinc-400 hover:text-zinc-600 cursor-grab active:cursor-grabbing p-1 -ml-1 transition-colors">
-                                <GripVertical className="w-4 h-4" />
-                              </div>
 
                               <img
                                 src={p.images[0]}
