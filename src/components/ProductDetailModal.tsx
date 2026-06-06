@@ -378,7 +378,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       : 'bg-red-600 hover:bg-black hover:text-white text-white shadow'
                   }`}
                 >
-                  <ShoppingCart className="w-4 h-4" /> Reservar Camisa
+                  <ShoppingCart className="w-4 h-4" /> Adicionar ao Carrinho
                 </button>
               </div>
 
