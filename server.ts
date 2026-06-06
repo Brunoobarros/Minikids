@@ -1840,26 +1840,8 @@ app.post("/api/ai/recommend", async (req, res) => {
 
 /* --- VITE MIDDLEWARE SETUP --- */
 
-async function initializeServer() {
-  console.log(`[SERVER] Inicializando... (VERCEL=${IS_VERCEL}, PRODUCTION=${IS_PRODUCTION})`);
-
-  // Se houver banco Supabase ativo, carrega dados
-  await syncFromSupabase();
-
-  if (!IS_PRODUCTION) {
-    // Local dev: use Vite dev server middleware
-    try {
-      const vite = await createViteServer({
-        server: { middlewareMode: true },
-        appType: "spa",
-      });
-      app.use(vite.middlewares);
-    } catch (err) {
-      console.warn("[SERVER] Vite middleware não disponível, servindo static fallback:", err);
-    }
-  }
-
-  // Always serve static files from dist in production or as fallback
+// Serve static files in production
+if (IS_PRODUCTION) {
   const distPath = path.join(process.cwd(), 'dist');
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
@@ -1875,19 +1857,14 @@ async function initializeServer() {
   });
 }
 
-// Initialize and start server (sync is needed for both local and Vercel)
-initializeServer().then(() => {
-  // Setup realtime subscriptions if Supabase is configured (only in non-serverless)
-  if (HAS_SUPABASE && !IS_VERCEL) {
+// Initialize data from Supabase (non-blocking, sync happens on first request too)
+if (!IS_VERCEL) {
+  syncFromSupabase().then(() => {
     setupRealtimeSubscriptions();
-  }
-
-  // Only listen locally; for Vercel, export the app
-  if (!IS_VERCEL) {
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
     });
-  }
-});
+  });
+}
 
 export default app;
