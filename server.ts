@@ -73,9 +73,9 @@ function getSupabaseClient() {
 }
 
 // Persistent JSON Database Paths (fallback for local dev)
-const PRODUCTS_FILE = path.join(process.cwd(), "products.json");
-const BANNERS_FILE = path.join(process.cwd(), "banners.json");
-const ORDERS_FILE = path.join(process.cwd(), "orders.json");
+const PRODUCTS_FILE = path.resolve(process.cwd(), "products.json");
+const BANNERS_FILE = path.resolve(process.cwd(), "banners.json");
+const ORDERS_FILE = path.resolve(process.cwd(), "orders.json");
 
 // Helper function to read from JSON file or write defaults
 const loadData = <T>(filePath: string, fallback: T): T => {
@@ -109,7 +109,7 @@ let products: Product[] = loadData(PRODUCTS_FILE, []);
 let banners: Banner[] = loadData(BANNERS_FILE, []);
 let orders: Order[] = loadData(ORDERS_FILE, []);
 
-const APPEARANCE_FILE = path.join(process.cwd(), "config_appearance.json");
+const APPEARANCE_FILE = path.resolve(process.cwd(), "config_appearance.json");
 const DEFAULT_APPEARANCE = {
   primaryColor: "#d12229",
   primaryColorHover: "#aa1a1e",
@@ -612,7 +612,7 @@ app.get("/api/products", async (req, res) => {
   res.json(products);
 });
 
-app.post("/api/products", (req, res) => {
+app.post("/api/products", async (req, res) => {
   const { name, category, description, price, discountPrice, images, sizes, colors, stock } = req.body;
   
   if (!name || !category || !price || !stock) {
@@ -637,33 +637,30 @@ app.post("/api/products", (req, res) => {
   products.unshift(newProduct);
   saveData(PRODUCTS_FILE, products);
 
-  // Sync to Supabase synchronous (await) to ensure data persistence across instances
-  (async () => {
-    try {
-      const supabase = getSupabaseClient();
-      if (supabase) {
-        const rows = products.map((p, idx) => ({
-          id: p.id,
-          name: p.name,
-          category: p.category,
-          description: p.description,
-          price: p.price,
-          discount_price: p.discountPrice || null,
-          images: p.images,
-          sizes: p.sizes,
-          colors: p.colors,
-          stock: p.stock,
-          rating_value: p.ratingValue,
-          reviews: p.reviews,
-          order_index: idx
-        }));
-        await supabase.from("products").upsert(rows);
-        console.log(`[SUPABASE] Novo produto ${newProduct.id} sincronizado.`);
-      }
-    } catch (err) {
-      console.warn("[SUPABASE] Erro ao sincronizar novo produto:", err);
+  // CRITICAL: Aguardar a sincronização com o Supabase antes de responder ao cliente
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const rows = products.map((p, idx) => ({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        description: p.description,
+        price: p.price,
+        discount_price: p.discountPrice || null,
+        images: p.images,
+        sizes: p.sizes,
+        colors: p.colors,
+        stock: p.stock,
+        rating_value: p.ratingValue,
+        reviews: p.reviews,
+        order_index: idx
+      }));
+      await supabase.from("products").upsert(rows);
     }
-  })();
+  } catch (err) {
+    console.warn("[SUPABASE] Erro ao sincronizar novo produto:", err);
+  }
 
   res.status(201).json(newProduct);
 });
@@ -839,7 +836,7 @@ app.get("/api/banners", async (req, res) => {
   res.json(banners);
 });
 
-app.post("/api/banners", (req, res) => {
+app.post("/api/banners", async (req, res) => {
   const { title, subtitle, image, tag, buttonText, linkToCategory } = req.body;
 
   if (!title || !subtitle || !image) {
@@ -860,28 +857,24 @@ app.post("/api/banners", (req, res) => {
   banners.push(newBanner);
   saveData(BANNERS_FILE, banners);
 
-  // Sync to Supabase
-  const syncToSupabase = async () => {
-    try {
-      const supabase = getSupabaseClient();
-      if (supabase) {
-        await supabase.from("banners").upsert({
-          id: newBanner.id,
-          title: newBanner.title,
-          subtitle: newBanner.subtitle,
-          image: newBanner.image,
-          tag: newBanner.tag,
-          button_text: newBanner.buttonText,
-          link_to_category: newBanner.linkToCategory,
-          order_index: newBanner.orderIndex
-        });
-        console.log(`[SUPABASE] Novo banner ${newBanner.id} sincronizado.`);
-      }
-    } catch (err) {
-      console.warn("[SUPABASE] Erro ao sincronizar novo banner:", err);
+  // CRITICAL: Aguardar a gravação no Supabase
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      await supabase.from("banners").upsert({
+        id: newBanner.id,
+        title: newBanner.title,
+        subtitle: newBanner.subtitle,
+        image: newBanner.image,
+        tag: newBanner.tag,
+        button_text: newBanner.buttonText,
+        link_to_category: newBanner.linkToCategory,
+        order_index: newBanner.orderIndex
+      });
     }
-  };
-  syncToSupabase();
+  } catch (err) {
+    console.warn("[SUPABASE] Erro ao sincronizar novo banner:", err);
+  }
 
   res.status(201).json(newBanner);
 });
@@ -1002,11 +995,15 @@ app.post("/api/banners/reorder", (req, res) => {
 });
 
 // Appearance Config API
-app.get("/api/config/appearance", (req, res) => {
+app.get("/api/config/appearance", async (req, res) => {
+  // Garante sincronização com o banco de dados antes de entregar a configuração
+  if (HAS_SUPABASE) {
+    await syncFromSupabase(); 
+  }
   res.json(appearanceConfig);
 });
 
-app.post("/api/config/appearance", (req, res) => {
+app.post("/api/config/appearance", async (req, res) => {
   const newConfig = req.body;
   if (!newConfig) {
     return res.status(400).json({ error: "Dados inválidos para atualizar aparência." });
@@ -1015,29 +1012,25 @@ app.post("/api/config/appearance", (req, res) => {
   appearanceConfig = { ...appearanceConfig, ...newConfig };
   saveData(APPEARANCE_FILE, appearanceConfig);
 
-  // Sync to Supabase
-  const syncToSupabase = async () => {
-    try {
-      const supabase = getSupabaseClient();
-      if (supabase) {
-        await supabase.from("appearance").upsert({
-          id: "default",
-          primary_color: appearanceConfig.primaryColor,
-          primary_color_hover: appearanceConfig.primaryColorHover,
-          bg_dark: appearanceConfig.bgDark,
-          bg_light: appearanceConfig.bgLight,
-          display_font: appearanceConfig.displayFont,
-          sans_font: appearanceConfig.sansFont,
-          pix_key: appearanceConfig.pixKey,
-          updated_at: new Date().toISOString()
-        });
-        console.log("[SUPABASE] Configuração de aparência salva em tempo real.");
-      }
-    } catch (err) {
-      console.warn("[SUPABASE] Erro ao sincronizar aparência:", err);
+  // CRITICAL: Aguardar a gravação da aparência
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      await supabase.from("appearance").upsert({
+        id: "default",
+        primary_color: appearanceConfig.primaryColor,
+        primary_color_hover: appearanceConfig.primaryColorHover,
+        bg_dark: appearanceConfig.bgDark,
+        bg_light: appearanceConfig.bgLight,
+        display_font: appearanceConfig.displayFont,
+        sans_font: appearanceConfig.sansFont,
+        pix_key: appearanceConfig.pixKey,
+        updated_at: new Date().toISOString()
+      });
     }
-  };
-  syncToSupabase();
+  } catch (err) {
+    console.warn("[SUPABASE] Erro ao sincronizar aparência:", err);
+  }
 
   res.json(appearanceConfig);
 });

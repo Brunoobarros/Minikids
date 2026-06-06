@@ -12,7 +12,6 @@ import { ProductCard } from './components/ProductCard';
 import { MobileShortcutModal } from './components/MobileShortcutModal';
 import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Layers, Star, Info, ChevronRight, X, Send, Smartphone } from 'lucide-react';
 import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
-import internacionalSquare from './assets/images/internacional_jersey_1780448910641.png';
 
 // Supabase & Express API Integration (Fully custom-tailored, Firebase-free)
 
@@ -595,15 +594,13 @@ export default function App() {
       const newBanner: Banner = { ...newBannerData, id: newId };
 
       // 1. Sync backend
-      try {
-        await fetch('/api/banners', {
+      const response = await fetch('/api/banners', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newBanner)
         });
-      } catch (backendErr) {
-        console.warn("Backend banner add sync warning:", backendErr);
-      }
+
+      if (!response.ok) throw new Error("Erro ao salvar no servidor");
 
       // 2. React state update
       setBanners(prev => [...prev, newBanner]);
