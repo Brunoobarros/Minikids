@@ -1951,7 +1951,14 @@ app.post("/api/ai/recommend", async (req, res) => {
 if (IS_PRODUCTION) {
   const distPath = path.join(process.cwd(), 'dist');
   app.use(express.static(distPath));
+  
+  // Return 404 for missing assets or files with extensions instead of serving index.html
+  app.get(['/assets/*', '/*.*'], (req, res) => {
+    res.status(404).send('Asset not found');
+  });
+
   app.get('*', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
     res.sendFile(path.join(distPath, 'index.html'), (err) => {
       if (err) {
         res.status(200).send(`
