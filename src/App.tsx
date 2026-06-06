@@ -1405,16 +1405,35 @@ export default function App() {
                         </button>
                       </div>
                     ) : o.status === 'pago' ? (
-                      <div className={`p-4 rounded-xl border flex items-center gap-3 ${
+                      <div className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                         isDarkMode ? 'bg-emerald-950/20 border-emerald-900/30' : 'bg-emerald-50/60 border-emerald-100'
                       }`}>
-                        <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold text-xs">✓</span>
-                        <div className="text-left">
-                          <p className="text-xs font-black text-emerald-600 uppercase font-mono">PAGAMENTO DIRETOR CONFIRMADO</p>
-                          <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-zinc-405 text-zinc-400' : 'text-zinc-500'}`}>
-                            Seu pagamento foi confirmado pelo app. Seu manto está na fila prioritária de separação!
-                          </p>
+                        <div className="flex items-start gap-3">
+                          <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                          <div className="text-left">
+                            <p className="text-xs font-black text-emerald-600 uppercase font-mono">PAGAMENTO CONFIRMADO</p>
+                            <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                              Seu pagamento foi confirmado pelo app. Seu manto está na fila prioritária de separação!
+                            </p>
+                          </div>
                         </div>
+                        <a
+                          href={`https://wa.me/5511999999999?text=${encodeURIComponent(
+                            `Olá Camisa 7! Fiz a compra e o pagamento do Pedido ${o.id}.\n\n` +
+                            `*Dados da Reserva:*\n` +
+                            `• Nome: ${o.customerName}\n` +
+                            `• WhatsApp: ${o.customerPhone}\n` +
+                            `• Total Pago: R$ ${o.totalPrice.toFixed(2)}\n\n` +
+                            `*Itens do Pedido:*\n` +
+                            o.items.map(item => `• ${item.productName} (${item.selectedSize}) x${item.quantity}`).join('\n') +
+                            `\n\nPor favor, confirmem o recebimento do pagamento e preparem o envio! Obrigado.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-[10px] uppercase font-black tracking-widest shadow cursor-pointer transition-all active:scale-97 flex items-center justify-center gap-1.5 font-sans"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" /> Confirmar no Whats
+                        </a>
                       </div>
                     ) : null}
 
