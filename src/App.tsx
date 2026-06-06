@@ -1418,16 +1418,30 @@ export default function App() {
                           </div>
                         </div>
                         <a
-                          href={`https://wa.me/5511999999999?text=${encodeURIComponent(
-                            `Olá Camisa 7! Fiz a compra e o pagamento do Pedido ${o.id}.\n\n` +
-                            `*Dados da Reserva:*\n` +
-                            `• Nome: ${o.customerName}\n` +
-                            `• WhatsApp: ${o.customerPhone}\n` +
-                            `• Total Pago: R$ ${o.totalPrice.toFixed(2)}\n\n` +
-                            `*Itens do Pedido:*\n` +
-                            o.items.map(item => `• ${item.productName} (${item.selectedSize}) x${item.quantity}`).join('\n') +
-                            `\n\nPor favor, confirmem o recebimento do pagamento e preparem o envio! Obrigado.`
-                          )}`}
+                          href={(() => {
+                            const cleanPhone = o.customerPhone.replace(/\D/g, '');
+                            const customerWhatsApp = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+                            const storeWhatsApp = '5511999999999';
+                            
+                            if (isAdminMode) {
+                              const adminMsg = `Olá ${o.customerName}! Aqui é da Camisa 7 Store.\n\n` +
+                                `Confirmamos o pagamento do seu Pedido ${o.id} no valor de R$ ${o.totalPrice.toFixed(2)}.\n\n` +
+                                `*Itens do seu Manto:*\n` +
+                                o.items.map(item => `• ${item.productName} (${item.selectedSize}) x${item.quantity}`).join('\n') +
+                                `\n\nSeu pedido já está em separação para postagem. Obrigado pela preferência!`;
+                              return `https://wa.me/${customerWhatsApp}?text=${encodeURIComponent(adminMsg)}`;
+                            } else {
+                              const clientMsg = `Olá Camisa 7! Fiz a compra e o pagamento do Pedido ${o.id}.\n\n` +
+                                `*Dados da Reserva:*\n` +
+                                `• Nome: ${o.customerName}\n` +
+                                `• WhatsApp: ${o.customerPhone}\n` +
+                                `• Total Pago: R$ ${o.totalPrice.toFixed(2)}\n\n` +
+                                `*Itens do Pedido:*\n` +
+                                o.items.map(item => `• ${item.productName} (${item.selectedSize}) x${item.quantity}`).join('\n') +
+                                `\n\nPor favor, confirmem o recebimento do pagamento e preparem o envio! Obrigado.`;
+                              return `https://wa.me/${storeWhatsApp}?text=${encodeURIComponent(clientMsg)}`;
+                            }
+                          })()}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-[10px] uppercase font-black tracking-widest shadow cursor-pointer transition-all active:scale-97 flex items-center justify-center gap-1.5 font-sans"

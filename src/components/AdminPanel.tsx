@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Product, Order, Banner } from '../types';
-import { DollarSign, ShoppingBag, Layers, AlertCircle, Plus, Eye, Sparkles, TrendingUp, RefreshCcw, GripVertical, Upload, ArrowUp, ArrowDown, Trash2, Paintbrush, Save, RotateCcw, Type, Settings, Edit, Sliders } from 'lucide-react';
+import { DollarSign, ShoppingBag, Layers, AlertCircle, Plus, Eye, Sparkles, TrendingUp, RefreshCcw, GripVertical, Upload, ArrowUp, ArrowDown, Trash2, Paintbrush, Save, RotateCcw, Type, Settings, Edit, Sliders, MessageCircle } from 'lucide-react';
 import { compressImage } from '../utils';
 import { SalesChart } from './SalesChart';
 
@@ -1057,7 +1057,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <div className="space-y-0.5 text-xs text-left mb-3">
                         <p className="font-bold text-slate-900">{o.customerName}</p>
                         <p className="text-[10px] text-zinc-500">{o.customerEmail}</p>
-                        <p className="text-[10px] text-zinc-500">{o.customerPhone}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-[10px] text-zinc-500">{o.customerPhone}</p>
+                          <a
+                            href={`https://wa.me/${(() => {
+                              const clean = o.customerPhone.replace(/\D/g, '');
+                              return clean.startsWith('55') ? clean : `55${clean}`;
+                            })()}?text=${encodeURIComponent(
+                              `Olá ${o.customerName}! Aqui é da Camisa 7 Store.\n\nGostaríamos de falar sobre o seu pedido ${o.id}.`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-emerald-600 hover:text-emerald-500 transition-colors inline-flex items-center"
+                            title="Conversar no WhatsApp"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
                         <p className="text-[9px] font-mono text-zinc-405 mt-1">{new Date(o.date).toLocaleString('pt-BR')}</p>
                       </div>
 
@@ -1080,6 +1096,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <span className="text-zinc-500 uppercase font-mono text-[9px] font-bold">Total da Reserva:</span>
                         <span className="font-bold text-slate-900 text-sm font-mono">R$ {o.totalPrice.toFixed(2)}</span>
                       </div>
+
+                      {o.status === 'pago' && (
+                        <div className="mb-3">
+                          <a
+                            href={`https://wa.me/${(() => {
+                              const clean = o.customerPhone.replace(/\D/g, '');
+                              return clean.startsWith('55') ? clean : `55${clean}`;
+                            })()}?text=${encodeURIComponent(
+                              `Olá ${o.customerName}! Aqui é da Camisa 7 Store.\n\n` +
+                              `Confirmamos o recebimento do pagamento do seu Pedido ${o.id} no valor de R$ ${o.totalPrice.toFixed(2)}.\n\n` +
+                              `Seu manto já está em processo de separação e preparação para envio! Obrigado pela preferência.`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center gap-1.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[9px] uppercase font-bold rounded shadow-sm transition-colors cursor-pointer font-sans"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" /> Confirmar Pagamento no Whats
+                          </a>
+                        </div>
+                      )}
 
                       <div className="grid grid-cols-4 gap-1">
                         <button
