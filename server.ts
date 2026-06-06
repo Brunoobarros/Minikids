@@ -72,9 +72,9 @@ let supabaseClient: any = null;
 
 function getSupabaseClient() {
   if (supabaseClient) return supabaseClient;
-  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (url && key && url.trim() !== "" && key.trim() !== "") {
+  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
+  const key = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
+  if (url.trim() !== "" && key.trim() !== "") {
     try {
       supabaseClient = createClient(url, key);
       console.log("[SUPABASE] Cliente inicializado com sucesso.");
@@ -102,9 +102,9 @@ const syncFromSupabase = async () => {
           description: p.description || "",
           price: Number(p.price),
           discountPrice: p.discount_price ? Number(p.discount_price) : undefined,
-          images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" ? JSON.parse(p.images) : []),
-          sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" ? JSON.parse(p.sizes) : []),
-          colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" ? JSON.parse(p.colors) : []),
+          images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" && p.images ? JSON.parse(p.images) : []),
+          sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" && p.sizes ? JSON.parse(p.sizes) : []),
+          colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" && p.colors ? JSON.parse(p.colors) : []),
           stock: Number(p.stock),
           ratingValue: Number(p.rating_value || 5.0),
           reviews: Array.isArray(p.reviews) ? p.reviews : (typeof p.reviews === "string" ? JSON.parse(p.reviews) : [])
@@ -138,10 +138,10 @@ const syncFromSupabase = async () => {
           customerName: o.customer_name,
           customerEmail: o.customer_email,
           customerPhone: o.customer_phone || "(11) 99999-9999",
-          items: Array.isArray(o.items) ? o.items : (typeof o.items === "string" ? JSON.parse(o.items) : []),
+          items: Array.isArray(o.items) ? o.items : (typeof o.items === "string" && o.items ? JSON.parse(o.items) : []),
           totalPrice: Number(o.total_price),
           status: o.status,
-          statusHistory: Array.isArray(o.status_history) ? o.status_history : (typeof o.status_history === "string" ? JSON.parse(o.status_history) : []),
+          statusHistory: Array.isArray(o.status_history) ? o.status_history : (typeof o.status_history === "string" && o.status_history ? JSON.parse(o.status_history) : []),
           paymentMethod: o.payment_method,
           paymentId: o.payment_id,
           date: o.created_at,
@@ -1170,8 +1170,8 @@ function generatePixPayload(key: string, name: string, city: string, amount: num
 
 // Endpoint 0: Safe public credentials config retrieval at runtime
 app.get("/api/config", (req, res) => {
-  const publicKey = process.env.VITE_MERCADO_PAGO_PUBLIC_KEY || process.env.MERCADO_PAGO_PUBLIC_KEY || process.env.VI || "";
-  const token = process.env.MERCADO_PAGO_ACCESS_TOKEN || process.env.ME || "";
+  const publicKey = process.env.VITE_MERCADO_PAGO_PUBLIC_KEY || process.env.MERCADO_PAGO_PUBLIC_KEY || "";
+  const token = process.env.MERCADO_PAGO_ACCESS_TOKEN || "";
   const isReal = !!(token && token !== "YOUR_MERCADO_PAGO_ACCESS_TOKEN" && token.trim() !== "");
   
   res.json({
