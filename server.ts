@@ -1665,9 +1665,17 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
-  });
+  // In Vercel serverless environment, don't listen - export the app instead
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
+    });
+  }
 }
 
-startServer();
+// Only start the server locally; for Vercel, the app is exported as default
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
