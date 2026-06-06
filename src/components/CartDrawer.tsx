@@ -40,6 +40,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [custPhone, setCustPhone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'retirada' | 'pix' | 'cartao'>('retirada');
 
+  // Validation errors
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+
   if (!isOpen) return null;
 
   // Calculos de preços
@@ -76,24 +81,51 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Reset errors
+    setNameError(false);
+    setEmailError(false);
+    setPhoneError(false);
+
     if (cart.length === 0) {
       triggerNotification("Carrinho Vazio", "Selecione alguma camisa do catálogo para prosseguir.", "alert");
       return;
     }
-    if (!custName.trim()) {
-      triggerNotification("Nome Necessário", "Por favor, informe seu Nome Completo para identificarmos sua reserva.", "alert");
+
+    // Validar Nome Completo (pelo menos duas palavras)
+    const nameTrimmed = custName.trim();
+    const nameParts = nameTrimmed.split(/\s+/);
+    if (!nameTrimmed || nameParts.length < 2 || nameParts.some(part => part.length < 2)) {
+      setNameError(true);
+      triggerNotification("Nome Completo Necessário", "Por favor, informe seu Nome Completo (Nome e Sobrenome).", "alert");
       return;
     }
+
+    // Validar Email
     if (!custEmail.trim() || !custEmail.includes('@')) {
+      setEmailError(true);
       triggerNotification("E-mail Necessário", "Por favor, indique um endereço de E-mail de contato válido.", "alert");
+      return;
+    }
+
+    // Validar WhatsApp / Telefone (mínimo 10 e máximo 11 dígitos numéricos com DDD)
+    const phoneDigits = custPhone.replace(/\D/g, '');
+    if (!custPhone.trim()) {
+      setPhoneError(true);
+      triggerNotification("Telefone Necessário", "Por favor, informe seu WhatsApp / Telefone.", "alert");
+      return;
+    }
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      setPhoneError(true);
+      triggerNotification("Telefone Inválido", "Por favor, informe um WhatsApp/Telefone válido com DDD (10 ou 11 dígitos).", "alert");
       return;
     }
 
     // Submit order action
     onSubmitOrder({
-      customerName: custName.trim(),
+      customerName: nameTrimmed,
       customerEmail: custEmail.trim(),
-      customerPhone: custPhone.trim() || '(11) 99999-9999',
+      customerPhone: custPhone.trim(),
       discountCode: appliedCoupon,
       paymentMethod: paymentMethod
     });
@@ -349,12 +381,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   type="text"
                   placeholder="ex: Carlos Nobre Barros"
                   value={custName}
-                  onChange={(e) => setCustName(e.target.value)}
-                  className={`w-full border rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-red-656 transition-colors ${
-                    isDarkMode 
-                      ? "bg-black border-zinc-800 text-white placeholder-zinc-500 focus:border-red-600" 
-                      : "bg-white border-zinc-200 text-slate-900 placeholder-zinc-400 focus:border-red-600"
-                  }`}
+                  onChange={(e) => {
+                    setCustName(e.target.value);
+                    if (nameError) setNameError(false);
+                  }}
+                  className={`w-full border rounded px-2.5 py-1.5 text-xs focus:outline-none transition-colors ${
+                    nameError 
+                      ? "border-red-500 ring-1 ring-red-500 bg-red-500/5 focus:border-red-500" 
+                      : (isDarkMode ? "bg-black border-zinc-800 focus:border-red-600" : "bg-white border-zinc-200 focus:border-red-600")
+                  } ${isDarkMode ? "text-white placeholder-zinc-500" : "text-slate-900 placeholder-zinc-400"}`}
                 />
               </div>
 
@@ -367,12 +402,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     type="email"
                     placeholder="carlos@exemplo.com"
                     value={custEmail}
-                    onChange={(e) => setCustEmail(e.target.value)}
-                    className={`w-full border rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-red-600 transition-colors ${
-                      isDarkMode 
-                        ? "bg-black border-zinc-800 text-white placeholder-zinc-500 focus:border-red-600" 
-                        : "bg-white border-zinc-200 text-slate-900 placeholder-zinc-400 focus:border-red-600"
-                    }`}
+                    onChange={(e) => {
+                      setCustEmail(e.target.value);
+                      if (emailError) setEmailError(false);
+                    }}
+                    className={`w-full border rounded px-2.5 py-1.5 text-xs focus:outline-none transition-colors ${
+                      emailError 
+                        ? "border-red-500 ring-1 ring-red-500 bg-red-500/5 focus:border-red-500" 
+                        : (isDarkMode ? "bg-black border-zinc-800 focus:border-red-600" : "bg-white border-zinc-200 focus:border-red-600")
+                    } ${isDarkMode ? "text-white placeholder-zinc-500" : "text-slate-900 placeholder-zinc-400"}`}
                   />
                 </div>
                 <div>
@@ -383,12 +421,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     type="tel"
                     placeholder="(11) 99999-9999"
                     value={custPhone}
-                    onChange={(e) => setCustPhone(e.target.value)}
-                    className={`w-full border rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-red-601 transition-colors ${
-                      isDarkMode 
-                        ? "bg-black border-zinc-800 text-white placeholder-zinc-500 focus:border-red-600" 
-                        : "bg-white border-zinc-200 text-slate-900 placeholder-zinc-400 focus:border-red-600"
-                    }`}
+                    onChange={(e) => {
+                      setCustPhone(e.target.value);
+                      if (phoneError) setPhoneError(false);
+                    }}
+                    className={`w-full border rounded px-2.5 py-1.5 text-xs focus:outline-none transition-colors ${
+                      phoneError 
+                        ? "border-red-500 ring-1 ring-red-500 bg-red-500/5 focus:border-red-500" 
+                        : (isDarkMode ? "bg-black border-zinc-800 focus:border-red-600" : "bg-white border-zinc-200 focus:border-red-600")
+                    } ${isDarkMode ? "text-white placeholder-zinc-500" : "text-slate-900 placeholder-zinc-400"}`}
                   />
                 </div>
               </div>
