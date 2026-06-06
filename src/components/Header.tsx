@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingCart, User, LogOut, Check, Sliders, Sun, Moon } from 'lucide-react';
 
 interface HeaderProps {
@@ -37,6 +37,23 @@ export const Header: React.FC<HeaderProps> = ({
   const [typedPassword, setTypedPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [simulatedRole, setSimulatedRole] = useState<'customer' | 'admin'>('customer');
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowAuthDropdown(false);
+      }
+    };
+
+    if (showAuthDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAuthDropdown]);
 
   const submitLogin = (e: React.SyntheticEvent, role: 'admin' | 'customer') => {
     e.preventDefault();
@@ -198,7 +215,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* User Section dropdown trigger */}
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowAuthDropdown(!showAuthDropdown)}
               className={`flex items-center gap-2 px-3 py-1.5 border rounded-full hover:border-red-600 transition-all text-xs cursor-pointer font-bold ${
