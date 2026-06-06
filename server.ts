@@ -1840,42 +1840,54 @@ app.post("/api/ai/recommend", async (req, res) => {
 
 /* --- VITE MIDDLEWARE SETUP --- */
 
-async function startServer() {
-  console.log(`[SERVER] Iniciando servidor... (VERCEL=${IS_VERCEL}, PRODUCTION=${IS_PRODUCTION})`);
+async function initializeServer() {
+  console.log(`[SERVER] Inicializando... (VERCEL=${IS_VERCEL}, PRODUCTION=${IS_PRODUCTION})`);
 
-  // Se houver banco Supabase ativo, ele tem precedência para carregar dados atualizados
+  // Se houver banco Supabase ativo, carrega dados
   await syncFromSupabase();
 
-  // Setup realtime subscriptions if Supabase is configured
-  if (HAS_SUPABASE) {
+  if (!IS_PRODUCTION) {
+    // Local dev: use Vite dev server middleware
+    try {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    } catch (err) {
+      console.warn("[SERVER] Vite middleware não disponível, servindo static fallback:", err);
+    }
+  }
+
+  // Always serve static files from dist in production or as fallback
+  const distPath = path.join(process.cwd(), 'dist');
+  app.use(express.static(distPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'), (err) => {
+      if (err) {
+        res.status(200).send(`
+          <!DOCTYPE html>
+          <html><head><title>Camisa 7 Store</title></head>
+          <body><h1>Camisa 7 Store</h1><p>API está funcionando. Aguarde o build do frontend.</p></body>
+        </html>`);
+      }
+    });
+  });
+}
+
+// Initialize and start server (sync is needed for both local and Vercel)
+initializeServer().then(() => {
+  // Setup realtime subscriptions if Supabase is configured (only in non-serverless)
+  if (HAS_SUPABASE && !IS_VERCEL) {
     setupRealtimeSubscriptions();
   }
 
-  if (!IS_PRODUCTION) {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
-
-  // In Vercel serverless environment, don't listen - export the app instead
+  // Only listen locally; for Vercel, export the app
   if (!IS_VERCEL) {
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
     });
   }
-}
-
-// Only start the server locally; for Vercel, the app is exported as default
-if (!IS_VERCEL) {
-  startServer();
-}
+});
 
 export default app;
