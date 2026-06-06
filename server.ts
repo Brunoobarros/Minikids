@@ -283,6 +283,9 @@ const syncFromSupabase = async () => {
       const { data: dbProds, error: pErr } = await supabase.from("products").select("*").order("order_index", { ascending: true });
       if (!pErr && dbProds && dbProds.length > 0) {
         products = dbProds.map((p: any) => ({
+      if (!pErr) {
+        // Se pErr for nulo, sincronizamos o que vier (mesmo que seja array vazio)
+        products = (dbProds || []).map((p: any) => ({
           id: p.id,
           name: p.name,
           category: p.category,
@@ -292,18 +295,26 @@ const syncFromSupabase = async () => {
           images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" && p.images ? JSON.parse(p.images) : []),
           sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" && p.sizes ? JSON.parse(p.sizes) : []),
           colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" && p.colors ? JSON.parse(p.colors) : []),
+          images: p.images || [],
+          sizes: p.sizes || [],
+          colors: p.colors || [],
           stock: Number(p.stock),
           ratingValue: Number(p.rating_value || 5.0),
           reviews: Array.isArray(p.reviews) ? p.reviews : (typeof p.reviews === "string" ? JSON.parse(p.reviews) : [])
+          reviews: p.reviews || []
         }));
         saveData(PRODUCTS_FILE, products);
         console.log(`[SUPABASE] ${products.length} produtos sincronizados.`);
+      } else {
+        console.error("[SUPABASE ERROR] Falha ao buscar produtos:", pErr.message);
       }
 
       // 2. Banners
       const { data: dbBanners, error: bErr } = await supabase.from("banners").select("*").order("order_index", { ascending: true });
       if (!bErr && dbBanners && dbBanners.length > 0) {
         banners = dbBanners.map((b: any) => ({
+      if (!bErr) {
+        banners = (dbBanners || []).map((b: any) => ({
           id: b.id,
           title: b.title,
           subtitle: b.subtitle,
@@ -315,12 +326,16 @@ const syncFromSupabase = async () => {
         }));
         saveData(BANNERS_FILE, banners);
         console.log(`[SUPABASE] ${banners.length} banners sincronizados.`);
+      } else {
+        console.error("[SUPABASE ERROR] Falha ao buscar banners:", bErr.message);
       }
 
       // 3. Orders
       const { data: dbOrders, error: oErr } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
       if (!oErr && dbOrders && dbOrders.length > 0) {
         orders = dbOrders.map((o: any) => ({
+      if (!oErr) {
+        orders = (dbOrders || []).map((o: any) => ({
           id: o.id,
           customerName: o.customer_name,
           customerEmail: o.customer_email,
@@ -337,6 +352,8 @@ const syncFromSupabase = async () => {
         }));
         saveData(ORDERS_FILE, orders);
         console.log(`[SUPABASE] ${orders.length} pedidos sincronizados.`);
+      } else {
+        console.error("[SUPABASE ERROR] Falha ao buscar pedidos:", oErr.message);
       }
 
       // 4. Appearance
@@ -660,6 +677,24 @@ app.post("/api/products", async (req, res) => {
         order_index: idx
       }));
       await supabase.from("products").upsert(rows);
+      // IMPORTANTE: Upsert apenas do NOVO produto, não do array inteiro.
+      // Em serverless, o array local pode estar incompleto.
+      await supabase.from("products").upsert({
+        id: newProduct.id,
+        name: newProduct.name,
+        category: newProduct.category,
+        description: newProduct.description,
+        price: newProduct.price,
+        discount_price: newProduct.discountPrice || null,
+        images: newProduct.images,
+        sizes: newProduct.sizes,
+        colors: newProduct.colors,
+        stock: newProduct.stock,
+        rating_value: newProduct.ratingValue,
+        reviews: newProduct.reviews,
+        order_index: 0 // Novo item no topo
+      });
+      console.log(`[SUPABASE] Produto ${newProduct.id} persistido com sucesso.`);
     }
   } catch (err) {
     console.warn("[SUPABASE] Erro ao sincronizar novo produto:", err);
