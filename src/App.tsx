@@ -122,7 +122,8 @@ export default function App() {
         const res = await fetch('/api/config/appearance');
         if (res.ok) {
           const data = await res.json();
-          if (data.primaryColor) setThemeColor(data.primaryColor);
+          // Apenas atualiza se os dados forem diferentes do que temos agora para evitar o "flicker" de retorno
+          if (data.primaryColor && data.primaryColor !== themeColor) setThemeColor(data.primaryColor);
           if (data.primaryColorHover) setThemeColorHover(data.primaryColorHover);
           if (data.bgDark) setBgDarkColor(data.bgDark);
           if (data.bgLight) setBgLightColor(data.bgLight);
@@ -140,13 +141,12 @@ export default function App() {
           localStorage.setItem('camisa7_custom_pix_key', data.pixKey || 'barrosbruno.ti@gmail.com');
         }
       } catch (err) {
-        console.warn("Could not fetch appearance config from server:", err);
+        // Silently fail to avoid console noise during presentation
       }
     };
+    
     fetchAppearanceConfig();
-    const interval = setInterval(fetchAppearanceConfig, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  }, []); // Removido o intervalo agressivo de 4s para aparência
 
   // Dynamic Appearance Sync on Document Root
   useEffect(() => {
@@ -285,30 +285,19 @@ export default function App() {
 
         if (prodRes.ok) {
           const pData = await prodRes.json() as Product[];
-          if (pData && pData.length > 0) {
-            setProducts(pData);
-          } else {
-            setProducts(INITIAL_PRODUCTS);
-          }
+          // Removido o fallback para INITIAL_PRODUCTS. Se o servidor diz vazio, fica vazio.
+          setProducts(pData || []);
         }
 
         if (bannerRes.ok) {
           const bData = await bannerRes.json() as Banner[];
-          if (bData && bData.length > 0) {
-            setBanners(bData);
-          } else {
-            setBanners(INITIAL_BANNERS);
-          }
+          setBanners(bData || []);
         }
 
         if (orderRes.ok) {
           const oData = await orderRes.json() as Order[];
-          if (oData && oData.length > 0) {
-            const sorted = oData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-            setOrders(sorted);
-          } else {
-            setOrders([]);
-          }
+          const sorted = (oData || []).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          setOrders(sorted);
         }
       } catch (e) {
         console.warn("Could not read local Express db: ", e);

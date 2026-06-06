@@ -95,21 +95,19 @@ const loadData = <T>(filePath: string, fallback: T): T => {
   return fallback;
 };
 
-// Helper function to write back updates
+// Modificado para garantir salvamento mesmo em ambientes de desenvolvimento
 const saveData = <T>(filePath: string, data: T) => {
-  if (!IS_VERCEL) {
-    try {
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
-    } catch (err) {
-      console.error(`Error saving ${filePath}:`, err);
-    }
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.error(`Error saving ${filePath}:`, err);
   }
 };
 
-// Initialize in-memory store - In production (Vercel), start empty and load from Supabase
-let products: Product[] = IS_PRODUCTION ? [] : loadData(PRODUCTS_FILE, INITIAL_PRODUCTS);
-let banners: Banner[] = IS_PRODUCTION ? [] : loadData(BANNERS_FILE, INITIAL_BANNERS);
-let orders: Order[] = IS_PRODUCTION ? [] : loadData(ORDERS_FILE, INITIAL_ORDERS);
+// Para a apresentação: Inicializar como arrays vazios se não houver arquivo salvo
+let products: Product[] = loadData(PRODUCTS_FILE, []);
+let banners: Banner[] = loadData(BANNERS_FILE, []);
+let orders: Order[] = loadData(ORDERS_FILE, []);
 
 const APPEARANCE_FILE = path.join(process.cwd(), "config_appearance.json");
 const DEFAULT_APPEARANCE = {
@@ -122,7 +120,10 @@ const DEFAULT_APPEARANCE = {
   pixKey: "barrosbruno.ti@gmail.com"
 };
 
-let appearanceConfig = loadData(APPEARANCE_FILE, DEFAULT_APPEARANCE);
+let appearanceConfig = loadData(APPEARANCE_FILE, { ...DEFAULT_APPEARANCE });
+
+// Sincronização inicial com Supabase
+if (HAS_SUPABASE) syncFromSupabase();
 
 /* ===== SUPABASE REALTIME SUBSCRIPTIONS ===== */
 function setupRealtimeSubscriptions() {
