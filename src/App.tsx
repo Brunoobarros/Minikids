@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Product, Banner, CartItem, Order, ToastMessage, Review } from './types';
 import { Header } from './components/Header';
 import { PromotionBanner } from './components/PromotionBanner';
@@ -114,39 +114,35 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Listen for Live Theme & Appearance Customization from Server API (Independent of Firestore)
-  useEffect(() => {
-    const fetchAppearanceConfig = async () => {
-      try {
-        const res = await fetch('/api/config/appearance');
-        if (res.ok) {
-          const data = await res.json();
-          
-          // Atualiza os estados
-          setThemeColor(data.primaryColor || '#d12229');
-          setThemeColorHover(data.primaryColorHover || '#aa1a1e');
-          setBgDarkColor(data.bgDark || '#09090b');
-          setBgLightColor(data.bgLight || '#fafafa');
-          setDisplayFont(data.displayFont || 'Space Grotesk');
-          setSansFont(data.sansFont || 'Inter');
-          setPixKey(data.pixKey || 'barrosbruno.ti@gmail.com');
+  // Callback to fetch store appearance/branding configuration
+  const loadAppearance = useCallback(async () => {
+    try {
+      const res = await fetch('/api/config/appearance');
+      if (res.ok) {
+        const data = await res.json();
+        
+        // Atualiza os estados
+        setThemeColor(data.primaryColor || '#d12229');
+        setThemeColorHover(data.primaryColorHover || '#aa1a1e');
+        setBgDarkColor(data.bgDark || '#09090b');
+        setBgLightColor(data.bgLight || '#fafafa');
+        setDisplayFont(data.displayFont || 'Space Grotesk');
+        setSansFont(data.sansFont || 'Inter');
+        setPixKey(data.pixKey || 'barrosbruno.ti@gmail.com');
 
-          // Persiste no localStorage para evitar o flash de cor padrão no próximo F5
-          localStorage.setItem('camisa7_theme_color', data.primaryColor || '#d12229');
-          localStorage.setItem('camisa7_theme_color_hover', data.primaryColorHover || '#aa1a1e');
-          localStorage.setItem('camisa7_bg_dark_color', data.bgDark || '#09090b');
-          localStorage.setItem('camisa7_bg_light_color', data.bgLight || '#fafafa');
-          localStorage.setItem('camisa7_display_font', data.displayFont || 'Space Grotesk');
-          localStorage.setItem('camisa7_sans_font', data.sansFont || 'Inter');
-          localStorage.setItem('camisa7_custom_pix_key', data.pixKey || 'barrosbruno.ti@gmail.com');
-        }
-      } catch (err) {
-        // Silently fail to avoid console noise during presentation
+        // Persiste no localStorage para evitar o flash de cor padrão no próximo F5
+        localStorage.setItem('camisa7_theme_color', data.primaryColor || '#d12229');
+        localStorage.setItem('camisa7_theme_color_hover', data.primaryColorHover || '#aa1a1e');
+        localStorage.setItem('camisa7_bg_dark_color', data.bgDark || '#09090b');
+        localStorage.setItem('camisa7_bg_light_color', data.bgLight || '#fafafa');
+        localStorage.setItem('camisa7_display_font', data.displayFont || 'Space Grotesk');
+        localStorage.setItem('camisa7_sans_font', data.sansFont || 'Inter');
+        localStorage.setItem('camisa7_custom_pix_key', data.pixKey || 'barrosbruno.ti@gmail.com');
       }
-    };
-    
-    fetchAppearanceConfig();
-  }, []); // Removido o intervalo agressivo de 4s para aparência
+    } catch (err) {
+      // Silently fail to avoid console noise during presentation
+    }
+  }, []);
 
   // Dynamic Appearance Sync on Document Root
   useEffect(() => {
@@ -273,41 +269,86 @@ export default function App() {
     }
   };
 
-  // Periodically poll products, banners and orders from Server API (fully synchronized with local storage & Supabase)
+  // Callbacks to fetch individual tables from backend
+  const loadProducts = useCallback(async () => {
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const pData = await res.json() as Product[];
+        setProducts(pData || []);
+      }
+    } catch (e) {
+      console.warn("Could not read products: ", e);
+    }
+  }, []);
+
+  const loadBanners = useCallback(async () => {
+    try {
+      const res = await fetch('/api/banners');
+      if (res.ok) {
+        const bData = await res.json() as Banner[];
+        setBanners(bData || []);
+      }
+    } catch (e) {
+      console.warn("Could not read banners: ", e);
+    }
+  }, []);
+
+  const loadOrders = useCallback(async () => {
+    try {
+      const res = await fetch('/api/orders');
+      if (res.ok) {
+        const oData = await res.json() as Order[];
+        const sorted = (oData || []).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        setOrders(sorted);
+      }
+    } catch (e) {
+      console.warn("Could not read orders: ", e);
+    }
+  }, []);
+
+  // Fetch initial store data on mount
   useEffect(() => {
-    const loadLocalData = async () => {
+    loadProducts();
+    loadBanners();
+    loadOrders();
+    loadAppearance();
+  }, [loadProducts, loadBanners, loadOrders, loadAppearance]);
+
+  // Real-time Event Stream (SSE) listener
+  useEffect(() => {
+    const eventSource = new EventSource('/api/realtime');
+    
+    eventSource.addEventListener('db-change', (event: any) => {
       try {
-        const [prodRes, bannerRes, orderRes] = await Promise.all([
-          fetch('/api/products'),
-          fetch('/api/banners'),
-          fetch('/api/orders')
-        ]);
-
-        if (prodRes.ok) {
-          const pData = await prodRes.json() as Product[];
-          // Removido o fallback para INITIAL_PRODUCTS. Se o servidor diz vazio, fica vazio.
-          setProducts(pData || []);
-        }
-
-        if (bannerRes.ok) {
-          const bData = await bannerRes.json() as Banner[];
-          setBanners(bData || []);
-        }
-
-        if (orderRes.ok) {
-          const oData = await orderRes.json() as Order[];
-          const sorted = (oData || []).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-          setOrders(sorted);
+        const data = JSON.parse(event.data);
+        console.log('[SSE] Database change detected:', data);
+        if (data.table === 'products') {
+          loadProducts();
+        } else if (data.table === 'banners') {
+          loadBanners();
+        } else if (data.table === 'orders') {
+          loadOrders();
+        } else if (data.table === 'appearance') {
+          loadAppearance();
         }
       } catch (e) {
-        console.warn("Could not read local Express db: ", e);
+        console.error('[SSE] Error parsing change event:', e);
       }
+    });
+
+    eventSource.addEventListener('connected', (event: any) => {
+      console.log('[SSE] Connected to real-time events channel.');
+    });
+
+    eventSource.onerror = (err) => {
+      console.warn('[SSE] Connection error, EventSource will automatically reconnect:', err);
     };
 
-    loadLocalData();
-    const intervalId = setInterval(loadLocalData, 4000);
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => {
+      eventSource.close();
+    };
+  }, [loadProducts, loadBanners, loadOrders, loadAppearance]);
 
   // Secure order handling based on simulated user role / sessionOrderIds
   useEffect(() => {

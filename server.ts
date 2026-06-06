@@ -13,7 +13,51 @@ const IS_VERCEL = !!process.env.VERCEL;
 const IS_PRODUCTION = process.env.NODE_ENV === "production" || IS_VERCEL;
 
 // Removidas importações problemáticas do src para evitar erro de path no Vercel
-// As interfaces serão tratadas como 'any' ou definidas localmente para o server
+// Definindo as interfaces localmente conforme planejado
+interface Review {
+  id: string;
+  username: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  price: number;
+  discountPrice?: number;
+  images: string[];
+  sizes: string[];
+  colors: { name: string; hex: string }[];
+  stock: number;
+  ratingValue: number;
+  reviews: Review[];
+}
+
+interface Banner {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  tag?: string;
+  buttonText: string;
+  linkToCategory?: string;
+  orderIndex?: number;
+}
+
+interface Order {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  items: any[];
+  totalPrice: number;
+  status: 'reservado' | 'pago' | 'retirado' | 'cancelado';
+  date: string;
+}
 
 const app = express();
 const PORT = 3000;
@@ -281,8 +325,6 @@ const syncFromSupabase = async () => {
       
       // 1. Products
       const { data: dbProds, error: pErr } = await supabase.from("products").select("*").order("order_index", { ascending: true });
-      if (!pErr && dbProds && dbProds.length > 0) {
-        products = dbProds.map((p: any) => ({
       if (!pErr) {
         // Se pErr for nulo, sincronizamos o que vier (mesmo que seja array vazio)
         products = (dbProds || []).map((p: any) => ({
@@ -295,13 +337,9 @@ const syncFromSupabase = async () => {
           images: Array.isArray(p.images) ? p.images : (typeof p.images === "string" && p.images ? JSON.parse(p.images) : []),
           sizes: Array.isArray(p.sizes) ? p.sizes : (typeof p.sizes === "string" && p.sizes ? JSON.parse(p.sizes) : []),
           colors: Array.isArray(p.colors) ? p.colors : (typeof p.colors === "string" && p.colors ? JSON.parse(p.colors) : []),
-          images: p.images || [],
-          sizes: p.sizes || [],
-          colors: p.colors || [],
           stock: Number(p.stock),
           ratingValue: Number(p.rating_value || 5.0),
           reviews: Array.isArray(p.reviews) ? p.reviews : (typeof p.reviews === "string" ? JSON.parse(p.reviews) : [])
-          reviews: p.reviews || []
         }));
         saveData(PRODUCTS_FILE, products);
         console.log(`[SUPABASE] ${products.length} produtos sincronizados.`);
@@ -311,8 +349,6 @@ const syncFromSupabase = async () => {
 
       // 2. Banners
       const { data: dbBanners, error: bErr } = await supabase.from("banners").select("*").order("order_index", { ascending: true });
-      if (!bErr && dbBanners && dbBanners.length > 0) {
-        banners = dbBanners.map((b: any) => ({
       if (!bErr) {
         banners = (dbBanners || []).map((b: any) => ({
           id: b.id,
@@ -332,8 +368,6 @@ const syncFromSupabase = async () => {
 
       // 3. Orders
       const { data: dbOrders, error: oErr } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
-      if (!oErr && dbOrders && dbOrders.length > 0) {
-        orders = dbOrders.map((o: any) => ({
       if (!oErr) {
         orders = (dbOrders || []).map((o: any) => ({
           id: o.id,
