@@ -1,0 +1,13 @@
+node_modules
+.env
+dist
+.DS_Store
+
+# Bancos de dados JSON locais
+products.json
+banners.json
+orders.json
+config_appearance.json
+
+# Logs
+npm-debug.log*

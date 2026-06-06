@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Camisa7Store",
+  "description": "App moderno de e-commerce premium para venda de camisas de times e esportivas masculinas e femininas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
