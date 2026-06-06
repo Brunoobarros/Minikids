@@ -64,14 +64,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanCoupon = coupon.trim().toUpperCase();
-    if (cleanCoupon === 'CAMISA7') {
+    if (cleanCoupon === 'MINIKIDS10') {
       setActiveDiscount(0.1); // 10% Discount
-      setAppliedCoupon('CAMISA7');
+      setAppliedCoupon('MINIKIDS10');
       setCoupon('');
-      triggerNotification("Cupom Aplicado!", "Você ganhou 10% de desconto na sua reserva de mantos!", "success");
-    } else if (cleanCoupon === 'OUTLET40') {
+      triggerNotification("Cupom Aplicado!", "Você ganhou 10% de desconto na sua compra!", "success");
+    } else if (cleanCoupon === 'KIDS40') {
       setActiveDiscount(0.40); // 40% Discount
-      setAppliedCoupon('OUTLET40');
+      setAppliedCoupon('KIDS40');
       setCoupon('');
       triggerNotification("Super Cupom!", "Incrível: Garantiu 40% de desconto especial!", "success");
     } else {
@@ -159,7 +159,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="flex items-center gap-2">
               <ShoppingBag className="text-red-600 w-5 h-5 animate-pulse" />
               <h3 className={`text-sm font-black tracking-widest uppercase font-mono ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                SEU CARRINHO DE RESERVAS <span className="text-xs text-red-600">// CAMISA 7</span>
+                SACOLA DE LOOKINHOS <span className="text-xs text-red-600">// MINI KIDS</span>
               </h3>
             </div>
             
@@ -258,7 +258,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
                 <input
                   type="text"
-                  placeholder="Cupom: CAMISA7 (10% OFF)"
+                  placeholder="Cupom: MINIKIDS10 (10% OFF)"
                   value={coupon}
                   onChange={(e) => setCoupon(e.target.value)}
                   className={`w-full border rounded px-3 pl-9 py-1.5 text-xs uppercase focus:outline-none focus:border-red-600 transition-colors ${
@@ -449,7 +449,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 isDarkMode ? 'text-zinc-500' : 'text-zinc-400'
               }`}>
                 {paymentMethod === 'retirada' 
-                  ? '*O manto ficará reservado no estoque por 48 horas para que você retire na Camisa 7 Store com segurança!'
+                  ? '*As roupinhas ficarão reservadas no estoque por 48 horas para que você as retire na Mini Kids com segurança!'
                   : '*Efetue o seu pagamento na próxima etapa com total segurança digital de ponta a ponta!'
                 }
               </p>

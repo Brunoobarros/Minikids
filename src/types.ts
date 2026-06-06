@@ -1,12 +1,12 @@
 export interface Product {
   id: string;
   name: string;
-  category: 'masculino' | 'feminino' | 'promocoes' | 'esportivo';
+  category: 'bebe' | 'menino' | 'menina' | 'promocoes' | 'brinquedos' | 'todos' | string;
   description: string;
   price: number;
   discountPrice?: number;
   images: string[];
-  sizes: ('P' | 'M' | 'G' | 'GG')[];
+  sizes: string[];
   colors: { name: string; hex: string }[];
   stock: number;
   ratingValue: number;
@@ -27,7 +27,7 @@ export interface Banner {
 export interface CartItem {
   id: string; // unique for this combination of product, size, and color
   product: Product;
-  selectedSize: 'P' | 'M' | 'G' | 'GG';
+  selectedSize: string;
   selectedColor: { name: string; hex: string };
   quantity: number;
 }
@@ -49,7 +49,7 @@ export interface Order {
     productId: string;
     productName: string;
     image: string;
-    selectedSize: 'P' | 'M' | 'G' | 'GG';
+    selectedSize: string;
     selectedColor: { name: string; hex: string };
     price: number;
     quantity: number;

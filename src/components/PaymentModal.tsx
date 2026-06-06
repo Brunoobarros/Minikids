@@ -263,8 +263,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             body: JSON.stringify({
               orderId,
               amount: totalValue,
-              payerEmail: "cliente@camisa7.com.br",
-              payerName: "Cliente Camisa 7",
+              payerEmail: "cliente@minikids.com.br",
+              payerName: "Cliente Mini Kids",
               customAccessToken: customAccessToken || undefined,
               customPixKey: customPixKey || globalPixKey || undefined
             }),
@@ -400,10 +400,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   // Pix code generator string (with fallback)
   const pixCode = pixCodeValue || generatePixPayload(
     customPixKey || globalPixKey || "barrosbruno.ti@gmail.com",
-    "CAMISA 7 STORE",
+    "MINI KIDS",
     "SAO PAULO",
     totalValue,
-    `PED_${orderId}_ONLINE_C7`
+    `PED_${orderId}_ONLINE_MK`
   );
 
   const handleCopyPix = () => {
@@ -523,7 +523,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 orderId,
                 amount: totalValue,
                 payerName: cardName,
-                payerEmail: "cliente@camisa7.com.br",
+                payerEmail: "cliente@minikids.com.br",
                 payerCpf: payerCpf || undefined,
                 customAccessToken: localAccessToken
               })
@@ -605,7 +605,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           payment_method_id,
           installments: 1,
           payerName: cardName,
-          payerEmail: "cliente@camisa7.com.br",
+          payerEmail: "cliente@minikids.com.br",
           payerCpf: cleanCpf,
           amount: totalValue,
           customAccessToken: localAccessToken
@@ -852,15 +852,15 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                       }`}
                     >
                       {/* FRONT FACE CREDIT CARD */}
-                      <div className="absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-tr from-zinc-950 via-zinc-900 to-red-800 border border-zinc-805 p-5 flex flex-col justify-between backface-invisible">
+                      <div className="absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-tr from-cyan-600 via-pink-500 to-amber-400 border border-pink-400/20 p-5 flex flex-col justify-between backface-invisible">
                         <div className="flex justify-between items-start">
                           <div>
-                            <span className="text-[10px] tracking-widest uppercase font-mono text-zinc-400">CARTÃO VIRTUAL</span>
-                            <h4 className="text-sm font-black font-mono mt-0.5 tracking-wider">CAMISA 7 STORE</h4>
+                            <span className="text-[10px] tracking-widest uppercase font-mono text-zinc-100">CARTÃO VIRTUAL</span>
+                            <h4 className="text-sm font-black font-mono mt-0.5 tracking-wider text-white">MINI KIDS</h4>
                           </div>
-                          {/* Soccer Ball icon mockup */}
-                          <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center bg-white/5 font-mono text-xs font-black text-red-500">
-                            C7
+                          {/* Sun icon mockup */}
+                          <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center bg-white/5 font-mono text-xs font-black text-yellow-350">
+                            ☀️
                           </div>
                         </div>
 
@@ -872,9 +872,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
                         <div className="flex justify-between items-end font-mono">
                           <div className="min-w-0 flex-1 pr-4">
-                            <span className="text-[8px] text-zinc-500 block uppercase font-bold">Titular do Cartão</span>
-                            <p className="text-[11px] font-bold truncate tracking-wide text-zinc-250">
-                              {cardName.toUpperCase() || 'Membro Camisa 7'}
+                            <span className="text-[8px] text-zinc-100 block uppercase font-bold">Titular do Cartão</span>
+                            <p className="text-[11px] font-bold truncate tracking-wide text-zinc-105">
+                              {cardName.toUpperCase() || 'Cliente Mini Kids'}
                             </p>
                           </div>
                           <div>
@@ -901,7 +901,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
                         <div className="px-5 flex items-center justify-between font-mono text-[8px] text-zinc-500 mt-2 uppercase">
                           <span>Não compartilhe estes dados</span>
-                          <span>Camisa 7 Secure Code</span>
+                          <span>Mini Kids Secure Code</span>
                         </div>
                       </div>
                     </div>

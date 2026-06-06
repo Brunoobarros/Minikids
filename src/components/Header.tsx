@@ -11,7 +11,7 @@ interface HeaderProps {
   onLogout: () => void;
   onGoogleLogin: () => void;
   selectedCategory: string;
-  setSelectedCategory: (cat: 'todos' | 'masculino' | 'feminino' | 'promocoes' | 'esportivo') => void;
+  setSelectedCategory: (cat: 'todos' | 'bebe' | 'menino' | 'menina' | 'brinquedos' | 'promocoes') => void;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
   onLogoClick?: () => void;
@@ -94,14 +94,35 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-2 cursor-pointer select-none hover:opacity-90 active:scale-[0.98] transition-all"
             title="Ir para a página inicial"
           >
-            <span className="text-2xl font-black tracking-tighter uppercase font-sans italic">
-              CAMISA <span className="text-red-600 font-extrabold text-2xl">7</span>
-            </span>
-            <span className={`text-[10px] tracking-widest text-red-600 font-mono uppercase px-2 py-0.5 rounded border transition-colors ${
-              isDarkMode ? 'bg-red-950/30 border-red-900/60 text-red-400' : 'bg-red-50 border-red-200'
-            }`}>
-              STORE
-            </span>
+            <div className="flex items-center gap-1.5 text-left select-none">
+              <svg className="w-12 h-12 select-none hover:rotate-180 transition-transform duration-1000 ease-out origin-center" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Spiral Sun Body */}
+                <path d="M60,60 
+                         C62,58 60,54 57,55
+                         C52,56 51,62 54,65
+                         C59,70 67,68 70,62
+                         C74,54 70,43 61,40
+                         C49,36 36,44 33,57
+                         C29,73 41,88 58,91
+                         C77,95 94,80 97,60" 
+                      stroke="#FFC300" strokeWidth="6.5" strokeLinecap="round" fill="none"/>
+                {/* 8 Teardrop Rays */}
+                <g transform="translate(60,60)">
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(45)" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(90)" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(135)" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(180)" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(225)" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(270)" />
+                  <path d="M0,-35 C-2,-35 -3,-45 0,-52 C3,-45 2,-35 0,-35 Z" fill="#FFC300" transform="rotate(315)" />
+                </g>
+              </svg>
+              <div className="flex flex-col leading-none font-display">
+                <span className="text-xl font-bold tracking-tight text-[#06b6d4]">MiNi</span>
+                <span className="text-xl font-bold tracking-tight text-[#ff4f79] -mt-0.5">kids</span>
+              </div>
+            </div>
           </div>
           
           {/* Mobile Right Icons (Toggle Theme, Cart + Account) */}
@@ -151,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
             <input
               type="text"
-              placeholder="Buscar camisas de times, clássicas, dry-fit..."
+              placeholder="Buscar roupinhas, vestidos, brinquedos e mais..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-10 pr-4 py-2 border rounded-full text-sm font-sans focus:outline-none focus:ring-1 focus:ring-red-600 transition-all ${
@@ -166,20 +187,27 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right Actions (Theme Switch, Cart, Account, Authentication simulator) */}
         <div className="hidden md:flex items-center gap-6">
           {/* Categories Shortcuts */}
-          <nav className={`flex items-center gap-4 text-xs tracking-widest font-bold uppercase transition-colors ${
+          <nav className={`flex items-center gap-4 text-xs font-bold uppercase transition-colors ${
             isDarkMode ? "text-zinc-400" : "text-zinc-500"
           }`}>
-            {(['todos', 'masculino', 'feminino', 'esportivo', 'promocoes'] as const).map((cat) => (
+            {([
+              { value: 'todos', label: 'Ver Tudo' },
+              { value: 'bebe', label: 'Bebê 👶' },
+              { value: 'menino', label: 'Meninos 👦' },
+              { value: 'menina', label: 'Meninas 👧' },
+              { value: 'brinquedos', label: 'Brinquedos 🧸' },
+              { value: 'promocoes', label: 'Ofertas 🏷️' }
+            ] as const).map((cat) => (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                key={cat.value}
+                onClick={() => setSelectedCategory(cat.value)}
                 className={`transition-colors cursor-pointer ${
                   isDarkMode ? "hover:text-white" : "hover:text-black"
                 } ${
-                  selectedCategory === cat ? 'text-red-600 font-extrabold border-b-2 border-red-600 pb-1' : ''
+                  selectedCategory === cat.value ? 'text-red-600 font-extrabold border-b-2 border-red-600 pb-1' : ''
                 }`}
               >
-                {cat === 'todos' ? 'Ver Tudo' : cat}
+                {cat.label}
               </button>
             ))}
           </nav>

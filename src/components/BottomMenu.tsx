@@ -36,7 +36,7 @@ export const BottomMenu: React.FC<BottomMenuProps> = ({
           }`}
         >
           <Shirt className="w-5 h-5" />
-          <span className="text-[10px] font-sans tracking-widest font-bold uppercaseScale">Camisas</span>
+          <span className="text-[10px] font-sans tracking-widest font-bold uppercaseScale">Lookinhos</span>
         </button>
 
         {/* Pedidos Tab */}

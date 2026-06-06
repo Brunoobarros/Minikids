@@ -22,13 +22,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   isDarkMode
 }) => {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<'P' | 'M' | 'G' | 'GG'>('M');
+  const [selectedSize, setSelectedSize] = useState<string>(product.sizes[0] || '1-2a');
   const [selectedColor, setSelectedColor] = useState(product.colors[0] || { name: 'Padrão', hex: '#000000' });
   const [quantity, setQuantity] = useState(1);
 
   // Styling AI chat state
   const [chatMessages, setChatMessages] = useState<{ sender: 'user' | 'ai'; text: string }[]>([
-    { sender: 'ai', text: `Olá! Sou o estilista AI da Camisa 7. Gostaria de sugestões de bermudas, sapatos ou dicas de ocasiões para usar a camisa "${product.name}"? Pergunte-me qualquer dúvida!` }
+    { sender: 'ai', text: `Olá! Sou o Solzinho AI da Mini Kids! ☀️✨ Gostaria de sugestões de sapatinhos, meias ou dicas de looks fofos para usar com "${product.name}"? Pergunte-me qualquer dúvida!` }
   ]);
   const [userQuery, setUserQuery] = useState('');
   const [isQueryingAI, setIsQueryingAI] = useState(false);
@@ -59,7 +59,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       }
     } catch (err) {
       console.error(err);
-      setChatMessages(prev => [...prev, { sender: 'ai', text: 'Desculpe, meu alfaiate de rede neural está indisposto. Mas posso te dizer que essa camisa combina perfeitamente com shorts chumbo e tênis branco casual!' }]);
+      setChatMessages(prev => [...prev, { sender: 'ai', text: 'Desculpe, meu pozinho de pirlimpimpim falhou um pouquinho. Mas posso te dizer que este lookinho combina perfeitamente com um sapato confortável e uma calça de moletom super macia! 🧚✨' }]);
     } finally {
       setIsQueryingAI(false);
     }
@@ -79,13 +79,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       comment: reviewComment
     });
 
-    triggerNotification("Avaliação Recebida", "Muito obrigado pelo seu feedback sobre este manto!", "success");
+    triggerNotification("Avaliação Recebida", "Muito obrigado pelo seu feedback sobre este lookinho!", "success");
     setReviewComment('');
   };
 
   const executeAddToCart = () => {
     if (product.stock === 0) {
-      triggerNotification("Indisponível", "Infelizmente esta camisa está esgotada no estoque.", "alert");
+      triggerNotification("Indisponível", "Infelizmente este lookinho está esgotado no estoque.", "alert");
       return;
     }
 
@@ -97,7 +97,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     });
 
     triggerNotification(
-      "Manto Reservado!",
+      "Lookinho na Sacola!",
       `Adicionado ao carrinho: ${product.name} (${selectedSize}) - Cor: ${selectedColor.name}`,
       "success"
     );
@@ -105,7 +105,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   // WhatsApp formatted string URL generator (High converting e-commerce template)
   const getWhatsAppURL = () => {
-    const message = `Olá! Estou na Camisa 7 Store e gostaria de tirar dúvidas sobre a ${product.name} (${selectedSize}, Cor: ${selectedColor.name}). Tem mais detalhe sobre o envio?`;
+    const message = `Olá! Estou na Mini Kids e gostaria de tirar dúvidas sobre a ${product.name} (${selectedSize}, Cor: ${selectedColor.name}). Tem mais detalhes sobre a roupinha e o envio?`;
     return `https://wa.me/5511999999999?text=${encodeURIComponent(message)}`;
   };
 
@@ -173,9 +173,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className={`border rounded-xl p-3.5 mt-2 space-y-2.5 transition-colors ${
               isDarkMode ? "bg-zinc-900/60 border-zinc-800" : "bg-zinc-50 border-zinc-200"
             }`}>
-              <div className="flex items-center gap-1.5 text-red-600">
-                <Sparkles className="w-4 h-4 animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-wider font-mono">Consulente de Estilo AI</span>
+              <div className="flex items-center gap-1.5 text-amber-500">
+                <svg className="w-5 h-5 select-none animate-[spin_12s_linear_infinite] origin-center" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="50" cy="50" r="18" stroke="#F5A623" strokeWidth="4" fill="#FFEB3B"/>
+                  <path d="M50,50 Q48,46 52,44 Q56,46 53,52 Q47,56 43,49 Q42,40 52,37" stroke="#D07A00" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                  <path d="M50,14 L50,4 M50,96 L50,86 M14,50 L4,50 M96,50 L86,50" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
+                  <path d="M24,24 L18,18 M76,76 L70,70 M24,76 L18,82 M76,24 L70,18" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
+                </svg>
+                <span className="text-[10px] font-black uppercase tracking-wider font-mono">Solzinho AI ☀️✨</span>
               </div>
               
               <div className="h-32 overflow-y-auto space-y-2 pr-1 text-xs font-sans max-h-32">
@@ -191,7 +196,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 
                 {isQueryingAI && (
                   <div className="text-zinc-500 text-[10px] font-mono animate-pulse uppercase">
-                    Alfaiate AI está digitando...
+                    Solzinho AI está digitando...
                   </div>
                 )}
               </div>
@@ -199,7 +204,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <form onSubmit={handleSendQuery} className={`flex gap-1.5 pt-1.5 border-t ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
                 <input
                   type="text"
-                  placeholder="Ex: Combina com tênis casual banco?"
+                  placeholder="Ex: Qual calça combina com esse casaco?"
                   value={userQuery}
                   onChange={(e) => setUserQuery(e.target.value)}
                   className={`flex-1 border rounded-md px-2.5 py-1.5 text-xs focus:outline-none transition-colors ${
@@ -229,7 +234,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span className={`text-[10px] tracking-widest font-mono font-black uppercase px-2 py-0.5 rounded border ${
                   isDarkMode ? 'bg-red-950/30 text-red-400 border-red-900/60' : 'bg-red-50 text-red-600 border-red-200'
                 }`}>
-                  {product.category}
+                  {product.category === 'bebe' ? '👶 Bebê' : product.category === 'menino' ? '👦 Menino' : product.category === 'menina' ? '👧 Menina' : product.category === 'brinquedos' ? '🧸 Brinquedos' : product.category === 'promocoes' ? '🏷️ Oferta' : product.category}
                 </span>
                 <h2 className={`text-xl sm:text-2xl font-black tracking-tight uppercase mt-2 ${
                   isDarkMode ? 'text-white' : 'text-slate-900'
@@ -299,29 +304,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
               </div>
 
-              {/* Sizes choosing panel (P, M, G, GG) */}
+              {/* Sizes choosing panel (Dynamic) */}
               <div>
-                <span className={`block text-[10px] uppercase font-mono mb-1.5 font-bold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Tamanho do Manto</span>
-                <div className="flex gap-2">
-                  {['P', 'M', 'G', 'GG'].map((size) => {
-                    const isAvailable = product.sizes.includes(size as any);
-                    return (
-                      <button
-                        key={size}
-                        disabled={!isAvailable}
-                        onClick={() => setSelectedSize(size as any)}
-                        className={`w-10 h-10 rounded text-xs font-black transition-all cursor-pointer ${
-                          !isAvailable
-                            ? (isDarkMode ? 'bg-zinc-900 border-zinc-850 text-zinc-700 opacity-40 cursor-not-allowed line-through' : 'bg-zinc-100 border-zinc-200 text-zinc-300 opacity-45 cursor-not-allowed line-through')
-                            : selectedSize === size
-                            ? 'bg-red-600 border border-red-600 text-white font-black'
-                            : (isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white shadow-sm' : 'bg-white border-zinc-200 text-slate-800 hover:text-black font-semibold shadow-sm')
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    );
-                  })}
+                <span className={`block text-[10px] uppercase font-mono mb-1.5 font-bold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Tamanho da Roupinha</span>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-3.5 h-10 rounded text-xs font-black transition-all cursor-pointer ${
+                        selectedSize === size
+                          ? 'bg-red-600 border border-red-600 text-white font-black'
+                          : (isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white shadow-sm' : 'bg-white border-zinc-200 text-slate-800 hover:text-black font-semibold shadow-sm')
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
                 </div>
               </div>
 

@@ -104,14 +104,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Hover rapid trigger panel overlay (not showing over arrows) */}
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
             <span className="bg-white text-black text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-lg">
-              Detalhes do Manto →
+              Ver Lookinho →
             </span>
           </div>
         </div>
 
         {/* Header specifications */}
         <span className="text-[9px] uppercase font-bold tracking-widest text-red-500 font-mono">
-          {product.category}
+          {product.category === 'bebe' ? '👶 Bebê' : product.category === 'menino' ? '👦 Menino' : product.category === 'menina' ? '👧 Menina' : product.category === 'brinquedos' ? '🧸 Brinquedos' : product.category === 'promocoes' ? '🏷️ Oferta' : product.category}
         </span>
         
         <h3 className={`text-sm font-bold uppercase tracking-tight mt-1 group-hover:text-red-500 transition-colors line-clamp-1 ${
@@ -121,22 +121,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </h3>
 
         {/* Sizes representation badges */}
-        <div className="flex gap-1.5 items-center mt-2.5">
-          {['P', 'M', 'G', 'GG'].map((size) => {
-            const isAvail = product.sizes.includes(size as any);
-            return (
-              <span
-                key={size}
-                className={`text-[8px] font-black w-5 h-5 flex items-center justify-center rounded border transition-colors ${
-                  isAvail 
-                    ? (isDarkMode ? 'text-gray-300 border-white/10' : 'text-zinc-700 border-zinc-200 bg-white/70') 
-                    : (isDarkMode ? 'text-gray-600 border-zinc-900 bg-zinc-950/20 line-through' : 'text-zinc-300 border-zinc-100 line-through bg-zinc-50/40')
-                }`}
-              >
-                {size}
-              </span>
-            );
-          })}
+        <div className="flex flex-wrap gap-1 items-center mt-2.5">
+          {product.sizes.map((size) => (
+            <span
+              key={size}
+              className={`text-[8px] font-bold px-1.5 py-0.5 rounded border transition-colors ${
+                isDarkMode 
+                  ? 'text-gray-300 border-white/10 bg-zinc-900' 
+                  : 'text-zinc-700 border-zinc-200 bg-zinc-50'
+              }`}
+            >
+              {size}
+            </span>
+          ))}
         </div>
       </div>
 

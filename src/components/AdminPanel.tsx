@@ -199,7 +199,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   // Input States for New Product
   const [prodName, setProdName] = useState('');
-  const [prodCategory, setProdCategory] = useState<'masculino' | 'feminino' | 'esportivo' | 'promocoes'>('esportivo');
+  const [prodCategory, setProdCategory] = useState<'bebe' | 'menino' | 'menina' | 'brinquedos' | 'promocoes'>('bebe');
+  const [prodSizes, setProdSizes] = useState('RN, 3-6m, 1a, 2a');
   const [prodPrice, setProdPrice] = useState('');
   const [prodDiscountPrice, setProdDiscountPrice] = useState('');
   const [prodImage, setProdImage] = useState('');
@@ -309,19 +310,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     onAddProduct({
       name: prodName,
       category: prodCategory,
-      description: prodDesc || "Uma camisa esportiva com acabamento de alta fidelidade e respirabilidade premium.",
+      description: prodDesc || "Uma linda roupinha infantil Mini Kids, feita com muito amor e carinho, super confortável e macia.",
       price: priceNum,
       discountPrice: discNum,
       images: prodImage ? [prodImage] : ["https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80"],
-      sizes: ["P", "M", "G", "GG"],
+      sizes: prodSizes.split(',').map(s => s.trim()).filter(Boolean),
       colors: [
-        { name: "Preto", hex: "#000000" },
-        { name: "Vermelho", hex: "#D12229" }
+        { name: "Colorido", hex: "#ff4f79" },
+        { name: "Clássico", hex: "#06b6d4" }
       ],
       stock: stockNum
     });
 
-    triggerNotification("Produto Cadastrado", `Camisa "${prodName}" inserida com sucesso!`, "success");
+    triggerNotification("Produto Cadastrado", `Lookinho "${prodName}" inserido com sucesso!`, "success");
 
     // Clear form inputs
     setProdName('');
@@ -330,6 +331,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setProdImage('');
     setProdStock('10');
     setProdDesc('');
+    setProdSizes('RN, 3-6m, 1a, 2a');
   };
 
   const handleCancelEdit = () => {
@@ -340,6 +342,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setProdImage('');
     setProdStock('10');
     setProdDesc('');
+    setProdSizes('RN, 3-6m, 1a, 2a');
   };
 
   const executeSaveProduct = () => {
@@ -356,14 +359,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     onUpdateProduct(editingProduct.id, {
       name: prodName,
       category: prodCategory,
-      description: prodDesc || "Uma camisa esportiva com acabamento de alta fidelidade e respirabilidade premium.",
+      description: prodDesc || "Uma linda roupinha infantil Mini Kids, feita com muito amor e carinho, super confortável e macia.",
       price: priceNum,
       discountPrice: discNum,
       images: prodImage ? [prodImage] : ["https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80"],
+      sizes: prodSizes.split(',').map(s => s.trim()).filter(Boolean),
       stock: stockNum
     });
 
-    triggerNotification("Produto Atualizado", `Camisa "${prodName}" atualizada com sucesso!`, "success");
+    triggerNotification("Produto Atualizado", `Lookinho "${prodName}" atualizado com sucesso!`, "success");
     handleCancelEdit();
   };
 
@@ -644,10 +648,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => setProdCategory(e.target.value as any)}
                       className="w-full bg-white border border-zinc-200 rounded px-3 py-2 text-slate-800 focus:outline-none focus:border-red-600"
                     >
-                      <option value="masculino">Masculino</option>
-                      <option value="feminino">Feminino</option>
-                      <option value="esportivo">Esportivo</option>
-                      <option value="promocoes">Promoções (Outlet)</option>
+                      <option value="bebe">Bebê</option>
+                      <option value="menino">Menino</option>
+                      <option value="menina">Menina</option>
+                      <option value="brinquedos">Brinquedos</option>
+                      <option value="promocoes">Promoções</option>
                     </select>
                   </div>
 
@@ -688,7 +693,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => setProdDiscountPrice(e.target.value)}
                       className="w-full bg-white border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-600"
                     />
-                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-zinc-500 font-bold uppercase font-mono mb-1 text-[10px]">Tamanhos Disponíveis (Separados por vírgula)</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="ex: RN, 3-6m, 1a, 2a, 3-4a"
+                    value={prodSizes}
+                    onChange={(e) => setProdSizes(e.target.value)}
+                    className="w-full bg-white border border-zinc-200 rounded px-3 py-2 text-slate-900 placeholder-zinc-400 focus:outline-none focus:border-red-600 mb-3"
+                  />
                 </div>
 
                 <div>
@@ -963,6 +979,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   setProdImageMode(p.images[0]?.startsWith('data:') ? 'upload' : 'url');
                                   setProdStock(String(p.stock));
                                   setProdDesc(p.description);
+                                  setProdSizes(p.sizes?.join(', ') || 'RN, 3-6m, 1a, 2a');
                                   document.getElementById('admin-product-form')?.scrollIntoView({ behavior: 'smooth' });
                                 }}
                                 className={`p-1.5 rounded border cursor-pointer transition-colors ${

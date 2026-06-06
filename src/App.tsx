@@ -126,9 +126,70 @@ export default function App() {
   const [showSupportWidget, setShowSupportWidget] = useState(false);
   const [supportMessage, setSupportMessage] = useState('');
   const [supportChat, setSupportChat] = useState<{ sender: 'bot' | 'user'; text: string }[]>([
-    { sender: 'bot', text: 'Olá! Sou o assistente Camisa 7. Como posso ajudar com seu manto hoje?' }
+    { sender: 'bot', text: 'Olá! Sou o Solzinho AI da Mini Kids! ☀️✨ Estou aqui para iluminar o seu dia e te ajudar a escolher os lookinhos mais mágicos e confortáveis para brincar! Como posso ajudar você hoje? 🎈🧸' }
   ]);
   const [isTypingSupport, setIsTypingSupport] = useState(false);
+
+  // Kids balloon game state
+  const [balloons, setBalloons] = useState<{ id: number; x: number; color: string; popped: boolean }[]>([]);
+  const [poppedCount, setPoppedCount] = useState(0);
+  const [isPlayingBalloons, setIsPlayingBalloons] = useState(false);
+
+  // Confetti particles state
+  const [confettiParticles, setConfettiParticles] = useState<{ id: number; x: number; y: number; color: string; size: number; tx: number; ty: number; r: number; d: number }[]>([]);
+
+  const startBalloonGame = () => {
+    setIsPlayingBalloons(true);
+    setPoppedCount(0);
+    setBalloons([]);
+    triggerNotification("Jogo dos Balões!", "Estoure 3 balões para liberar seu cupom! 🎈", "info");
+    
+    // Spawn balloons
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        setBalloons(prev => [...prev, {
+          id: i,
+          x: 10 + Math.random() * 80,
+          color: ['#ff4f79', '#06b6d4', '#ffbc42', '#4caf50', '#9c27b0'][Math.floor(Math.random() * 5)],
+          popped: false
+        }]);
+      }, i * 800);
+    }
+  };
+
+  const handlePopBalloon = (id: number) => {
+    setBalloons(prev => prev.map(b => b.id === id ? { ...b, popped: true } : b));
+    setPoppedCount(c => {
+      const next = c + 1;
+      if (next === 3) {
+        triggerNotification("Cupom Liberado! 🎁", "Use o cupom MINIKIDS10 para ganhar 10% de desconto na sua Sacola!", "success");
+        triggerConfetti();
+      }
+      return next;
+    });
+  };
+
+  const triggerConfetti = () => {
+    const particles = [];
+    const colors = ['#ff4f79', '#06b6d4', '#ffbc42', '#4caf50', '#9c27b0', '#ffeb3b'];
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        id: Date.now() + i,
+        x: Math.random() * 100, // percentage horizontal starting position
+        y: -10,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: 8 + Math.random() * 8,
+        tx: (Math.random() - 0.5) * 300,
+        ty: 600 + Math.random() * 400,
+        r: Math.random() * 360,
+        d: 1.5 + Math.random() * 2
+      });
+    }
+    setConfettiParticles(particles);
+    setTimeout(() => {
+      setConfettiParticles([]);
+    }, 4000);
+  };
 
   // Helper: Trigger custom toast notifications
   const triggerNotification = (title: string, body: string, type: 'info' | 'success' | 'alert') => {
@@ -804,11 +865,12 @@ export default function App() {
         return [...prevCart, { ...newItem, id: itemCombinationId }];
       }
     });
+    triggerConfetti();
   };
 
   const onRemoveCartItem = (id: string) => {
     setCart((p) => p.filter(item => item.id !== id));
-    triggerNotification("Item Removido", "Camisa retirada do carrinho.", "info");
+    triggerNotification("Lookinho Removido", "Lookinho retirado da sacola de compras.", "info");
   };
 
   const onUpdateCartQuantity = (id: string, newQuantity: number) => {
@@ -956,6 +1018,7 @@ export default function App() {
       console.warn("No write connection: updated payment state locally for interactive test", err);
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'pago' } : o));
     }
+    triggerConfetti();
   };
 
   // STATUS UPDATER: Change booking order status (Admin function)
@@ -1563,22 +1626,185 @@ export default function App() {
         />
       )}
 
-      {/* FLOATING SHORTCUT PANEL */}
-      <div className="fixed bottom-20 right-6 z-40 flex flex-col items-end">
-        <div className="flex flex-col gap-2.5">
-          {/* FLOATING ACTION SHORTCUT BUTTON FOR MOBILE USERS */}
+      {/* CSS Confetti & Animations Style Block */}
+      <style>{`
+        @keyframes confettiFall {
+          0% {
+            transform: translateY(-50px) translateX(0) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(105vh) translateX(var(--tx)) rotate(var(--r));
+            opacity: 0;
+          }
+        }
+        .animate-confetti {
+          animation: confettiFall var(--d) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+      `}</style>
+
+      {/* Confetti Particles Render */}
+      {confettiParticles.map(p => (
+        <div
+          key={p.id}
+          className="fixed pointer-events-none z-[9999] rounded-full animate-confetti"
+          style={{
+            backgroundColor: p.color,
+            left: `${p.x}%`,
+            top: `${p.y}px`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            '--tx': `${p.tx}px`,
+            '--r': `${p.r}deg`,
+            '--d': `${p.d}s`,
+          } as React.CSSProperties}
+        />
+      ))}
+
+      {/* Floating Balloons for Minigame */}
+      {isPlayingBalloons && balloons.map(b => {
+        if (b.popped) return null;
+        return (
           <button
-            onClick={() => setShowShortcutModal(true)}
-            className="p-3.5 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-95 flex items-center justify-center relative cursor-pointer group"
-            aria-label="Atalho Mobile"
+            key={b.id}
+            onClick={() => handlePopBalloon(b.id)}
+            className="fixed bottom-0 z-[9999] w-16 h-20 rounded-full animate-balloon-float cursor-pointer flex flex-col items-center"
+            style={{
+              left: `${b.x}%`,
+              backgroundColor: b.color,
+              boxShadow: 'inset -10px -10px 20px rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.1)',
+            }}
           >
-            <Smartphone className="w-5 h-5 text-white" />
-            <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
-              Atalho Mobile
-            </span>
+            {/* Balloon string */}
+            <div className="w-0.5 h-10 bg-zinc-400 mt-20 relative">
+              <div className="absolute top-0 -left-1 w-2.5 h-2 bg-inherit rounded-t-sm" />
+            </div>
           </button>
-        </div>
+        );
+      })}
+
+      {/* FLOATING ACTION SHORTCUT PANEL & MASCOT BUTTONS */}
+      <div className="fixed bottom-20 right-6 z-40 flex flex-col items-end gap-2.5">
+        
+        {/* BALLOON MINIGAME BUTTON */}
+        <button
+          onClick={startBalloonGame}
+          className="p-3 bg-gradient-to-tr from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-95 flex items-center justify-center relative cursor-pointer group"
+          aria-label="Brincar de Balão"
+        >
+          <span className="text-xl">🎈</span>
+          <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+            Brincar de Balão 🎈
+          </span>
+        </button>
+
+        {/* SOLZINHO AI FLOATING MASCOT BUTTON */}
+        <button
+          onClick={() => setShowSupportWidget(!showSupportWidget)}
+          className="p-2 bg-gradient-to-tr from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-[0.93] flex items-center justify-center relative cursor-pointer group"
+          aria-label="Falar com o Solzinho AI"
+        >
+          <svg className="w-9 h-9 select-none animate-[spin_20s_linear_infinite] origin-center" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="18" stroke="#F5A623" strokeWidth="4" fill="#FFEB3B"/>
+            <path d="M50,50 Q48,46 52,44 Q56,46 53,52 Q47,56 43,49 Q42,40 52,37" stroke="#D07A00" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+            <path d="M50,14 L50,4 M50,96 L50,86 M14,50 L4,50 M96,50 L86,50" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
+            <path d="M24,24 L18,18 M76,76 L70,70 M24,76 L18,82 M76,24 L70,18" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
+          </svg>
+          <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+            Falar com o Sol AI! ☀️
+          </span>
+          {/* Subtle pulsing indicator */}
+          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500"></span>
+          </span>
+        </button>
+
+        {/* FLOATING ACTION SHORTCUT BUTTON FOR MOBILE USERS */}
+        <button
+          onClick={() => setShowShortcutModal(true)}
+          className="p-3.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-95 flex items-center justify-center relative cursor-pointer group"
+          aria-label="Atalho Mobile"
+        >
+          <Smartphone className="w-5 h-5 text-white" />
+          <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+            Atalho Mobile
+          </span>
+        </button>
       </div>
+
+      {/* SOLZINHO AI CHAT WIDGET OVERLAY */}
+      {showSupportWidget && (
+        <div className={`fixed bottom-24 right-6 w-80 max-w-[90vw] h-[450px] border rounded-2xl p-4 shadow-2xl flex flex-col z-50 animate-zoom-in transition-all duration-300 ${
+          isDarkMode 
+            ? "bg-zinc-950 border-zinc-850 text-white" 
+            : "bg-white border-zinc-200 text-slate-900"
+        }`}>
+          {/* Header */}
+          <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center gap-2">
+              <svg className="w-7 h-7 select-none animate-[spin_16s_linear_infinite] origin-center" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="18" stroke="#F5A623" strokeWidth="4" fill="#FFEB3B"/>
+                <path d="M50,50 Q48,46 52,44 Q56,46 53,52 Q47,56 43,49 Q42,40 52,37" stroke="#D07A00" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M50,14 L50,4 M50,96 L50,86 M14,50 L4,50 M96,50 L86,50" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
+                <path d="M24,24 L18,18 M76,76 L70,70 M24,76 L18,82 M76,24 L70,18" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
+              </svg>
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-wider text-amber-500 font-display">Solzinho AI ☀️</h4>
+                <span className="text-[9px] text-zinc-400 block font-mono">ASSISTENTE MINI KIDS</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowSupportWidget(false)}
+              className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4 text-zinc-400 hover:text-red-500" />
+            </button>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="flex-grow overflow-y-auto py-3 space-y-2 pr-1 scrollbar-thin flex flex-col">
+            <div className="space-y-2.5 flex-1">
+              {supportChat.map((msg, i) => (
+                <div key={i} className={`p-2.5 rounded-xl max-w-[85%] text-xs leading-relaxed ${
+                  msg.sender === 'bot' 
+                    ? (isDarkMode ? 'bg-zinc-900 border border-zinc-850 text-zinc-100 mr-auto' : 'bg-zinc-100 border border-zinc-200 text-zinc-800 mr-auto') 
+                    : (isDarkMode ? 'bg-pink-950/40 text-pink-200 border border-pink-900/40 ml-auto' : 'bg-pink-50 text-pink-900 border border-pink-200 ml-auto')
+                }`}>
+                  {msg.text}
+                </div>
+              ))}
+              {isTypingSupport && (
+                <div className="text-[10px] text-zinc-400 font-mono animate-pulse uppercase">
+                  Solzinho AI está pensando... ☀️✨
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Chat Form */}
+          <form onSubmit={handleSupportWidgetSubmit} className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
+            <input
+              type="text"
+              placeholder="Pergunte sobre lookinhos e cupons..."
+              value={supportMessage}
+              onChange={(e) => setSupportMessage(e.target.value)}
+              className={`flex-1 text-xs border rounded-xl px-3 py-2.5 focus:outline-none transition-colors ${
+                isDarkMode 
+                  ? "bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500 focus:border-pink-500" 
+                  : "bg-white border-zinc-200 text-slate-900 placeholder-zinc-400 focus:border-pink-500"
+              }`}
+            />
+            <button
+              type="submit"
+              disabled={isTypingSupport}
+              className="p-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-all active:scale-95 cursor-pointer"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* MOBILE SHORTCUT GUIDE / INSTALL PROMPT MODAL */}
       <MobileShortcutModal

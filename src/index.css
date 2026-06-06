@@ -1,10 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@350;500;600;700&family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;800&family=DynaPuff:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
+  --font-sans: "Quicksand", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Floating balloon animations for kids game */
+@keyframes floatUp {
+  0% {
+    transform: translateY(110vh) scale(0.9) rotate(0deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(45vh) scale(1.05) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20vh) scale(0.9) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+.animate-balloon-float {
+  animation: floatUp 8s linear forwards;
+}
+
+/* Float mini sparkles/bubbles */
+@keyframes bubbleFloat {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.animate-bubble-float {
+  animation: bubbleFloat 3s ease-out infinite;
 }
 
 /* Custom premium transitions and animation presets */
