@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
       }
     }
 
-    const email = typedEmail.trim() || (role === 'admin' ? 'admin@camisa7.com.br' : 'cliente@exemplo.com');
+    const email = typedEmail.trim() || (role === 'admin' ? 'admin@minikids.com.br' : 'cliente@exemplo.com');
     onLoginSimulate(email, role);
     setShowAuthDropdown(false);
     setTypedEmail('');

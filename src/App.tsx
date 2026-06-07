@@ -536,7 +536,7 @@ export default function App() {
   const onGoogleLogin = async () => {
     // Directly simulate admin or customer login with simulated credentials
     const email = prompt("Digite seu e-mail para acessar:", "contato@cliente.com.br") || "contato@cliente.com.br";
-    const isAdmin = email === 'brunoskolaxa@gmail.com' || email === 'barrosbruno.ti@gmail.com' || email === 'admin@camisa7.com.br' || email === 'lisbooaellen@gmail.com';
+    const isAdmin = email === 'brunoskolaxa@gmail.com' || email === 'barrosbruno.ti@gmail.com' || email === 'admin@minikids.com.br' || email === 'lisbooaellen@gmail.com';
     const role = isAdmin ? 'admin' : 'customer';
     
     await onLoginSimulate(email, role);
@@ -548,7 +548,7 @@ export default function App() {
       const mockUser = {
         id: `mock-${role}-${Math.floor(Math.random()*1000)}`,
         name: email ? email.split('@')[0].toUpperCase() : 'ADMIN',
-        email: email || 'admin@camisa7.com.br',
+        email: email || 'admin@minikids.com.br',
         role: role
       };
       
@@ -890,7 +890,7 @@ export default function App() {
       return sum + (priceVal * item.quantity);
     }, 0);
 
-    const discountMultiplier = orderData.discountCode === 'CAMISA7' ? 0.10 : orderData.discountCode === 'OUTLET40' ? 0.40 : 0;
+    const discountMultiplier = orderData.discountCode === 'MINIKIDS10' ? 0.10 : orderData.discountCode === 'KIDS40' ? 0.40 : 0;
     const baseWithCoupon = baseTotalPrice * (1 - discountMultiplier);
     const onlineIncentive = (orderData.paymentMethod === 'pix' || orderData.paymentMethod === 'cartao') ? baseWithCoupon * 0.05 : 0;
     const finalTotalPrice = Math.max(0, baseWithCoupon - onlineIncentive);
@@ -1110,18 +1110,18 @@ export default function App() {
 
       {/* Update Available Banner */}
       {isUpdateAvailable && (
-        <div className="fixed bottom-20 left-4 right-4 md:bottom-6 md:right-6 md:left-auto z-[9998] max-w-md bg-zinc-900/95 border border-red-650/40 text-white rounded-2xl p-4 shadow-2xl backdrop-blur-md animate-fade-in pointer-events-auto">
+        <div className="fixed bottom-20 left-4 right-4 md:bottom-6 md:right-6 md:left-auto z-[9998] max-w-md bg-zinc-900/95 border border-pink-500/20 text-white rounded-2xl p-4 shadow-2xl backdrop-blur-md animate-fade-in pointer-events-auto">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-red-600/10 rounded-lg text-red-500 mt-0.5 animate-pulse">
+            <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500 mt-0.5 animate-pulse">
               <RefreshCw className="w-5 h-5" />
             </div>
             <div className="flex-grow">
               <h4 className="font-semibold text-sm tracking-wide font-display">Atualização Disponível!</h4>
-              <p className="text-xs text-gray-400 mt-0.5">Uma nova versão do Camisa7store está disponível para você.</p>
+              <p className="text-xs text-gray-400 mt-0.5">Uma nova versão do Mini Kids está disponível para você.</p>
               <div className="mt-3 flex gap-2">
                 <button
                   onClick={() => window.location.reload()}
-                  className="px-4 py-1.5 bg-red-600 hover:bg-red-750 text-white text-xs font-semibold rounded-lg flex items-center gap-1 transition-all duration-200 shadow-lg shadow-red-600/25 cursor-pointer font-sans"
+                  className="px-4 py-1.5 bg-pink-500 hover:bg-pink-600 text-white text-xs font-semibold rounded-lg flex items-center gap-1 transition-all duration-200 shadow-lg shadow-pink-500/25 cursor-pointer font-sans"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   Atualizar Agora
