@@ -24,22 +24,22 @@ export default function App() {
 
   // Visual Theme / Appearance Customization States
   const [themeColor, setThemeColor] = useState(() => {
-    return localStorage.getItem('camisa7_theme_color') || '#d12229';
+    return localStorage.getItem('camisa7_theme_color') || '#ff4f79';
   });
   const [themeColorHover, setThemeColorHover] = useState(() => {
-    return localStorage.getItem('camisa7_theme_color_hover') || '#aa1a1e';
+    return localStorage.getItem('camisa7_theme_color_hover') || '#e0355f';
   });
   const [bgDarkColor, setBgDarkColor] = useState(() => {
-    return localStorage.getItem('camisa7_bg_dark_color') || '#09090b';
+    return localStorage.getItem('camisa7_bg_dark_color') || '#121026';
   });
   const [bgLightColor, setBgLightColor] = useState(() => {
-    return localStorage.getItem('camisa7_bg_light_color') || '#fafafa';
+    return localStorage.getItem('camisa7_bg_light_color') || '#fffdf9';
   });
   const [displayFont, setDisplayFont] = useState(() => {
-    return localStorage.getItem('camisa7_display_font') || 'Space Grotesk';
+    return localStorage.getItem('camisa7_display_font') || 'Quicksand';
   });
   const [sansFont, setSansFont] = useState(() => {
-    return localStorage.getItem('camisa7_sans_font') || 'Inter';
+    return localStorage.getItem('camisa7_sans_font') || 'Quicksand';
   });
   const [pixKey, setPixKey] = useState(() => {
     return localStorage.getItem('camisa7_custom_pix_key') || 'barrosbruno.ti@gmail.com';
@@ -214,21 +214,21 @@ export default function App() {
         const data = await res.json();
         
         // Atualiza os estados
-        setThemeColor(data.primaryColor || '#d12229');
-        setThemeColorHover(data.primaryColorHover || '#aa1a1e');
-        setBgDarkColor(data.bgDark || '#09090b');
-        setBgLightColor(data.bgLight || '#fafafa');
-        setDisplayFont(data.displayFont || 'Space Grotesk');
-        setSansFont(data.sansFont || 'Inter');
+        setThemeColor(data.primaryColor || '#ff4f79');
+        setThemeColorHover(data.primaryColorHover || '#e0355f');
+        setBgDarkColor(data.bgDark || '#121026');
+        setBgLightColor(data.bgLight || '#fffdf9');
+        setDisplayFont(data.displayFont || 'Quicksand');
+        setSansFont(data.sansFont || 'Quicksand');
         setPixKey(data.pixKey || 'barrosbruno.ti@gmail.com');
 
         // Persiste no localStorage para evitar o flash de cor padrão no próximo F5
-        localStorage.setItem('camisa7_theme_color', data.primaryColor || '#d12229');
-        localStorage.setItem('camisa7_theme_color_hover', data.primaryColorHover || '#aa1a1e');
-        localStorage.setItem('camisa7_bg_dark_color', data.bgDark || '#09090b');
-        localStorage.setItem('camisa7_bg_light_color', data.bgLight || '#fafafa');
-        localStorage.setItem('camisa7_display_font', data.displayFont || 'Space Grotesk');
-        localStorage.setItem('camisa7_sans_font', data.sansFont || 'Inter');
+        localStorage.setItem('camisa7_theme_color', data.primaryColor || '#ff4f79');
+        localStorage.setItem('camisa7_theme_color_hover', data.primaryColorHover || '#e0355f');
+        localStorage.setItem('camisa7_bg_dark_color', data.bgDark || '#121026');
+        localStorage.setItem('camisa7_bg_light_color', data.bgLight || '#fffdf9');
+        localStorage.setItem('camisa7_display_font', data.displayFont || 'Quicksand');
+        localStorage.setItem('camisa7_sans_font', data.sansFont || 'Quicksand');
         localStorage.setItem('camisa7_custom_pix_key', data.pixKey || 'barrosbruno.ti@gmail.com');
       }
     } catch (err) {
@@ -245,6 +245,13 @@ export default function App() {
     root.style.setProperty('--color-bg-light', bgLightColor);
     root.style.setProperty('--font-display-custom', displayFont);
     root.style.setProperty('--font-sans-custom', sansFont);
+
+    // Sync isDarkMode to html class list
+    if (isDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
 
     // Apply font-family styles globally
     const styleId = 'custom-appearance-styles';
@@ -298,12 +305,66 @@ export default function App() {
         background-color: var(--color-bg-dark) !important;
       }
       
+      /* Magical deep indigo-violet overrides for other dark elements */
+      .dark .bg-black,
+      .dark .bg-zinc-950,
+      .dark .bg-zinc-900,
+      .dark .bg-stone-950,
+      .dark .bg-zinc-950\\/50,
+      .dark .bg-zinc-900\\/50,
+      .dark .bg-black\\/60,
+      .dark header.bg-zinc-950,
+      .dark .bg-zinc-900\\/50 {
+        background-color: #1a163a !important;
+      }
+      
+      .dark .hover\\:bg-zinc-900:hover,
+      .dark .hover\\:bg-zinc-850:hover,
+      .dark .hover\\:bg-zinc-800:hover,
+      .dark .bg-zinc-900\\/30,
+      .dark .bg-zinc-900\\/50,
+      .dark .bg-zinc-800 {
+        background-color: #24204c !important;
+      }
+      
+      .dark input, 
+      .dark textarea, 
+      .dark select {
+        background-color: #161230 !important;
+        border-color: #2b2559 !important;
+        color: #f8fafc !important;
+      }
+      
+      .dark .border-zinc-850,
+      .dark .border-zinc-800,
+      .dark .border-zinc-900,
+      .dark .border-zinc-100,
+      .dark .border-zinc-200,
+      .dark .border-white\\/5,
+      .dark .border-white\\/10 {
+        border-color: #25204c !important;
+      }
+      
+      .dark .text-zinc-500,
+      .dark .text-gray-450,
+      .dark .text-gray-400 {
+        color: #a5a2cc !important;
+      }
+      
+      .dark .text-zinc-605,
+      .dark .text-zinc-650,
+      .dark .text-zinc-700,
+      .dark .text-slate-900,
+      .dark .text-white {
+        color: #f8fafc !important;
+      }
+      
       /* Light theme custom background override */
       body {
         transition: background-color 0.2s ease;
       }
     `;
-  }, [themeColor, themeColorHover, bgDarkColor, bgLightColor, displayFont, sansFont]);
+  }, [themeColor, themeColorHover, bgDarkColor, bgLightColor, displayFont, sansFont, isDarkMode]);
 
   const handleSaveAppearance = async (appearance: {
     primaryColor: string;

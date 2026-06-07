@@ -320,7 +320,7 @@ const APPEARANCE_FILE = path.resolve(process.cwd(), "config_appearance.json");
 const DEFAULT_APPEARANCE = {
   primaryColor: "#ff4f79",
   primaryColorHover: "#e0355f",
-  bgDark: "#1e1b4b",
+  bgDark: "#121026",
   bgLight: "#fffdf9",
   displayFont: "Quicksand",
   sansFont: "Quicksand",
