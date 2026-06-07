@@ -351,7 +351,7 @@ function setupRealtimeSubscriptions() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table },
-        (payload: RealtimePostgresChangesPayload) => {
+        (payload: RealtimePostgresChangesPayload<any>) => {
           console.log(`[REALTIME] Mudança detectada em ${table}:`, payload.eventType);
           
           // Broadcast to all SSE clients
@@ -481,7 +481,7 @@ app.get("/api/realtime", (req, res) => {
 });
 
 /* ===== EXISTING API ROUTES (with real-time broadcasting) ===== */
-const syncFromSupabase = async () => {
+async function syncFromSupabase() {
   const supabase = getSupabaseClient();
   if (supabase) {
     try {

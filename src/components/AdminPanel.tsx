@@ -693,6 +693,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => setProdDiscountPrice(e.target.value)}
                       className="w-full bg-white border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-600"
                     />
+                  </div>
                 </div>
 
                 <div>

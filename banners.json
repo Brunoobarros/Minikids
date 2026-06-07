@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "banner-1",
+    "title": "CONFORTO E MAGIA PARA SEU BEBÊ",
+    "subtitle": "Roupinhas de tricot e algodão antialérgico feitas com carinho e fofura para proteger a pele macia do seu pequeno.",
+    "image": "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=1200&auto=format&fit=crop&q=80",
+    "tag": "FESTIVAL DO BEBÊ 👶",
+    "buttonText": "Ver Roupinhas de Bebê",
+    "linkToCategory": "bebe",
+    "orderIndex": 0
+  },
+  {
+    "id": "banner-2",
+    "title": "DIVERSÃO SEM LIMITES!",
+    "subtitle": "Conjuntos super resistentes, coloridos e confortáveis para o seu filho correr, pular e criar grandes aventuras.",
+    "image": "https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=1200&auto=format&fit=crop&q=80",
+    "tag": "BRINCAR COM ESTILO 🎈",
+    "buttonText": "Ver Coleção Infantil",
+    "linkToCategory": "todos",
+    "orderIndex": 1
+  },
+  {
+    "id": "banner-3",
+    "title": "AMIGOS DE PELÚCIA E MUITA FOFURA",
+    "subtitle": "Brinquedos seguros, fofinhos e antialérgicos para acompanhar o crescimento e o sono saudável do seu pequeno.",
+    "image": "https://images.unsplash.com/photo-1559251606-c623743a6d76?w=1200&auto=format&fit=crop&q=80",
+    "tag": "COMPANHEIROS DE SONECAS 🧸",
+    "buttonText": "Explorar Brinquedos",
+    "linkToCategory": "brinquedos",
+    "orderIndex": 2
+  }
+]
