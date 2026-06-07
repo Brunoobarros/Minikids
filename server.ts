@@ -788,7 +788,7 @@ app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
   
   // High-fidelity validation: standard admin/customer credentials for presentation
-  if ((email === "admin@minikids.com.br" || email === "admin@camisa7.com.br") && password === "camisa72026*") {
+  if ((email === "admin@minikids.com.br" || email === "admin@camisa7.com.br") && password === "minikids2026*") {
     return res.json({
       success: true,
       token: "simulated-jwt-header.payload-admin.signature",

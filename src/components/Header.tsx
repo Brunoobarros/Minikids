@@ -65,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
         setErrorMessage("Por favor, digite a senha de administrador.");
         return;
       }
-      if (p !== "camisa72026*") {
+      if (p !== "minikids2026*") {
         setErrorMessage("Senha incorreta! Tente novamente.");
         return;
       }

@@ -32,7 +32,7 @@ A aplicação foi projetada para lidar com a natureza **Stateless** do Vercel:
 **Solução:** Removidos fallbacks agressivos e adicionada persistência das configurações de aparência no `localStorage` após a primeira carga, mantendo o tema de cores creme e rosa logo no início do boot.
 
 ### 3. Exposição de Senhas e Usabilidade de Login
-**Solução:** Atualizada a senha do administrador do painel para `camisa72026*` (com email `admin@minikids.com.br`) e habilitado envio de formulário com a tecla "Enter".
+**Solução:** Atualizada a senha do administrador do painel para `minikids2026*` (com email `admin@minikids.com.br`) e habilitado envio de formulário com a tecla "Enter".
 
 ### 4. Grade Rígida de Tamanhos
 **Solução:** Removido o mapeamento estático de `P, M, G, GG` nos cards de produto e detalhes. Agora os tamanhos são carregados 100% dinamicamente a partir das opções cadastradas no banco de dados.
