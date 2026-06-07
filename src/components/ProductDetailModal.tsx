@@ -234,7 +234,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span className={`text-[10px] tracking-widest font-mono font-black uppercase px-2 py-0.5 rounded border ${
                   isDarkMode ? 'bg-red-950/30 text-red-400 border-red-900/60' : 'bg-red-50 text-red-600 border-red-200'
                 }`}>
-                  {product.category === 'bebe' ? '👶 Bebê' : product.category === 'menino' ? '👦 Menino' : product.category === 'menina' ? '👧 Menina' : product.category === 'brinquedos' ? '🧸 Brinquedos' : product.category === 'promocoes' ? '🏷️ Oferta' : product.category}
+                  {product.category === 'bebe' ? 'Bebê' : product.category === 'menino' ? 'Menino' : product.category === 'menina' ? 'Menina' : product.category === 'brinquedos' ? 'Brinquedos' : product.category === 'promocoes' ? 'Oferta' : product.category}
                 </span>
                 <h2 className={`text-xl sm:text-2xl font-black tracking-tight uppercase mt-2 ${
                   isDarkMode ? 'text-white' : 'text-slate-900'

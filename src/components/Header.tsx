@@ -192,11 +192,11 @@ export const Header: React.FC<HeaderProps> = ({
           }`}>
             {([
               { value: 'todos', label: 'Ver Tudo' },
-              { value: 'bebe', label: 'Bebê 👶' },
-              { value: 'menino', label: 'Meninos 👦' },
-              { value: 'menina', label: 'Meninas 👧' },
-              { value: 'brinquedos', label: 'Brinquedos 🧸' },
-              { value: 'promocoes', label: 'Ofertas 🏷️' }
+              { value: 'bebe', label: 'Bebê' },
+              { value: 'menino', label: 'Meninos' },
+              { value: 'menina', label: 'Meninas' },
+              { value: 'brinquedos', label: 'Brinquedos' },
+              { value: 'promocoes', label: 'Ofertas' }
             ] as const).map((cat) => (
               <button
                 key={cat.value}

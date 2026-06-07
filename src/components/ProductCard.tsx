@@ -111,7 +111,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Header specifications */}
         <span className="text-[9px] uppercase font-bold tracking-widest text-red-500 font-mono">
-          {product.category === 'bebe' ? '👶 Bebê' : product.category === 'menino' ? '👦 Menino' : product.category === 'menina' ? '👧 Menina' : product.category === 'brinquedos' ? '🧸 Brinquedos' : product.category === 'promocoes' ? '🏷️ Oferta' : product.category}
+          {product.category === 'bebe' ? 'Bebê' : product.category === 'menino' ? 'Menino' : product.category === 'menina' ? 'Menina' : product.category === 'brinquedos' ? 'Brinquedos' : product.category === 'promocoes' ? 'Oferta' : product.category}
         </span>
         
         <h3 className={`text-sm font-bold uppercase tracking-tight mt-1 group-hover:text-red-500 transition-colors line-clamp-1 ${

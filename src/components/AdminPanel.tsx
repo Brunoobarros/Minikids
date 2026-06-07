@@ -1718,11 +1718,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </span>
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5">
                   {[
-                    { name: 'Rubro-Negro Original', primary: '#d12229', hover: '#aa1a1e', dark: '#09090b', light: '#fafafa' },
-                    { name: 'Elite Esmeralda', primary: '#10b981', hover: '#059669', dark: '#062c21', light: '#f0fdf4' },
-                    { name: 'Canarinho Imperial', primary: '#eab308', hover: '#ca8a04', dark: '#0b1329', light: '#fefdf0' },
-                    { name: 'Azul Premium Celeste', primary: '#2563eb', hover: '#1d4ed8', dark: '#091124', light: '#f8fafc' },
-                    { name: 'Atlético Ouro Puro', primary: '#d97706', hover: '#b45309', dark: '#000000', light: '#fdfaf2' }
+                    { name: 'Rosa Candy (Padrão)', primary: '#ff4f79', hover: '#e0355f', dark: '#121026', light: '#fffdf9' },
+                    { name: 'Lavanda Mágica', primary: '#a855f7', hover: '#9333ea', dark: '#1a0e2e', light: '#faf5ff' },
+                    { name: 'Oceano Turquesa', primary: '#06b6d4', hover: '#0891b2', dark: '#0c1a2e', light: '#f0fdfa' },
+                    { name: 'Limão Tropical', primary: '#84cc16', hover: '#65a30d', dark: '#0f1a0a', light: '#fefff5' },
+                    { name: 'Pêssego Sunrise', primary: '#f97316', hover: '#ea580c', dark: '#1c1008', light: '#fff8f1' }
                   ].map((preset) => (
                     <button
                       key={preset.name}
