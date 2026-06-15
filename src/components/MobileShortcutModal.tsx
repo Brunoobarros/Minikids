@@ -58,7 +58,7 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
         }`}
       >
         {/* Color accent bar matching Mini Kids color palette */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-red-600 via-rose-500 to-red-800" />
+        <div className="h-1.5 w-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-600" />
 
         {/* Close Button */}
         <button
@@ -75,7 +75,7 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
         <div className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-2.5 rounded-xl ${
-              isDarkMode ? 'bg-red-950/40 text-red-400 border border-red-900/30' : 'bg-red-50 text-red-600 border border-red-100'
+              isDarkMode ? 'bg-amber-950/40 text-amber-400 border border-amber-900/30' : 'bg-amber-50 text-amber-600 border border-amber-100'
             }`}>
               <Smartphone className="w-6 h-6 animate-pulse" />
             </div>
@@ -93,7 +93,7 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
           {deferredPrompt && (
             <button
               onClick={handleNativeInstall}
-              className="w-full py-3 mb-5 font-black text-sm uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white rounded-xl transition-all transform active:scale-95 shadow-lg shadow-red-600/20 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3 mb-5 font-black text-sm uppercase tracking-wider bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-amber-500/20 cursor-pointer flex items-center justify-center gap-2"
             >
               <Smartphone className="w-4 h-4" /> Instalar Aplicativo Oficial
             </button>
@@ -144,24 +144,24 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
             {platform === 'ios' && (
               <>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">1</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">1</span>
                   <p className="leading-normal">
-                    Abra este site através do navegador <strong className="text-red-500">Safari</strong> no seu iPhone ou iPad.
+                    Abra este site através do navegador <strong className="text-amber-600 dark:text-amber-400 font-bold">Safari</strong> no seu iPhone ou iPad.
                   </p>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">2</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">2</span>
                   <div className="leading-normal space-y-1">
-                    <p>Toque no ícone de <strong className="text-red-500">Compartilhar</strong> na barra inferior do navegador:</p>
+                    <p>Toque no ícone de <strong className="text-amber-600 dark:text-amber-400 font-bold">Compartilhar</strong> na barra inferior do navegador:</p>
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-800 text-white text-[10px] border border-white/5 font-medium">
                       <Share2 className="w-3.5 h-3.5 text-blue-400" /> Compartilhar
                     </div>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">3</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">3</span>
                   <div className="leading-normal space-y-1">
-                    <p>Suba o menu de opções e selecione <strong className="text-red-500">"Adicionar à Tela de Início"</strong>:</p>
+                    <p>Suba o menu de opções e selecione <strong className="text-amber-600 dark:text-amber-400 font-bold">"Adicionar à Tela de Início"</strong>:</p>
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-800 text-white text-[10px] border border-white/5 font-medium">
                       <PlusSquare className="w-3.5 h-3.5 text-emerald-400" /> Adicionar à Tela de Início
                     </div>
@@ -173,21 +173,21 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
             {platform === 'android' && (
               <>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">1</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">1</span>
                   <p className="leading-normal">
-                    Abra o site através de um navegador confiável como o <strong className="text-red-500">Google Chrome</strong>.
+                    Abra o site através de um navegador confiável como o <strong className="text-amber-600 dark:text-amber-400 font-bold">Google Chrome</strong>.
                   </p>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">2</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">2</span>
                   <p className="leading-normal">
-                    Toque nos <strong className="text-red-500">três pontinhos verticais (menu)</strong> no topo à direita da tela.
+                    Toque nos <strong className="text-amber-600 dark:text-amber-400 font-bold">três pontinhos verticais (menu)</strong> no topo à direita da tela.
                   </p>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">3</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">3</span>
                   <p className="leading-normal">
-                    Clique em <strong className="text-red-500">"Adicionar à tela inicial"</strong> ou <strong className="text-red-500">"Instalar aplicativo"</strong> para criar o ícone automaticamente.
+                    Clique em <strong className="text-amber-600 dark:text-amber-400 font-bold">"Adicionar à tela inicial"</strong> ou <strong className="text-amber-600 dark:text-amber-400 font-bold">"Instalar aplicativo"</strong> para criar o ícone automaticamente.
                   </p>
                 </div>
               </>
@@ -196,15 +196,15 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
             {platform === 'other' && (
               <>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">1</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">1</span>
                   <p className="leading-normal">
-                    Em computadores, no Chrome ou Edge, clique no ícone de <strong className="text-red-500">Monitor/Seta de Download</strong> ao lado da barra de endereço no navegador.
+                    Em computadores, no Chrome ou Edge, clique no ícone de <strong className="text-amber-600 dark:text-amber-400 font-bold">Monitor/Seta de Download</strong> ao lado da barra de endereço no navegador.
                   </p>
                 </div>
                 <div className="flex gap-3 items-start">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">2</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-mono text-slate-950 font-black">2</span>
                   <p className="leading-normal">
-                    Confirme o prompt clicando em <strong>"Instalar"</strong> para abrir a Mini Kids em modo de janela cheia autônomo sem molduras de navegador.
+                    Confirme o prompt clicando em <strong className="text-amber-655 text-amber-600 dark:text-amber-400 font-bold">"Instalar"</strong> para abrir a Mini Kids em modo de janela cheia autônomo sem molduras de navegador.
                   </p>
                 </div>
               </>

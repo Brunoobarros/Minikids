@@ -7,7 +7,7 @@
     "price": 139.9,
     "discountPrice": 99.9,
     "images": [
-      "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-dino-moletom.jpg"
     ],
     "sizes": [
       "1-2a",
@@ -44,7 +44,7 @@
     "description": "Um vestido charmoso e cheio de vida! Feito em viscose premium respirável, com caimento soltinho e estampa alegre de girassóis. Perfeito para festinhas, passeios ou para um dia de sol cheio de energia.",
     "price": 119.9,
     "images": [
-      "https://images.unsplash.com/photo-1604467731651-1d5b1c8a371c?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-vestido-floral.jpg"
     ],
     "sizes": [
       "2-3a",
@@ -82,7 +82,7 @@
     "price": 99.9,
     "discountPrice": 79.9,
     "images": [
-      "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-trico-romper.jpg"
     ],
     "sizes": [
       "RN",
@@ -116,7 +116,7 @@
     "price": 189.9,
     "discountPrice": 129.9,
     "images": [
-      "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-conjunto-jeans.jpg"
     ],
     "sizes": [
       "2a",
@@ -150,7 +150,7 @@
     "description": "O melhor companheiro de soneca! Ursinho de pelúcia hipoalergênico, com enchimento super fofinho de microfibra. Detalhes bordados para total segurança do seu filho.",
     "price": 79.9,
     "images": [
-      "https://images.unsplash.com/photo-1559251606-c623743a6d76?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-urso-pelucia.jpg"
     ],
     "sizes": [
       "Tamanho Único"
@@ -184,7 +184,7 @@
     "description": "Pijama macacão com capuz de leãozinho e orelhinhas em relevo! Confeccionado em soft térmico antialérgico, perfeito para manter o bebê quentinho a noite toda com muita fofura.",
     "price": 109.9,
     "images": [
-      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-macacao-leao.jpg"
     ],
     "sizes": [
       "3-6m",
@@ -209,7 +209,7 @@
     "description": "Jardineira em jeans leve e macio com alças reguláveis e botões laterais que facilitam o vestir. Acompanha camiseta branca de algodão de manga curta para completar o visual aventureiro.",
     "price": 129.9,
     "images": [
-      "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-jardineira-jeans.jpg"
     ],
     "sizes": [
       "6-12m",
@@ -235,7 +235,7 @@
     "price": 159.9,
     "discountPrice": 119.9,
     "images": [
-      "https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-capa-chuva.jpg"
     ],
     "sizes": [
       "2a",
@@ -260,7 +260,7 @@
     "description": "Suéter clássico tricotado em algodão macio de alta qualidade. Com gola redonda e punhos canelados, oferece um toque quentinho e elegante ideal para dias frescos ou passeios formais.",
     "price": 98.9,
     "images": [
-      "https://images.unsplash.com/photo-1566516171-414c99a70659?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-sueter-mostarda.jpg"
     ],
     "sizes": [
       "2-3a",
@@ -289,7 +289,7 @@
     "description": "O vestido dos sonhos de toda menina! Com corpete confortável de algodão e saia volumosa em camadas de tule macio com brilhos discretos. Ideal para aniversários e festas especiais.",
     "price": 149.9,
     "images": [
-      "https://images.unsplash.com/photo-1505371904114-1b359f1fa443?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-vestido-tule.jpg"
     ],
     "sizes": [
       "2a",
@@ -319,7 +319,7 @@
     "description": "Conforto e cuidado para os primeiros passos! Confeccionado em couro ecológico extra macio com solado antiderrapante e elástico no tornozelo para ajuste perfeito, permitindo o desenvolvimento saudável dos pezinhos.",
     "price": 89.9,
     "images": [
-      "https://images.unsplash.com/photo-1533512930330-4ac257c86793?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-sapatinho-couro.jpg"
     ],
     "sizes": [
       "15-16",
@@ -349,7 +349,7 @@
     "price": 89.9,
     "discountPrice": 69.9,
     "images": [
-      "https://images.unsplash.com/photo-1471286174243-e7a4db931751?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-conjunto-verao.jpg"
     ],
     "sizes": [
       "1-2a",
@@ -377,7 +377,7 @@
     "description": "Estimule a criatividade e a coordenação motora! Conjunto de 30 blocos de madeira reflorestada com tintas atóxicas à base de água. Formas geométricas coloridas para construir pontes, castelos e o que a imaginação permitir.",
     "price": 119.9,
     "images": [
-      "https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-blocos-madeira.jpg"
     ],
     "sizes": [
       "Tamanho Único"
@@ -399,7 +399,7 @@
     "description": "Desenvolva a percepção de cores e formas geométricas dos pequenos! Brinquedo de encaixe clássico com base de madeira e pinos para ordenar cilindros, triângulos e quadrados de forma divertida.",
     "price": 74.9,
     "images": [
-      "https://images.unsplash.com/photo-1515488042361-404e9250afef?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-formas-coloridas.jpg"
     ],
     "sizes": [
       "Tamanho Único"
@@ -421,7 +421,7 @@
     "description": "Brinquedo pedagógico clássico com anéis de empilhar de tamanhos diferentes, incentivando o raciocínio lógico e a coordenação. Acabamento super suave com ceras naturais de abelha.",
     "price": 85.9,
     "images": [
-      "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-torre-aneis.jpg"
     ],
     "sizes": [
       "Tamanho Único"
@@ -443,7 +443,7 @@
     "description": "Feito em malha de algodão canelada super elástica e macia. Com fechamento em zíper duplo frontal completo para trocas de fralda rápidas e sem estresse, além de proteção de zíper no queixo.",
     "price": 95.95,
     "images": [
-      "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-macacao-listrado.jpg"
     ],
     "sizes": [
       "RN",
@@ -472,7 +472,7 @@
     "description": "Conjunto confortável e estiloso com calça e blusa de moletom flanelado por dentro. Perfeito para manter a garotada quentinha no colégio, parquinho ou passeios de inverno.",
     "price": 145,
     "images": [
-      "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-moletom-mescla.jpg"
     ],
     "sizes": [
       "2a",
@@ -502,7 +502,7 @@
     "description": "Estilo moderno e proteção contra ventos e garoas. Jaqueta corta-vento super leve com forro de tela respirável, capuz e punhos com elástico. Design tricolor moderno com cores vibrantes.",
     "price": 169.9,
     "images": [
-      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-cortavento-colorblock.jpg"
     ],
     "sizes": [
       "3-4a",
@@ -527,7 +527,7 @@
     "description": "Sofisticação sem perder a leveza! Bermuda em mescla de linho e algodão com ajuste interno de elástico na cintura. Ideal para casamentos, festas de fim de ano ou passeios em dias ensolarados.",
     "price": 79.9,
     "images": [
-      "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-bermuda-linho.jpg"
     ],
     "sizes": [
       "2a",
@@ -557,7 +557,7 @@
     "description": "Kit com 3 babadores em formato bandana super charmosos. Frente em algodão egípcio macio e verso com camada impermeável que protege a roupa do bebê contra babas e sujeiras.",
     "price": 49.9,
     "images": [
-      "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800&auto=format&fit=crop&q=80"
+      "/products/prod-kit-babadores.jpg"
     ],
     "sizes": [
       "Tamanho Único"

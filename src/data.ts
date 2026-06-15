@@ -30,7 +30,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Um vestido charmoso e cheio de vida! Feito em viscose premium respirável, com caimento soltinho e estampa alegre de girassóis. Perfeito para festinhas, passeios ou para um dia de sol cheio de energia.',
     price: 119.90,
     images: [
-      'https://images.unsplash.com/photo-1604467731651-1d5b1c8a371c?w=800&auto=format&fit=crop&q=80'
+      '/products/prod-dino-moletom.jpg'
     ],
     sizes: ['2-3a', '4-5a', '6-8a', '9-10a'],
     colors: [
@@ -51,7 +51,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     price: 99.90,
     discountPrice: 79.90,
     images: [
-      'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=800&auto=format&fit=crop&q=80'
+      '/products/prod-vestido-floral.jpg'
     ],
     sizes: ['RN', '3-6m', '6-12m', '12-18m'],
     colors: [
@@ -71,7 +71,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     price: 189.90,
     discountPrice: 129.90,
     images: [
-      'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80'
+      '/products/prod-trico-romper.jpg'
     ],
     sizes: ['2a', '4a', '6a', '8a', '10a'],
     colors: [
@@ -90,7 +90,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'O melhor companheiro de soneca! Ursinho de pelúcia hipoalergênico, com enchimento super fofinho de microfibra. Detalhes bordados para total segurança do seu filho.',
     price: 79.90,
     images: [
-      'https://images.unsplash.com/photo-1559251606-c623743a6d76?w=800&auto=format&fit=crop&q=80'
+      '/products/prod-conjunto-jeans.jpg'
     ],
     sizes: ['Tamanho Único'],
     colors: [
@@ -110,7 +110,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Pijama macacão com capuz de leãozinho e orelhinhas em relevo! Confeccionado em soft térmico antialérgico, perfeito para manter o bebê quentinho a noite toda com muita fofura.',
     price: 109.90,
     images: [
-      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80'
+      '/products/prod-urso-pelucia.jpg'
     ],
     sizes: ['3-6m', '6-12m', '12-18m', '2a'],
     colors: [
@@ -127,7 +127,7 @@ export const INITIAL_BANNERS: Banner[] = [
     id: 'banner-1',
     title: 'CONFORTO E MAGIA PARA SEU BEBÊ',
     subtitle: 'Roupinhas de tricot e algodão antialérgico feitas com carinho e fofura para proteger a pele macia do seu pequeno.',
-    image: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=1200&auto=format&fit=crop&q=80',
+    image: '/products/prod-trico-romper.jpg',
     tag: 'FESTIVAL DO BEBÊ 👶',
     buttonText: 'Ver Roupinhas de Bebê',
     linkToCategory: 'bebe',
@@ -137,7 +137,7 @@ export const INITIAL_BANNERS: Banner[] = [
     id: 'banner-2',
     title: 'DIVERSÃO SEM LIMITES!',
     subtitle: 'Conjuntos super resistentes, coloridos e confortáveis para o seu filho correr, pular e criar grandes aventuras.',
-    image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=1200&auto=format&fit=crop&q=80',
+    image: '/products/prod-capa-chuva.jpg',
     tag: 'BRINCAR COM ESTILO 🎈',
     buttonText: 'Ver Coleção Infantil',
     linkToCategory: 'todos',
@@ -147,7 +147,7 @@ export const INITIAL_BANNERS: Banner[] = [
     id: 'banner-3',
     title: 'AMIGOS DE PELÚCIA E MUITA FOFURA',
     subtitle: 'Brinquedos seguros, fofinhos e antialérgicos para acompanhar o crescimento e o sono saudável do seu pequeno.',
-    image: 'https://images.unsplash.com/photo-1559251606-c623743a6d76?w=1200&auto=format&fit=crop&q=80',
+    image: '/products/prod-urso-pelucia.jpg',
     tag: 'COMPANHEIROS DE SONECAS 🧸',
     buttonText: 'Explorar Brinquedos',
     linkToCategory: 'brinquedos',

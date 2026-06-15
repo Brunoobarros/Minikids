@@ -10,6 +10,7 @@ import { PaymentModal } from './components/PaymentModal';
 import { BottomMenu } from './components/BottomMenu';
 import { ProductCard } from './components/ProductCard';
 import { MobileShortcutModal } from './components/MobileShortcutModal';
+import { SplashScreen } from './components/SplashScreen';
 import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Layers, Star, Info, ChevronRight, X, Send, GripVertical } from 'lucide-react';
 import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
 
@@ -66,18 +67,8 @@ export default function App() {
     }
     return null;
   });
-  const [isAdminMode, setAdminMode] = useState(() => {
-    const savedSimulated = localStorage.getItem('minikids_simulated_user');
-    if (savedSimulated) {
-      try {
-        const parsed = JSON.parse(savedSimulated);
-        return parsed.role === 'admin';
-      } catch (e) {
-        return false;
-      }
-    }
-    return false;
-  });
+  const [isAdminMode, setAdminMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activePaymentOrder, setActivePaymentOrder] = useState<{ id: string; totalPrice: number } | null>(null);
@@ -271,19 +262,32 @@ export default function App() {
       }
       
       /* Overrides dynamically selected branding across component styles! */
-      .bg-red-500, .bg-red-600, .bg-red-650, .hover\\:bg-red-750:hover, .hover\\:bg-red-700:hover, .hover\\:bg-red-850:hover {
+      .bg-red-500, .bg-red-600, .bg-red-650 {
         background-color: var(--color-primary) !important;
       }
       
-      button.bg-red-600:hover, button.bg-red-650:hover {
+      .hover\\:bg-red-650:hover,
+      .hover\\:bg-red-600:hover,
+      .hover\\:bg-red-700:hover,
+      .hover\\:bg-red-750:hover,
+      .hover\\:bg-red-800:hover,
+      .hover\\:bg-red-850:hover,
+      .hover\\:bg-red-900:hover,
+      button.bg-red-600:hover,
+      button.bg-red-655:hover,
+      button.bg-red-650:hover,
+      a.bg-red-600:hover,
+      div.bg-red-600:hover,
+      button.hover\\:bg-red-700:hover,
+      a.hover\\:bg-red-700:hover {
         background-color: var(--color-primary-hover) !important;
       }
       
-      .text-red-500, .text-red-650, .text-red-600, .text-red-700, .hover\\:text-red-500:hover, .hover\\:text-red-600:hover, .hover\\:text-red-700:hover, .group:hover .group-hover\\:text-red-500, .group:hover .group-hover\\:text-red-600 {
+      .text-red-500, .text-red-655, .text-red-650, .text-red-600, .text-red-700, .hover\\:text-red-500:hover, .hover\\:text-red-600:hover, .hover\\:text-red-700:hover, .group:hover .group-hover\\:text-red-500, .group:hover .group-hover\\:text-red-600 {
         color: var(--color-primary) !important;
       }
       
-      .border-red-600, .border-red-900\\/40, .hover\\:border-red-600\\/20:hover, .hover\\:border-red-656\\/40:hover {
+      .border-red-500, .border-red-600, .border-red-656, .border-red-900\\/40, .hover\\:border-red-600\\/20:hover, .hover\\:border-red-656\\/40:hover {
         border-color: var(--color-primary) !important;
       }
 
@@ -459,10 +463,24 @@ export default function App() {
 
   // Fetch initial store data on mount
   useEffect(() => {
-    loadProducts();
-    loadBanners();
-    loadOrders();
-    loadAppearance();
+    const initData = async () => {
+      try {
+        await Promise.all([
+          loadProducts(),
+          loadBanners(),
+          loadOrders(),
+          loadAppearance()
+        ]);
+      } catch (err) {
+        console.warn("Could not load initial store data: ", err);
+      } finally {
+        // Atraso intencional para visualização suave do Splash Screen e aplicação de estilos
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1200);
+      }
+    };
+    initData();
   }, [loadProducts, loadBanners, loadOrders, loadAppearance]);
 
   // Function to check for updates by fetching index.html and comparing asset hashes
@@ -1162,6 +1180,9 @@ export default function App() {
         ? "bg-black text-white selection:text-white" 
         : "bg-slate-50 text-slate-900 selection:text-white"
     }`}>
+      
+      {/* Splash loading screen to prevent initial flashing */}
+      <SplashScreen isLoading={isLoading} />
       
       {/* Absolute Push alerts queue */}
       <PushNotification toasts={toasts} removeToast={removeToast} />
