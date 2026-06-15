@@ -597,7 +597,8 @@ export default function App() {
       try {
         const parsed = JSON.parse(savedSimulated);
         setCurrentUser(parsed);
-        setAdminMode(parsed.role === 'admin');
+        // Start admin on the storefront instead of the admin panel
+        setAdminMode(false);
       } catch (e) {
         setCurrentUser(null);
         setAdminMode(false);
