@@ -8,10 +8,34 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Mini Kids" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#111111" />
+    <meta name="theme-color" content="#fffdf9" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="manifest" href="/manifest.json" />
+    <style>
+      html, body {
+        background-color: #fffdf9;
+        margin: 0;
+        padding: 0;
+      }
+      html.dark, html.dark body {
+        background-color: #121026;
+      }
+    </style>
+    <script>
+      (function() {
+        try {
+          const theme = localStorage.getItem('minikids_theme');
+          if (theme === 'true') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#121026';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.backgroundColor = '#fffdf9';
+          }
+        } catch (_) {}
+      })();
+    </script>
     <script>
       // Automatically reload the page if a script or stylesheet fails to load (due to deployment cache/updates)
       window.addEventListener('error', function(e) {
