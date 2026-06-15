@@ -10,7 +10,7 @@ import { PaymentModal } from './components/PaymentModal';
 import { BottomMenu } from './components/BottomMenu';
 import { ProductCard } from './components/ProductCard';
 import { MobileShortcutModal } from './components/MobileShortcutModal';
-import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Layers, Star, Info, ChevronRight, X, Send, Smartphone, GripVertical } from 'lucide-react';
+import { Tag, Hourglass, CheckCircle, HelpCircle, MessageCircle, RefreshCw, Layers, Star, Info, ChevronRight, X, Send, GripVertical } from 'lucide-react';
 import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
 
 // Supabase & Express API Integration (Fully custom-tailored, Firebase-free)
@@ -1747,9 +1747,15 @@ export default function App() {
 
         {/* SOLZINHO AI FLOATING MASCOT BUTTON */}
         <button
-          onClick={() => setShowSupportWidget(!showSupportWidget)}
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              setShowShortcutModal(true);
+            } else {
+              setShowSupportWidget(!showSupportWidget);
+            }
+          }}
           className="p-2 bg-gradient-to-tr from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-[0.93] flex items-center justify-center relative cursor-pointer group"
-          aria-label="Falar com o Solzinho AI"
+          aria-label="Solzinho AI / Atalho"
         >
           <svg className="w-9 h-9 select-none animate-[spin_20s_linear_infinite] origin-center" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="18" stroke="#F5A623" strokeWidth="4" fill="#FFEB3B"/>
@@ -1758,24 +1764,13 @@ export default function App() {
             <path d="M24,24 L18,18 M76,76 L70,70 M24,76 L18,82 M76,24 L70,18" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
           </svg>
           <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
-            Falar com o Sol AI! ☀️
+            <span className="hidden md:inline">Falar com o Sol AI! ☀️</span>
+            <span className="inline md:hidden">Instalar Atalho 📱</span>
           </span>
           {/* Subtle pulsing indicator */}
           <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500"></span>
-          </span>
-        </button>
-
-        {/* FLOATING ACTION SHORTCUT BUTTON FOR MOBILE USERS */}
-        <button
-          onClick={() => setShowShortcutModal(true)}
-          className="p-3.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-95 flex items-center justify-center relative cursor-pointer group"
-          aria-label="Atalho Mobile"
-        >
-          <Smartphone className="w-5 h-5 text-white" />
-          <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
-            Atalho Mobile
           </span>
         </button>
       </div>
