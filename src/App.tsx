@@ -16,11 +16,8 @@ import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
 // Supabase & Express API Integration (Fully custom-tailored, Firebase-free)
 
 export default function App() {
-  // Theme dark / light state manager (Standard defaults to Dark)
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('minikids_theme');
-    return saved !== null ? saved === 'true' : true;
-  });
+  // Theme dark / light state manager (Defaults to Light)
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   // Visual Theme / Appearance Customization States
   const [themeColor, setThemeColor] = useState(() => {
@@ -1747,17 +1744,6 @@ export default function App() {
       {/* FLOATING ACTION SHORTCUT PANEL & MASCOT BUTTONS */}
       <div className="fixed bottom-20 right-6 z-40 flex flex-col items-end gap-2.5">
         
-        {/* BALLOON MINIGAME BUTTON */}
-        <button
-          onClick={startBalloonGame}
-          className="p-3 bg-gradient-to-tr from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-95 flex items-center justify-center relative cursor-pointer group"
-          aria-label="Brincar de Balão"
-        >
-          <span className="text-xl">🎈</span>
-          <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
-            Brincar de Balão 🎈
-          </span>
-        </button>
 
         {/* SOLZINHO AI FLOATING MASCOT BUTTON */}
         <button
