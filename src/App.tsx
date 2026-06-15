@@ -1183,7 +1183,7 @@ export default function App() {
     }`}>
       
       {/* Splash loading screen to prevent initial flashing */}
-      <SplashScreen isLoading={isLoading} />
+      <SplashScreen isLoading={isLoading} isDarkMode={isDarkMode} />
       
       {/* Absolute Push alerts queue */}
       <PushNotification toasts={toasts} removeToast={removeToast} />

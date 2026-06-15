@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 interface SplashScreenProps {
   isLoading: boolean;
+  isDarkMode: boolean;
 }
 
-export const SplashScreen: React.FC<SplashScreenProps> = ({ isLoading }) => {
+export const SplashScreen: React.FC<SplashScreenProps> = ({ isLoading, isDarkMode }) => {
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(true);
   const [fadeExit, setFadeExit] = useState(false);
@@ -64,7 +65,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isLoading }) => {
     <div
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500 ease-in-out ${
         fadeExit ? 'opacity-0 pointer-events-none scale-105' : 'opacity-100'
-      } bg-[#fffdf9] dark:bg-zinc-950`}
+      }`}
+      style={{
+        backgroundColor: isDarkMode 
+          ? (localStorage.getItem('minikids_bg_dark_color') || '#121026') 
+          : (localStorage.getItem('minikids_bg_light_color') || '#fffdf9')
+      }}
     >
       <div className="flex flex-col items-center max-w-sm px-6 text-center">
         {/* Animated Spiral Sun Mascot Logo */}
