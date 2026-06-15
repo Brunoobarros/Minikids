@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, ShoppingCart, User, LogOut, Check, Sliders, Sun, Moon } from 'lucide-react';
+import { Search, User, LogOut, Check, Sliders, Sun, Moon } from 'lucide-react';
+import { CarrinhoInfantilIcon } from './CarrinhoInfantilIcon';
 
 interface HeaderProps {
   searchQuery: string;
@@ -125,21 +126,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
           
-          {/* Mobile Right Icons (Toggle Theme, Cart + Account) */}
+          {/* Mobile Right Icons (Cart + Account) */}
           <div className="flex items-center gap-2 md:hidden">
-            <button
-              onClick={onToggleDarkMode}
-              className={`p-2 rounded-full transition-colors ${
-                isDarkMode ? "hover:bg-zinc-900 text-yellow-500" : "hover:bg-zinc-100 text-zinc-800"
-              }`}
-              title={isDarkMode ? "Modo Claro" : "Modo Escuro"}
-            >
-              {isDarkMode ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </button>
 
             <button
               onClick={onCartToggle}
@@ -147,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
                 isDarkMode ? "hover:bg-zinc-900 text-white" : "hover:bg-zinc-100 text-zinc-800"
               }`}
             >
-              <ShoppingCart className="w-5 h-5" />
+              <CarrinhoInfantilIcon className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white font-mono text-[9px] w-5 h-5 rounded-full flex items-center justify-center border border-white animate-pulse">
                   {cartCount}
@@ -212,20 +200,7 @@ export const Header: React.FC<HeaderProps> = ({
             ))}
           </nav>
 
-          {/* Theme Mode Toggle Button */}
-          <button
-            onClick={onToggleDarkMode}
-            className={`p-2 rounded-full transition-colors cursor-pointer ${
-              isDarkMode ? "hover:bg-zinc-900 text-yellow-500" : "hover:bg-zinc-100 text-zinc-850"
-            }`}
-            title={isDarkMode ? "Modo Claro" : "Modo Escuro"}
-          >
-            {isDarkMode ? (
-              <Sun className="w-5.5 h-5.5" />
-            ) : (
-              <Moon className="w-5.5 h-5.5" />
-            )}
-          </button>
+
 
           {/* Cart Icon */}
           <button
@@ -234,7 +209,7 @@ export const Header: React.FC<HeaderProps> = ({
               isDarkMode ? "hover:bg-zinc-900" : "hover:bg-zinc-100"
             }`}
           >
-            <ShoppingCart className={`w-5.5 h-5.5 ${isDarkMode ? "text-white" : "text-zinc-800"}`} />
+            <CarrinhoInfantilIcon className={`w-5.5 h-5.5 ${isDarkMode ? "text-white" : "text-zinc-800"}`} />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-600 text-white font-mono text-[10px] w-5.5 h-5.5 rounded-full flex items-center justify-center border border-white animate-pulse">
                 {cartCount}

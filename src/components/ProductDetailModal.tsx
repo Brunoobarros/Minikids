@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product, Review, CartItem } from '../types';
-import { X, Star, MessageCircle, Send, Sparkles, AlertCircle, ShoppingCart } from 'lucide-react';
+import { X, Star, MessageCircle, Send, Sparkles, AlertCircle } from 'lucide-react';
+import { CarrinhoInfantilIcon } from './CarrinhoInfantilIcon';
 
 interface ProductDetailModalProps {
   product: Product;
@@ -377,7 +378,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       : 'bg-red-600 hover:bg-black hover:text-white text-white shadow'
                   }`}
                 >
-                  <ShoppingCart className="w-4 h-4" /> Adicionar ao Carrinho
+                  <CarrinhoInfantilIcon className="w-4 h-4" /> Adicionar ao Carrinho
                 </button>
               </div>
 

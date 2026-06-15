@@ -145,19 +145,16 @@ const saveData = <T>(filePath: string, data: T) => {
   } catch (err) {
     console.error(`Error saving ${filePath}:`, err);
   }
-};
-
-const DEFAULT_PRODUCTS = [
+};const DEFAULT_PRODUCTS = [
   {
     id: 'prod-dino-moletom',
     name: 'Casaco Moletom Dinossauro',
     category: 'menino',
     description: 'Super divertido e confortável! Este casaco em moletom 100% algodão com capuz interativo possui escamas de dinossauro nas costas. Toque macio e quentinho, perfeito para as brincadeiras e aventuras em dias frios!',
-    price: 139.90,
-    discountPrice: 99.90,
+    price: 139.9,
+    discountPrice: 99.9,
     images: [
-      'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=800&auto=format&fit=crop&q=80'
     ],
     sizes: ['1-2a', '3-4a', '5-6a', '7-8a'],
     colors: [
@@ -165,7 +162,7 @@ const DEFAULT_PRODUCTS = [
       { name: 'Amarelo Sol', hex: '#FFEB3B' }
     ],
     stock: 12,
-    ratingValue: 5.0,
+    ratingValue: 5,
     reviews: [
       { id: 'rev-1', username: 'Mariana Souza', rating: 5, comment: 'Meu filho amou as escamas nas costas, não quer tirar o casaco para nada!', date: '2026-06-05' }
     ]
@@ -175,7 +172,7 @@ const DEFAULT_PRODUCTS = [
     name: 'Vestido Girassóis Alegre',
     category: 'menina',
     description: 'Um vestido charmoso e cheio de vida! Feito em viscose premium respirável, com caimento soltinho e estampa alegre de girassóis. Perfeito para festinhas, passeios ou para um dia de sol cheio de energia.',
-    price: 119.90,
+    price: 119.9,
     images: [
       'https://images.unsplash.com/photo-1604467731651-1d5b1c8a371c?w=800&auto=format&fit=crop&q=80'
     ],
@@ -195,8 +192,8 @@ const DEFAULT_PRODUCTS = [
     name: 'Romper Tricot Nuvenzinha',
     category: 'bebe',
     description: 'Aconchego puro para o seu bebê! Romper confeccionado em tricot antialérgico ultra macio, com desenho fofo de nuvem no peito. Ideal para deixar seu bebê confortável e super estiloso.',
-    price: 99.90,
-    discountPrice: 79.90,
+    price: 99.9,
+    discountPrice: 79.9,
     images: [
       'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=800&auto=format&fit=crop&q=80'
     ],
@@ -213,10 +210,10 @@ const DEFAULT_PRODUCTS = [
   {
     id: 'prod-conjunto-jeans',
     name: 'Conjunto Denim Aventureiro',
-    category: 'promocoes',
-    description: 'Estilo clássico em versão kids! Jaqueta jeans macia com elastano e calça combinando, super flexíveis para não prender os movimentos da criança. Muito resistente para brincar no parque!',
-    price: 189.90,
-    discountPrice: 129.90,
+    category: 'menino',
+    description: 'Estilo clássico em version kids! Jaqueta jeans macia com elastano e calça combinando, super flexíveis para não prender os movimentos da criança. Muito resistente para brincar no parque!',
+    price: 189.9,
+    discountPrice: 129.9,
     images: [
       'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80'
     ],
@@ -235,7 +232,7 @@ const DEFAULT_PRODUCTS = [
     name: 'Ursinho Teddy Plush Super Macio',
     category: 'brinquedos',
     description: 'O melhor companheiro de soneca! Ursinho de pelúcia hipoalergênico, com enchimento super fofinho de microfibra. Detalhes bordados para total segurança do seu filho.',
-    price: 79.90,
+    price: 79.9,
     images: [
       'https://images.unsplash.com/photo-1559251606-c623743a6d76?w=800&auto=format&fit=crop&q=80'
     ],
@@ -245,7 +242,7 @@ const DEFAULT_PRODUCTS = [
       { name: 'Creme', hex: '#FFF9C4' }
     ],
     stock: 20,
-    ratingValue: 5.0,
+    ratingValue: 5,
     reviews: [
       { id: 'rev-4', username: 'Aline P.', rating: 5, comment: 'Extremamente macio e seguro, minha bebê dorme com ele todos os dias.', date: '2026-06-03' }
     ]
@@ -255,7 +252,7 @@ const DEFAULT_PRODUCTS = [
     name: 'Macacão Pijama Leãozinho',
     category: 'bebe',
     description: 'Pijama macacão com capuz de leãozinho e orelhinhas em relevo! Confeccionado em soft térmico antialérgico, perfeito para manter o bebê quentinho a noite toda com muita fofura.',
-    price: 109.90,
+    price: 109.9,
     images: [
       'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80'
     ],
@@ -265,6 +262,253 @@ const DEFAULT_PRODUCTS = [
     ],
     stock: 9,
     ratingValue: 4.9,
+    reviews: []
+  },
+  {
+    id: 'prod-jardineira-jeans',
+    name: 'Jardineira Jeans Bebê Clássica',
+    category: 'bebe',
+    description: 'Jardineira em jeans leve e macio com alças reguláveis e botões laterais que facilitam o vestir. Acompanha camiseta branca de algodão de manga curta para completar o visual aventureiro.',
+    price: 129.9,
+    images: [
+      'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['6-12m', '12-18m', '2a', '3a'],
+    colors: [
+      { name: 'Azul Denim', hex: '#2C3E50' }
+    ],
+    stock: 14,
+    ratingValue: 4.6,
+    reviews: []
+  },
+  {
+    id: 'prod-capa-chuva',
+    name: 'Capa de Chuva Amarela Divertida',
+    category: 'promocoes',
+    description: 'Deixe os dias chuvosos cheios de alegria! Capa de chuva impermeável com capuz divertido, fechamento por botões de pressão e bolsos frontais. Estilo inconfundível para brincar na chuva com proteção.',
+    price: 159.9,
+    discountPrice: 119.9,
+    images: [
+      'https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['2a', '4a', '6a', '8a'],
+    colors: [
+      { name: 'Amarelo Sol', hex: '#FFEB3B' }
+    ],
+    stock: 7,
+    ratingValue: 5,
+    reviews: []
+  },
+  {
+    id: 'prod-sueter-mostarda',
+    name: 'Suéter de Algodão Mostarda',
+    category: 'menino',
+    description: 'Suéter clássico tricotado em algodão macio de alta qualidade. Com gola redonda e punhos canelados, oferece um toque quentinho e elegante ideal para dias frescos ou passeios formais.',
+    price: 98.9,
+    images: [
+      'https://images.unsplash.com/photo-1566516171-414c99a70659?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['2-3a', '4-5a', '6-7a', '8-9a'],
+    colors: [
+      { name: 'Mostarda', hex: '#E67E22' },
+      { name: 'Cinza Escuro', hex: '#34495E' }
+    ],
+    stock: 11,
+    ratingValue: 4.5,
+    reviews: []
+  },
+  {
+    id: 'prod-vestido-tule',
+    name: 'Vestido Rosa Tule Princesa',
+    category: 'menina',
+    description: 'O vestido dos sonhos de toda menina! Com corpete confortável de algodão e saia volumosa em camadas de tule macio com brilhos discretos. Ideal para aniversários e festas especiais.',
+    price: 149.9,
+    images: [
+      'https://images.unsplash.com/photo-1505371904114-1b359f1fa443?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['2a', '4a', '6a', '8a', '10a'],
+    colors: [
+      { name: 'Rosa Algodão', hex: '#FFB6C1' },
+      { name: 'Branco Neve', hex: '#FFFFFF' }
+    ],
+    stock: 6,
+    ratingValue: 4.9,
+    reviews: []
+  },
+  {
+    id: 'prod-sapatinho-couro',
+    name: 'Sapatinho de Couro Soft Bebê',
+    category: 'bebe',
+    description: 'Conforto e cuidado para os primeiros passos! Confeccionado em couro ecológico extra macio com solado antiderrapante e elástico no tornozelo para ajuste perfeito, permitindo o desenvolvimento saudável dos pezinhos.',
+    price: 89.9,
+    images: [
+      'https://images.unsplash.com/photo-1533512930330-4ac257c86793?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['15-16', '17-18', '19-20', '21-22'],
+    colors: [
+      { name: 'Caramelo', hex: '#D35400' },
+      { name: 'Azul Marinho', hex: '#1B4F72' }
+    ],
+    stock: 16,
+    ratingValue: 4.7,
+    reviews: []
+  },
+  {
+    id: 'prod-conjunto-verao',
+    name: 'Conjunto Verão Shorts e Regata',
+    category: 'promocoes',
+    description: 'Leveza e frescor para os dias quentes. Conjunto composto por regata leve 100% algodão e shorts de sarja confortável com elástico ajustável na cintura. Ideal para brincar à vontade sob o sol.',
+    price: 89.9,
+    discountPrice: 69.9,
+    images: [
+      'https://images.unsplash.com/photo-1471286174243-e7a4db931751?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['1-2a', '3-4a', '5-6a'],
+    colors: [
+      { name: 'Coral Verão', hex: '#E74C3C' },
+      { name: 'Verde Aqua', hex: '#1ABC9C' }
+    ],
+    stock: 18,
+    ratingValue: 4.8,
+    reviews: []
+  },
+  {
+    id: 'prod-blocos-madeira',
+    name: 'Blocos de Empilhar de Madeira',
+    category: 'brinquedos',
+    description: 'Estimule a criatividade e a coordenação motora! Conjunto de 30 blocos de madeira reflorestada com tintas atóxicas à base de água. Formas geométricas coloridas para construir pontes, castelos e o que a imaginação permitir.',
+    price: 119.9,
+    images: [
+      'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['Tamanho Único'],
+    colors: [
+      { name: 'Multicolorido', hex: '#9B59B6' }
+    ],
+    stock: 22,
+    ratingValue: 5,
+    reviews: []
+  },
+  {
+    id: 'prod-formas-coloridas',
+    name: 'Brinquedo de Encaixe Formas Coloridas',
+    category: 'brinquedos',
+    description: 'Desenvolva a percepção de cores e formas geométricas dos pequenos! Brinquedo de encaixe clássico com base de madeira e pinos para ordenar cilindros, triângulos e quadrados de forma divertida.',
+    price: 74.9,
+    images: [
+      'https://images.unsplash.com/photo-1515488042361-404e9250afef?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['Tamanho Único'],
+    colors: [
+      { name: 'Arco-Íris', hex: '#E67E22' }
+    ],
+    stock: 15,
+    ratingValue: 4.9,
+    reviews: []
+  },
+  {
+    id: 'prod-torre-aneis',
+    name: 'Torre de Anéis de Madeira Waldorf',
+    category: 'brinquedos',
+    description: 'Brinquedo pedagógico clássico com anéis de empilhar de tamanhos diferentes, incentivando o raciocínio lógico e a coordenação. Acabamento super suave com ceras naturais de abelha.',
+    price: 85.9,
+    images: [
+      'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['Tamanho Único'],
+    colors: [
+      { name: 'Pastel Kids', hex: '#F5B041' }
+    ],
+    stock: 13,
+    ratingValue: 4.8,
+    reviews: []
+  },
+  {
+    id: 'prod-macacao-listrado',
+    name: 'Macacão de Soft Algodão Listrado',
+    category: 'bebe',
+    description: 'Feito em malha de algodão canelada super elástica e macia. Com fechamento em zíper duplo frontal completo para trocas de fralda rápidas e sem estresse, além de proteção de zíper no queixo.',
+    price: 95.95,
+    images: [
+      'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['RN', '3-6m', '6-12m', '12-18m'],
+    colors: [
+      { name: 'Listrado Cinza/Branco', hex: '#BDC3C7' },
+      { name: 'Listrado Azul/Branco', hex: '#3498DB' }
+    ],
+    stock: 19,
+    ratingValue: 4.7,
+    reviews: []
+  },
+  {
+    id: 'prod-moletom-mescla',
+    name: 'Conjunto Moletom Kids Mescla',
+    category: 'menino',
+    description: 'Conjunto confortável e estiloso com calça e blusa de moletom flanelado por dentro. Perfeito para manter a garotada quentinha no colégio, parquinho ou passeios de inverno.',
+    price: 145,
+    images: [
+      'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['2a', '4a', '6a', '8a', '10a'],
+    colors: [
+      { name: 'Cinza Mescla', hex: '#7F8C8D' },
+      { name: 'Preto Clássico', hex: '#2C3E50' }
+    ],
+    stock: 10,
+    ratingValue: 4.6,
+    reviews: []
+  },
+  {
+    id: 'prod-cortavento-colorblock',
+    name: 'Jaqueta Corta-Vento Colorblock',
+    category: 'menina',
+    description: 'Estilo moderno e proteção contra ventos e garoas. Jaqueta corta-vento super leve com forro de tela respirável, capuz e punhos com elástico. Design tricolor moderno com cores vibrantes.',
+    price: 169.9,
+    images: [
+      'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['3-4a', '5-6a', '7-8a', '9-10a'],
+    colors: [
+      { name: 'Colorblock Rosa/Roxo', hex: '#8E44AD' }
+    ],
+    stock: 9,
+    ratingValue: 4.9,
+    reviews: []
+  },
+  {
+    id: 'prod-bermuda-linho',
+    name: 'Bermuda Linho Menino Slim',
+    category: 'menino',
+    description: 'Sofisticação sem perder a leveza! Bermuda em mescla de linho e algodão com ajuste interno de elástico na cintura. Ideal para casamentos, festas de fim de ano ou passeios em dias ensolarados.',
+    price: 79.9,
+    images: [
+      'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['2a', '3a', '4a', '6a', '8a'],
+    colors: [
+      { name: 'Areia Linho', hex: '#F1C40F' },
+      { name: 'Azul Bebê', hex: '#5DADE2' }
+    ],
+    stock: 14,
+    ratingValue: 4.7,
+    reviews: []
+  },
+  {
+    id: 'prod-kit-babadores',
+    name: 'Kit de Babadores Bandana Impermeáveis',
+    category: 'bebe',
+    description: 'Kit com 3 babadores em formato bandana super charmosos. Frente em algodão egípcio macio e verso com camada impermeável que protege a roupa do bebê contra babas e sujeiras.',
+    price: 49.9,
+    images: [
+      'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800&auto=format&fit=crop&q=80'
+    ],
+    sizes: ['Tamanho Único'],
+    colors: [
+      { name: 'Mix Neutro', hex: '#BDC3C7' }
+    ],
+    stock: 30,
+    ratingValue: 5,
     reviews: []
   }
 ];
