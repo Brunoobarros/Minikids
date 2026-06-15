@@ -270,7 +270,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Gemini API copywriter trigger
   const generateAIDescription = async () => {
     if (!prodName) {
-      triggerNotification("AI Copywriter", "Digite o nome da camisa primeiro para que a IA gere a descrição perfeita.", "alert");
+      triggerNotification("AI Copywriter", "Digite o nome do produto primeiro para que a IA gere a descrição perfeita.", "alert");
       return;
     }
     
@@ -455,11 +455,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
               <h2 className="text-sm font-black tracking-widest uppercase text-slate-800 font-mono">
-                PAINEL ADMINISTRATIVO <span className="text-xs text-red-600">// CAMISA 7</span>
+                PAINEL ADMINISTRATIVO <span className="text-xs text-red-600">// MINI KIDS</span>
               </h2>
             </div>
             <p className="text-[11px] text-zinc-500 mt-1">
-              Controle financeiro, fluxo de estoque de mantos reservados e gerenciamento de pedidos.
+              Controle financeiro, fluxo de estoque de produtos reservados e gerenciamento de pedidos.
             </p>
           </div>
           
@@ -554,7 +554,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
                 <p className="text-xl sm:text-2xl font-black text-slate-950 font-mono">R$ {pendingReservationsRevenue.toFixed(2)}</p>
                 <span className="text-[9px] text-amber-600 mt-1 uppercase font-mono font-bold">
-                  Aguardando retirada de mantos
+                  Aguardando retirada de produtos
                 </span>
               </div>
 
@@ -591,7 +591,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4.5 h-4.5 text-red-600 animate-bounce" />
                   <span>
-                    <strong>Controle de Estoque Crítico!</strong> Há {criticalStockItems.length} camisas com menos de 3 unidades no estoque.
+                    <strong>Controle de Estoque Crítico!</strong> Há {criticalStockItems.length} produtos com menos de 3 unidades no estoque.
                   </span>
                 </div>
                 <button
@@ -614,7 +614,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <h3 className="text-xs uppercase tracking-wider font-mono text-zinc-500 mb-3 flex items-center justify-between font-bold">
                 <span className="flex items-center gap-1.5">
                   {editingProduct ? <Edit className="w-4 h-4 text-red-600 animate-pulse" /> : <Plus className="w-4 h-4 text-red-600" />}
-                  {editingProduct ? 'EDITAR CAMISA' : 'CADASTRAR NOVA CAMISA'}
+                  {editingProduct ? 'EDITAR PRODUTO' : 'CADASTRAR NOVO PRODUTO'}
                 </span>
                 {editingProduct && (
                   <button
@@ -633,7 +633,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="Camisa Oficial Flamengo Camisa 7 Edition"
+                    placeholder="Vestido de Tule Princesa"
                     value={prodName}
                     onChange={(e) => setProdName(e.target.value)}
                     className="w-full bg-white border border-zinc-200 rounded px-3 py-2 text-slate-900 placeholder-zinc-400 focus:outline-none focus:border-red-600"
@@ -773,7 +773,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <div className="flex items-center gap-3 w-full text-left">
                           <img 
                             src={prodImage} 
-                            alt="Prévia do Manto" 
+                            alt="Prévia do Produto" 
                             referrerPolicy="no-referrer"
                             className="w-16 h-16 rounded object-cover shadow-sm bg-stone-100 flex-shrink-0 border border-zinc-200"
                           />
@@ -837,7 +837,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   type="submit"
                   className="w-full py-2.5 bg-red-600 hover:bg-black text-white font-black uppercase tracking-wider rounded transition-colors shadow cursor-pointer"
                 >
-                  {editingProduct ? 'Salvar Alterações' : 'Cadastrar Camisa no Catálogo'}
+                  {editingProduct ? 'Salvar Alterações' : 'Cadastrar Produto no Catálogo'}
                 </button>
                 {editingProduct && (
                   <button
@@ -851,7 +851,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </form>
             </div>
 
-            {/* Controle de Estoque de camisas (Right Col) */}
+            {/* Controle de Estoque de produtos (Right Col) */}
             <div className="lg:col-span-7 bg-zinc-50 border border-zinc-200 p-4 rounded-xl">
               <h3 className="text-xs uppercase tracking-wider font-mono text-zinc-500 mb-3 flex items-center justify-between font-bold">
                 <span>ESTOQUE ATUAL & PREÇOS (Ordenado por estoque)</span>
@@ -1082,7 +1082,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               const clean = o.customerPhone.replace(/\D/g, '');
                               return clean.startsWith('55') ? clean : `55${clean}`;
                             })()}?text=${encodeURIComponent(
-                              `Olá ${o.customerName}! Aqui é da Camisa 7 Store.\n\nGostaríamos de falar sobre o seu pedido ${o.id}.`
+                              `Olá ${o.customerName}! Aqui é da Mini Kids.\n\nGostaríamos de falar sobre o seu pedido ${o.id}.`
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -1122,9 +1122,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               const clean = o.customerPhone.replace(/\D/g, '');
                               return clean.startsWith('55') ? clean : `55${clean}`;
                             })()}?text=${encodeURIComponent(
-                              `Olá ${o.customerName}! Aqui é da Camisa 7 Store.\n\n` +
+                              `Olá ${o.customerName}! Aqui é da Mini Kids.\n\n` +
                               `Confirmamos o recebimento do pagamento do seu Pedido ${o.id} no valor de R$ ${o.totalPrice.toFixed(2)}.\n\n` +
-                              `Seu manto já está em processo de separação e preparação para envio! Obrigado pela preferência.`
+                              `Seu lookinho já está em processo de separação e preparação para envio! Obrigado pela preferência.`
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -1172,7 +1172,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <button
                           onClick={() => {
                             onUpdateOrderStatus(o.id, 'cancelado');
-                            triggerNotification(o.id, "Reserva de camisa cancelada.", "alert");
+                            triggerNotification(o.id, "Reserva de produto cancelada.", "alert");
                           }}
                           className={`py-1 text-[9px] uppercase font-bold rounded cursor-pointer border ${
                             o.status === 'cancelado' ? 'bg-zinc-700 text-white border-zinc-700' : 'bg-white border-zinc-205 text-zinc-500 hover:text-black'
@@ -1218,7 +1218,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <input
                       type="text"
                       required
-                      placeholder="ex: LANÇAMENTO MANTO DO CORINTHIANS"
+                      placeholder="ex: LANÇAMENTO LOOKINHO DO CORINTHIANS"
                       value={newBannerTitle}
                       onChange={(e) => setNewBannerTitle(e.target.value)}
                       className="w-full bg-white border border-zinc-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-red-600 font-sans"
@@ -1925,18 +1925,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div className="w-full max-w-[210px] bg-zinc-950 p-3.5 rounded-lg border border-zinc-800 text-white font-sans text-center shadow">
                     <span className="block text-[8.5px] tracking-widest uppercase text-zinc-500 font-mono mb-1.5">// Cabeçalho Mockup</span>
                     <div className="flex justify-between items-center bg-zinc-900/60 p-2 rounded border border-zinc-850">
-                      <span className="text-[10px] font-bold" style={{ fontFamily: displayFont }}>CAMISA 7</span>
+                      <span className="text-[10px] font-bold" style={{ fontFamily: displayFont }}>MINI KIDS</span>
                       <span className="px-1.5 py-0.5 rounded text-[8px] font-mono text-white" style={{ backgroundColor: themeColor }}>R$ 150</span>
                     </div>
                   </div>
 
                   {/* Pseudo Card preview */}
                   <div className="w-full max-w-[200px] bg-white p-3.5 rounded-xl border border-zinc-200 text-slate-800 shadow-sm text-left">
-                    <span className="block text-[8.5px] tracking-widest uppercase text-zinc-400 font-mono mb-1">// Card de Camisa</span>
+                    <span className="block text-[8.5px] tracking-widest uppercase text-zinc-400 font-mono mb-1">// Card de Produto</span>
                     <div className="w-full h-16 rounded bg-zinc-100 mb-2 flex items-center justify-center font-bold text-[9px] text-zinc-400 capitalize">
-                      Manto Mockup
+                      Produto Mockup
                     </div>
-                    <h5 className="text-[11px] font-bold tracking-tight text-slate-900" style={{ fontFamily: displayFont }}>Manto Customizado 2026</h5>
+                    <h5 className="text-[11px] font-bold tracking-tight text-slate-900" style={{ fontFamily: displayFont }}>Produto Customizado 2026</h5>
                     <p className="text-[9px] text-zinc-500 mt-0.5 leading-normal line-clamp-1" style={{ fontFamily: sansFont }}>Poliéster respirável e alta costura.</p>
                     <button
                       type="button"
@@ -1944,7 +1944,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       className="w-full mt-2 py-1.5 text-[9px] font-bold uppercase rounded text-white text-center cursor-not-allowed"
                       style={{ backgroundColor: themeColor }}
                     >
-                      Reservar Manto
+                      Reservar Lookinho
                     </button>
                   </div>
                 </div>
@@ -1968,13 +1968,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         });
                       } else {
                         // Backup/Optimistic save on localStorage
-                        localStorage.setItem('camisa7_theme_color', themeColor);
-                        localStorage.setItem('camisa7_theme_color_hover', themeColorHover);
-                        localStorage.setItem('camisa7_bg_dark_color', bgDarkColor);
-                        localStorage.setItem('camisa7_bg_light_color', bgLightColor);
-                        localStorage.setItem('camisa7_display_font', displayFont);
-                        localStorage.setItem('camisa7_sans_font', sansFont);
-                        localStorage.setItem('camisa7_custom_pix_key', pixKey);
+                        localStorage.setItem('minikids_theme_color', themeColor);
+                        localStorage.setItem('minikids_theme_color_hover', themeColorHover);
+                        localStorage.setItem('minikids_bg_dark_color', bgDarkColor);
+                        localStorage.setItem('minikids_bg_light_color', bgLightColor);
+                        localStorage.setItem('minikids_display_font', displayFont);
+                        localStorage.setItem('minikids_sans_font', sansFont);
+                        localStorage.setItem('minikids_custom_pix_key', pixKey);
                         triggerNotification(
                           "Aparência Salva!",
                           "Design da loja atualizado com sucesso no navegador!",
@@ -2001,13 +2001,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     setSansFont('Inter');
                     if (setPixKey) setPixKey('barrosbruno.ti@gmail.com');
 
-                    localStorage.removeItem('camisa7_theme_color');
-                    localStorage.removeItem('camisa7_theme_color_hover');
-                    localStorage.removeItem('camisa7_bg_dark_color');
-                    localStorage.removeItem('camisa7_bg_light_color');
-                    localStorage.removeItem('camisa7_display_font');
-                    localStorage.removeItem('camisa7_sans_font');
-                    localStorage.removeItem('camisa7_custom_pix_key');
+                    localStorage.removeItem('minikids_theme_color');
+                    localStorage.removeItem('minikids_theme_color_hover');
+                    localStorage.removeItem('minikids_bg_dark_color');
+                    localStorage.removeItem('minikids_bg_light_color');
+                    localStorage.removeItem('minikids_display_font');
+                    localStorage.removeItem('minikids_sans_font');
+                    localStorage.removeItem('minikids_custom_pix_key');
 
                     if (onSaveAppearance) {
                       await onSaveAppearance({
@@ -2201,7 +2201,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     Executar Transmissão de Dados
                   </h4>
                   <p className="text-[11px] text-zinc-500 leading-relaxed">
-                    Clique no botão abaixo para transferir de forma unificada os dados atuais locais de camisas, estoque, vendas (pedidos), layouts de banners e suas configurações de design diretamente para o banco relacional do Supabase. Todos os cadastros subsequentes passarão a persistir em ambos automaticamente.
+                    Clique no botão abaixo para transferir de forma unificada os dados atuais locais de produtos, estoque, vendas (pedidos), layouts de banners e suas configurações de design diretamente para o banco relacional do Supabase. Todos os cadastros subsequentes passarão a persistir em ambos automaticamente.
                   </p>
                 </div>
 

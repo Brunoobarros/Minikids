@@ -1032,7 +1032,7 @@ app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
   
   // High-fidelity validation: standard admin/customer credentials for presentation
-  if ((email === "admin@minikids.com.br" || email === "admin@camisa7.com.br") && password === "minikids2026*") {
+  if (email === "admin@minikids.com.br" && password === "minikids2026*") {
     return res.json({
       success: true,
       token: "simulated-jwt-header.payload-admin.signature",
@@ -1086,12 +1086,12 @@ app.post("/api/products", async (req, res) => {
     id: `prod-${Date.now()}`,
     name,
     category,
-    description: description || "Camisa premium inspirada em alta performance urbana.",
+    description: description || "Roupinha infantil premium, lúdica e confortável.",
     price: Number(price),
     discountPrice: discountPrice ? Number(discountPrice) : undefined,
-    images: images && images.length > 0 ? images : ["https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80"],
-    sizes: sizes || ["P", "M", "G", "GG"],
-    colors: colors || [{ name: "Chumbo", hex: "#1C1C1E" }],
+    images: images && images.length > 0 ? images : ["https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=800&auto=format&fit=crop&q=80"],
+    sizes: sizes || ["RN", "3-6m", "6-12m", "1-2a", "3-4a", "5-6a"],
+    colors: colors || [{ name: "Multicolorido", hex: "#FF4F79" }],
     stock: Number(stock),
     ratingValue: 5.0,
     reviews: []
@@ -1642,7 +1642,7 @@ app.post("/api/orders", async (req, res) => {
     const prod = products.find(p => p.id === item.productId);
     if (prod) {
       if (prod.stock < item.quantity) {
-        return res.status(400).json({ error: `Estoque insuficiente para a camisa: ${prod.name}` });
+        return res.status(400).json({ error: `Estoque insuficiente para o produto: ${prod.name}` });
       }
       prod.stock -= item.quantity;
     }
@@ -1998,10 +1998,10 @@ app.post("/api/payment/pix", async (req, res) => {
     console.log(`[MP PIX SIMULATION] Gerando PIX fictício sob-demanda para pedido: ${orderId}, total: R$ ${amount}`);
     const simulatedPix = generatePixPayload(
       customPixKey || "barrosbruno.ti@gmail.com",
-      "CAMISA 7 STORE",
+      "MINI KIDS",
       "SAO PAULO",
       Number(amount),
-      `PED_${orderId}_ONLINE_C7`
+      `PED_${orderId}_ONLINE`
     );
     
     return res.json({
@@ -2017,7 +2017,7 @@ app.post("/api/payment/pix", async (req, res) => {
   try {
     console.log(`[MP PIX REAL] Conectando com a API oficial do Mercado Pago para gerar PIX. Pedido: ${orderId}, Valor: ${amount}`);
     const first_name = payerName?.split(" ")[0] || "Cliente";
-    const last_name = payerName?.split(" ").slice(1).join(" ") || "Camisa 7";
+    const last_name = payerName?.split(" ").slice(1).join(" ") || "Mini Kids";
     const identificationNumber = payerCpf ? payerCpf.replace(/\D/g, '') : generateValidCPF();
 
     const response = await fetch("https://api.mercadopago.com/v1/payments", {
@@ -2063,10 +2063,10 @@ app.post("/api/payment/pix", async (req, res) => {
       console.warn("[MP PIX REAL ERROR] Falling back to high-fidelity simulated scan code:", data);
       const simulatedPix = generatePixPayload(
         customPixKey || "barrosbruno.ti@gmail.com",
-        "CAMISA 7 STORE",
+        "MINI KIDS",
         "SAO PAULO",
         Number(amount),
-        `PED_${orderId}_ONLINE_C7`
+        `PED_${orderId}_ONLINE`
       );
       
       const mpErrorMsg = data.message || (data.cause && data.cause[0]?.description) || "Erro de credenciais";
@@ -2092,10 +2092,10 @@ app.post("/api/payment/pix", async (req, res) => {
     console.warn("[MP PIX EXCEPTION] Falling back to high-fidelity simulated scan code:", err);
     const simulatedPix = generatePixPayload(
       customPixKey || "barrosbruno.ti@gmail.com",
-      "CAMISA 7 STORE",
+      "MINI KIDS",
       "SAO PAULO",
       Number(amount),
-      `PED_${orderId}_ONLINE_C7`
+      `PED_${orderId}_ONLINE`
     );
     return res.json({
       success: true,
@@ -2138,7 +2138,7 @@ app.post("/api/payment/card", async (req, res) => {
   try {
     console.log(`[MP CARD REAL] Cobrando cartão no Mercado Pago para pedido: ${orderId}, Token: ${token}, Valor: ${amount}`);
     const first_name = payerName?.split(" ")[0] || "Cliente";
-    const last_name = payerName?.split(" ").slice(1).join(" ") || "Camisa 7";
+    const last_name = payerName?.split(" ").slice(1).join(" ") || "Mini Kids";
     const identificationNumber = payerCpf ? payerCpf.replace(/\D/g, '') : generateValidCPF();
 
     const response = await fetch("https://api.mercadopago.com/v1/payments", {
@@ -2407,18 +2407,18 @@ if (IS_PRODUCTION) {
       if (err) {
         return res.status(200).send(`
           <!DOCTYPE html>
-          <html><head><title>Camisa 7 Store</title></head>
-          <body><h1>Camisa 7 Store</h1><p>API está funcionando. Aguarde o build do frontend.</p></body>
+          <html><head><title>Mini Kids</title></head>
+          <body><h1>Mini Kids</h1><p>API está funcionando. Aguarde o build do frontend.</p></body>
         </html>`);
       }
 
       // Inject server-side appearance values directly in index.html to prevent flash of default theme (FOUC)
-      const themeColor = appearanceConfig.primaryColor || '#d12229';
-      const themeColorHover = appearanceConfig.primaryColorHover || '#aa1a1e';
-      const bgDarkColor = appearanceConfig.bgDark || '#09090b';
-      const bgLightColor = appearanceConfig.bgLight || '#fafafa';
-      const displayFont = appearanceConfig.displayFont || 'Space Grotesk';
-      const sansFont = appearanceConfig.sansFont || 'Inter';
+      const themeColor = appearanceConfig.primaryColor || '#ff4f79';
+      const themeColorHover = appearanceConfig.primaryColorHover || '#e0355f';
+      const bgDarkColor = appearanceConfig.bgDark || '#121026';
+      const bgLightColor = appearanceConfig.bgLight || '#fffdf9';
+      const displayFont = appearanceConfig.displayFont || 'Quicksand';
+      const sansFont = appearanceConfig.sansFont || 'Quicksand';
 
       const injectedScript = `
     <script>
@@ -2491,7 +2491,7 @@ if (!IS_VERCEL) {
   syncFromSupabase().then(() => {
     setupRealtimeSubscriptions();
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`[SERVER] Camisa 7 Store rodando na porta ${PORT}`);
+      console.log(`[SERVER] Mini Kids rodando na porta ${PORT}`);
     });
   });
 }

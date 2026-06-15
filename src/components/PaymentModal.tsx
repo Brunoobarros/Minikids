@@ -375,7 +375,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               setIsProcessing(false);
               triggerNotification(
                 "Pagamento Aprovado!",
-                "Detectamos a confirmação em tempo real! Seu manto já está em produção.",
+                "Detectamos a confirmação em tempo real! Seu lookinho já está em produção.",
                 "success"
               );
             }
@@ -435,7 +435,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
       setIsProcessing(false);
       setStep('success');
-      triggerNotification("Pagamento Confirmado!", comprovanteId.trim() ? "O seu Pix real foi vinculado e aprovado com sucesso!" : "Identificamos o seu PIX e seu manto já está em preparação!", "success");
+      triggerNotification("Pagamento Confirmado!", comprovanteId.trim() ? "O seu Pix real foi vinculado e aprovado com sucesso!" : "Identificamos o seu PIX e seu lookinho já está em preparação!", "success");
     } catch (err) {
       setIsProcessing(false);
       setPixError("Tivemos dificuldades em processar a simulação.");
@@ -634,7 +634,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         await onPaymentSuccess(orderId);
         setIsProcessing(false);
         setStep('success');
-        triggerNotification("Compra Aprovada!", "Manto garantido: Seu cartão de crédito foi debitado com sucesso!", "success");
+        triggerNotification("Compra Aprovada!", "Lookinho garantido: Seu cartão de crédito foi debitado com sucesso!", "success");
       } else {
         setIsProcessing(false);
         setCardError(data.error || "A transação de crédito foi recusada.");
@@ -743,7 +743,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                     </div>
                   )}
 
-                  {/* SVG QR Code Simulation or Real MP QR Code Image with Camisa 7 branding */}
+                  {/* SVG QR Code Simulation or Real MP QR Code Image with Mini Kids branding */}
                   <div className={`p-3 rounded-2xl border bg-white ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
                     {isLoadingPix ? (
                       <div className="w-40 h-40 flex flex-col items-center justify-center font-mono text-[9px] gap-2 text-slate-800">
@@ -1138,7 +1138,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-[10px] text-white mt-0.5 animate-pulse">•</span>
                 <div>
                   <p className="font-bold">Emissão de Nota Fiscal & Separação</p>
-                  <p className={`text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'} mt-0.5 font-mono`}>O estoque reservou o seu manto para expedição rápida!</p>
+                  <p className={`text-[9px] ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'} mt-0.5 font-mono`}>O estoque reservou o seu lookinho para expedição rápida!</p>
                 </div>
               </div>
             </div>
@@ -1150,7 +1150,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   isDarkMode ? 'bg-white hover:bg-zinc-200 text-black' : 'bg-black hover:bg-zinc-800 text-white'
                 }`}
               >
-                Voltar aos Meus Mantos
+                Voltar aos Meus Lookinhos
               </button>
             </div>
           </div>

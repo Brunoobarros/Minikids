@@ -1,6 +1,6 @@
 {
-  "name": "Camisa7Store",
-  "description": "App moderno de e-commerce premium para venda de camisas de times e esportivas masculinas e femininas.",
+  "name": "MiniKids",
+  "description": "App moderno de e-commerce infantil para venda de roupas de bebê, moda infantil, brinquedos e acessórios.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

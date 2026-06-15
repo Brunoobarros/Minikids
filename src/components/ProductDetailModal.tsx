@@ -403,7 +403,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               
               <div className="space-y-3 max-h-40 overflow-y-auto pr-1">
                 {product.reviews.length === 0 ? (
-                  <p className="text-xs text-zinc-400 italic">Ninguém avaliou esta camisa ainda. Seja o primeiro!</p>
+                  <p className="text-xs text-zinc-400 italic">Ninguém avaliou esta roupinha ainda. Seja o primeiro!</p>
                 ) : (
                   product.reviews.map((r) => (
                     <div key={r.id} className={`border p-2.5 rounded-lg text-xs leading-relaxed transition-colors ${

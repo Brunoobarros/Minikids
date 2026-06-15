@@ -211,7 +211,7 @@ export const PromotionBanner: React.FC<PromotionBannerProps> = ({
                     <input
                       type="text"
                       required
-                      placeholder="ex: MANTOS RETRÔ HISTÓRICOS"
+                      placeholder="ex: CASACOS E DIAS DE DIVERSÃO"
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
                       className="w-full bg-zinc-50 border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-650 font-sans"
@@ -223,7 +223,7 @@ export const PromotionBanner: React.FC<PromotionBannerProps> = ({
                     <input
                       type="text"
                       required
-                      placeholder="ex: Recorde os melhores lances do futebol com as camisas vintage..."
+                      placeholder="ex: Encontre vestidos lindos, macacões de soft quentinhos e muito mais..."
                       value={newSubtitle}
                       onChange={(e) => setNewSubtitle(e.target.value)}
                       className="w-full bg-zinc-50 border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-650 font-sans"
@@ -391,9 +391,9 @@ export const PromotionBanner: React.FC<PromotionBannerProps> = ({
         <div className="p-3 bg-red-950/40 border border-red-900/30 rounded-full text-red-500">
           <ImageIcon className="w-8 h-8" />
         </div>
-        <h3 className="text-lg font-black uppercase tracking-wider font-sans">Bem-vindo à Camisa 7 Store</h3>
+        <h3 className="text-lg font-black uppercase tracking-wider font-sans">Bem-vindo à Mini Kids</h3>
         <p className="text-zinc-400 text-xs font-sans max-w-sm">
-          A loja está sendo configurada pelo Administrador. Marque esta página nos seus favoritos e volte em breve para conferir os mantos esportivos e promoções exclusivas!
+          A loja está sendo configurada pelo Administrador. Marque esta página nos seus favoritos e volte em breve para conferir os lookinhos infantis e promoções exclusivas!
         </p>
       </div>
     );
@@ -550,7 +550,7 @@ export const PromotionBanner: React.FC<PromotionBannerProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="ex: MANTOS RETRÔ HISTÓRICOS"
+                  placeholder="ex: CASACOS E DIAS DE DIVERSÃO"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full bg-zinc-50 border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-600"
@@ -562,7 +562,7 @@ export const PromotionBanner: React.FC<PromotionBannerProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="ex: Recorde os melhores lances do futebol com as camisas vintage..."
+                  placeholder="ex: Encontre vestidos lindos, macacões de soft quentinhos e muito mais..."
                   value={newSubtitle}
                   onChange={(e) => setNewSubtitle(e.target.value)}
                   className="w-full bg-zinc-50 border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-600"
@@ -763,7 +763,7 @@ export const PromotionBanner: React.FC<PromotionBannerProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="ex: MANTOS RETRÔ HISTÓRICOS"
+                  placeholder="ex: CASACOS E DIAS DE DIVERSÃO"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   className="w-full bg-zinc-50 border border-zinc-200 rounded px-3 py-2 text-slate-900 focus:outline-none focus:border-red-600 font-sans"

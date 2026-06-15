@@ -18,31 +18,31 @@ import { INITIAL_PRODUCTS, INITIAL_BANNERS } from './data';
 export default function App() {
   // Theme dark / light state manager (Standard defaults to Dark)
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('camisa7_theme');
+    const saved = localStorage.getItem('minikids_theme');
     return saved !== null ? saved === 'true' : true;
   });
 
   // Visual Theme / Appearance Customization States
   const [themeColor, setThemeColor] = useState(() => {
-    return localStorage.getItem('camisa7_theme_color') || '#ff4f79';
+    return localStorage.getItem('minikids_theme_color') || '#ff4f79';
   });
   const [themeColorHover, setThemeColorHover] = useState(() => {
-    return localStorage.getItem('camisa7_theme_color_hover') || '#e0355f';
+    return localStorage.getItem('minikids_theme_color_hover') || '#e0355f';
   });
   const [bgDarkColor, setBgDarkColor] = useState(() => {
-    return localStorage.getItem('camisa7_bg_dark_color') || '#121026';
+    return localStorage.getItem('minikids_bg_dark_color') || '#121026';
   });
   const [bgLightColor, setBgLightColor] = useState(() => {
-    return localStorage.getItem('camisa7_bg_light_color') || '#fffdf9';
+    return localStorage.getItem('minikids_bg_light_color') || '#fffdf9';
   });
   const [displayFont, setDisplayFont] = useState(() => {
-    return localStorage.getItem('camisa7_display_font') || 'Quicksand';
+    return localStorage.getItem('minikids_display_font') || 'Quicksand';
   });
   const [sansFont, setSansFont] = useState(() => {
-    return localStorage.getItem('camisa7_sans_font') || 'Quicksand';
+    return localStorage.getItem('minikids_sans_font') || 'Quicksand';
   });
   const [pixKey, setPixKey] = useState(() => {
-    return localStorage.getItem('camisa7_custom_pix_key') || 'barrosbruno.ti@gmail.com';
+    return localStorage.getItem('minikids_custom_pix_key') || 'barrosbruno.ti@gmail.com';
   });
 
   // Store Core State Managers
@@ -53,13 +53,13 @@ export default function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
   
   // Navigation & Categorization States
-  const [currentTab, setTab] = useState<'camisas' | 'pedidos' | 'historico'>('camisas');
+  const [currentTab, setTab] = useState<'lookinhos' | 'pedidos' | 'historico'>('lookinhos');
   const [selectedCategory, setSelectedCategory] = useState<'todos' | 'masculino' | 'feminino' | 'promocoes' | 'esportivo'>('todos');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Access levels and overlay states
   const [currentUser, setCurrentUser] = useState<any>(() => {
-    const savedSimulated = localStorage.getItem('camisa7_simulated_user');
+    const savedSimulated = localStorage.getItem('minikids_simulated_user');
     if (savedSimulated) {
       try {
         return JSON.parse(savedSimulated);
@@ -70,7 +70,7 @@ export default function App() {
     return null;
   });
   const [isAdminMode, setAdminMode] = useState(() => {
-    const savedSimulated = localStorage.getItem('camisa7_simulated_user');
+    const savedSimulated = localStorage.getItem('minikids_simulated_user');
     if (savedSimulated) {
       try {
         const parsed = JSON.parse(savedSimulated);
@@ -223,13 +223,13 @@ export default function App() {
         setPixKey(data.pixKey || 'barrosbruno.ti@gmail.com');
 
         // Persiste no localStorage para evitar o flash de cor padrão no próximo F5
-        localStorage.setItem('camisa7_theme_color', data.primaryColor || '#ff4f79');
-        localStorage.setItem('camisa7_theme_color_hover', data.primaryColorHover || '#e0355f');
-        localStorage.setItem('camisa7_bg_dark_color', data.bgDark || '#121026');
-        localStorage.setItem('camisa7_bg_light_color', data.bgLight || '#fffdf9');
-        localStorage.setItem('camisa7_display_font', data.displayFont || 'Quicksand');
-        localStorage.setItem('camisa7_sans_font', data.sansFont || 'Quicksand');
-        localStorage.setItem('camisa7_custom_pix_key', data.pixKey || 'barrosbruno.ti@gmail.com');
+        localStorage.setItem('minikids_theme_color', data.primaryColor || '#ff4f79');
+        localStorage.setItem('minikids_theme_color_hover', data.primaryColorHover || '#e0355f');
+        localStorage.setItem('minikids_bg_dark_color', data.bgDark || '#121026');
+        localStorage.setItem('minikids_bg_light_color', data.bgLight || '#fffdf9');
+        localStorage.setItem('minikids_display_font', data.displayFont || 'Quicksand');
+        localStorage.setItem('minikids_sans_font', data.sansFont || 'Quicksand');
+        localStorage.setItem('minikids_custom_pix_key', data.pixKey || 'barrosbruno.ti@gmail.com');
       }
     } catch (err) {
       // Silently fail to avoid console noise during presentation
@@ -377,14 +377,14 @@ export default function App() {
   }) => {
     try {
       // 1. Optimistic save locally (Immediate UI changes)
-      localStorage.setItem('camisa7_theme_color', appearance.primaryColor);
-      localStorage.setItem('camisa7_theme_color_hover', appearance.primaryColorHover);
-      localStorage.setItem('camisa7_bg_dark_color', appearance.bgDark);
-      localStorage.setItem('camisa7_bg_light_color', appearance.bgLight);
-      localStorage.setItem('camisa7_display_font', appearance.displayFont);
-      localStorage.setItem('camisa7_sans_font', appearance.sansFont);
+      localStorage.setItem('minikids_theme_color', appearance.primaryColor);
+      localStorage.setItem('minikids_theme_color_hover', appearance.primaryColorHover);
+      localStorage.setItem('minikids_bg_dark_color', appearance.bgDark);
+      localStorage.setItem('minikids_bg_light_color', appearance.bgLight);
+      localStorage.setItem('minikids_display_font', appearance.displayFont);
+      localStorage.setItem('minikids_sans_font', appearance.sansFont);
       if (appearance.pixKey) {
-        localStorage.setItem('camisa7_custom_pix_key', appearance.pixKey);
+        localStorage.setItem('minikids_custom_pix_key', appearance.pixKey);
         setPixKey(appearance.pixKey);
       }
 
@@ -577,7 +577,7 @@ export default function App() {
 
   // Monitor Authentication State (Stored completely in localStorage)
   useEffect(() => {
-    const savedSimulated = localStorage.getItem('camisa7_simulated_user');
+    const savedSimulated = localStorage.getItem('minikids_simulated_user');
     if (savedSimulated) {
       try {
         const parsed = JSON.parse(savedSimulated);
@@ -613,7 +613,7 @@ export default function App() {
         role: role
       };
       
-      localStorage.setItem('camisa7_simulated_user', JSON.stringify(mockUser));
+      localStorage.setItem('minikids_simulated_user', JSON.stringify(mockUser));
       setCurrentUser(mockUser);
       setAdminMode(role === 'admin');
       
@@ -629,10 +629,10 @@ export default function App() {
 
   const onLogout = async () => {
     try {
-      localStorage.removeItem('camisa7_simulated_user');
+      localStorage.removeItem('minikids_simulated_user');
       setCurrentUser(null);
       setAdminMode(false);
-      triggerNotification("Sessão Finalizada", "Você deslogou da conta Camisa 7.", "info");
+      triggerNotification("Sessão Finalizada", "Você deslogou da conta Mini Kids.", "info");
     } catch (err) {
       console.error(err);
     }
@@ -686,7 +686,7 @@ export default function App() {
       setProducts(prev => [newProduct, ...prev]);
       setBanners(prev => [...prev, newBanner]);
 
-      triggerNotification("Produto Cadastrado", "Camisa e Poster adicionados com sucesso ao catálogo!", "success");
+      triggerNotification("Produto Cadastrado", "Produto adicionado com sucesso ao catálogo!", "success");
     } catch (err: any) {
       triggerNotification("Erro ao cadastrar", err.message || "Falha ao salvar item.", "alert");
     }
@@ -1002,7 +1002,7 @@ export default function App() {
       if (orderData.paymentMethod === 'retirada') {
         triggerNotification(
           "Reserva Concluída!",
-          `Seu manto está garantido no código: ${orderId}. Compareça à loja física para retirar!`,
+          `Seu lookinho está garantido no código: ${orderId}. Compareça à loja física para retirar!`,
           "success"
         );
       } else {
@@ -1010,7 +1010,7 @@ export default function App() {
         setActivePaymentOrder({ id: orderId, totalPrice: Number(finalTotalPrice.toFixed(2)) });
         triggerNotification(
           "Garantido no Estoque!",
-          `Seu manto está reservado sob o código ${orderId}. Efetue o pagamento online para liberar!`,
+          `Seu lookinho está reservado sob o código ${orderId}. Efetue o pagamento online para liberar!`,
           "info"
         );
       }
@@ -1053,14 +1053,14 @@ export default function App() {
       if (orderData.paymentMethod === 'retirada') {
         triggerNotification(
           "Reserva Concluída (Local)!",
-          `Seu manto está reservado com o código: ${generatedOrderId}. Retire na loja física!`,
+          `Seu lookinho está reservado com o código: ${generatedOrderId}. Retire na loja física!`,
           "success"
         );
       } else {
         setActivePaymentOrder({ id: generatedOrderId, totalPrice: Number(finalTotalPrice.toFixed(2)) });
         triggerNotification(
           "Reservado no Estoque!",
-          `Manto reservado (código: ${generatedOrderId}). Prossiga para efetuar o pagamento simulado!`,
+          `Lookinho reservado (código: ${generatedOrderId}). Prossiga para efetuar o pagamento simulado!`,
           "info"
         );
       }
@@ -1212,7 +1212,7 @@ export default function App() {
         selectedCategory={selectedCategory}
         setSelectedCategory={(cat) => {
           setSelectedCategory(cat);
-          setTab('camisas');
+          setTab('lookinhos');
           setTimeout(() => {
             document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
           }, 100);
@@ -1221,12 +1221,12 @@ export default function App() {
         onToggleDarkMode={() => {
           setIsDarkMode(prev => {
             const next = !prev;
-            localStorage.setItem('camisa7_theme', String(next));
+            localStorage.setItem('minikids_theme', String(next));
             return next;
           });
         }}
         onLogoClick={() => {
-          setTab('camisas');
+          setTab('lookinhos');
           setSelectedCategory('todos');
           setSearchQuery('');
         }}
@@ -1272,8 +1272,8 @@ export default function App() {
       {/* TAB SUB-ROUTER CONTROLLER */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
-        {/* VIEW 1: PRODUCT LISTING (CAMISAS) */}
-        {currentTab === 'camisas' && (
+        {/* VIEW 1: PRODUCT LISTING (LOOKINHOS) */}
+        {currentTab === 'lookinhos' && (
           <div className="space-y-8 animate-fade-in">
             
             {/* Promotional Hero Carousel Banner */}
@@ -1337,7 +1337,7 @@ export default function App() {
                     <p className={`text-xs mt-1 max-w-md mx-auto px-4 ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>
                       {isAdminMode || currentUser?.role === 'admin'
                         ? 'Você está logado com a conta de Administrador! Use o Painel de Controle administrativo no topo ou clique para registrar o primeiro produto do catálogo.'
-                        : 'A vitrine do site está passando por manutenção estética. O administrador irá disponibilizar as novas coleções e mantos esportivos em breve!'}
+                        : 'A vitrine do site está passando por manutenção estética. O administrador irá disponibilizar as novas coleções e lookinhos infantis em breve!'}
                     </p>
                   </div>
                 </div>
@@ -1345,7 +1345,7 @@ export default function App() {
                 <div className={`text-center py-20 border rounded-2xl flex flex-col items-center justify-center gap-3 transition-colors ${
                   isDarkMode ? 'bg-zinc-950 border-white/10' : 'bg-white border-zinc-200'
                 }`}>
-                  <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>Nenhum manto de time ou camisa premium coincide com a busca.</span>
+                  <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>Nenhuma roupinha ou brinquedo coincide com a busca.</span>
                   <button
                     onClick={() => {
                       setSearchQuery('');
@@ -1404,10 +1404,10 @@ export default function App() {
                 isDarkMode ? 'text-white' : 'text-slate-900'
               }`}>
                 <span className="w-1.5 h-6 bg-amber-500 rounded"></span>
-                RESERVAS DE CAMISAS ATIVAS
+                RESERVAS DE PRODUTOS ATIVAS
               </h2>
               <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>
-                Seus mantos estão protegidos no estoque. Retire em nossa loja em até 48 horas facilitando por pix ou dinheiro.
+                Seus lookinhos estão protegidos no estoque. Retire em nossa loja em até 48 horas facilitando por pix ou dinheiro.
               </p>
             </div>
 
@@ -1415,12 +1415,12 @@ export default function App() {
               <div className={`text-center py-20 rounded-2xl flex flex-col items-center justify-center gap-3 border ${
                 isDarkMode ? 'bg-zinc-950 border-white/10' : 'bg-white border-zinc-200 shadow-sm'
               }`}>
-                <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>Você não conta com nenhuma reserva de mantos pendente de retirada.</span>
+                <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>Você não conta com nenhuma reserva de lookinhos pendente de retirada.</span>
                 <button
-                  onClick={() => setTab('camisas')}
+                  onClick={() => setTab('lookinhos')}
                   className="bg-red-600 text-white hover:bg-red-700 text-[10px] uppercase font-black px-6 py-3 rounded-full transition-all cursor-pointer"
                 >
-                  Garantir Camisa do Time
+                  Garantir Lookinho Infantil
                 </button>
               </div>
             ) : (
@@ -1466,7 +1466,7 @@ export default function App() {
 
                     {/* Purchased shirts listings */}
                     <div className="space-y-3">
-                      <span className={`block text-[8px] font-mono tracking-widest uppercase font-black ${isDarkMode ? 'text-gray-500' : 'text-zinc-400'}`}>MANTOS PROTEGIDOS</span>
+                      <span className={`block text-[8px] font-mono tracking-widest uppercase font-black ${isDarkMode ? 'text-gray-500' : 'text-zinc-400'}`}>LOOKINHOS PROTEGIDOS</span>
                       <div className="space-y-2">
                         {o.items.map((item, idx) => (
                           <div key={idx} className={`flex items-center justify-between p-2.5 rounded-xl border text-xs ${
@@ -1537,7 +1537,7 @@ export default function App() {
                           <div className="text-left">
                             <p className="text-xs font-black text-emerald-600 uppercase font-mono">PAGAMENTO CONFIRMADO</p>
                             <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
-                              Seu pagamento foi confirmado pelo app. Seu manto está na fila prioritária de separação!
+                              Seu pagamento foi confirmado pelo app. Seu lookinho está na fila prioritária de separação!
                             </p>
                           </div>
                         </div>
@@ -1548,14 +1548,14 @@ export default function App() {
                             const storeWhatsApp = '5511999999999';
                             
                             if (isAdminMode) {
-                              const adminMsg = `Olá ${o.customerName}! Aqui é da Camisa 7 Store.\n\n` +
+                              const adminMsg = `Olá ${o.customerName}! Aqui é da Mini Kids.\n\n` +
                                 `Confirmamos o pagamento do seu Pedido ${o.id} no valor de R$ ${o.totalPrice.toFixed(2)}.\n\n` +
-                                `*Itens do seu Manto:*\n` +
+                                `*Itens do seu Lookinho:*\n` +
                                 o.items.map(item => `• ${item.productName} (${item.selectedSize}) x${item.quantity}`).join('\n') +
                                 `\n\nSeu pedido já está em separação para postagem. Obrigado pela preferência!`;
                               return `https://wa.me/${customerWhatsApp}?text=${encodeURIComponent(adminMsg)}`;
                             } else {
-                              const clientMsg = `Olá Camisa 7! Fiz a compra e o pagamento do Pedido ${o.id}.\n\n` +
+                              const clientMsg = `Olá Mini Kids! Fiz a compra e o pagamento do Pedido ${o.id}.\n\n` +
                                 `*Dados da Reserva:*\n` +
                                 `• Nome: ${o.customerName}\n` +
                                 `• WhatsApp: ${o.customerPhone}\n` +
@@ -1577,7 +1577,7 @@ export default function App() {
 
                     {/* Operational advice */}
                     <p className={`text-[10px] italic leading-relaxed text-center font-mono ${isDarkMode ? 'text-gray-400' : 'text-zinc-500'}`}>
-                      *Imprima ou faça o print desta tela e apresente no checkout. Dúvidas com o pedido? Fale com a equipe Camisa 7.
+                      *Imprima ou faça o print desta tela e apresente no checkout. Dúvidas com o pedido? Fale com a equipe Mini Kids.
                     </p>
 
                   </div>
@@ -1606,7 +1606,7 @@ export default function App() {
               <div className={`text-center py-20 rounded-2xl text-xs border ${
                 isDarkMode ? 'bg-zinc-950 border-white/10 text-gray-500' : 'bg-white border-zinc-200 text-zinc-400 shadow-sm'
               }`}>
-                Seu histórico de pedidos de camisas está vazio. Conclua uma reserva para ver o log.
+                Seu histórico de pedidos de lookinhos está vazio. Conclua uma reserva para ver o log.
               </div>
             ) : (
               <div className="space-y-3 font-sans">

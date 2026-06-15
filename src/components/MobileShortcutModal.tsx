@@ -57,7 +57,7 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
             : "bg-white border-zinc-200 text-slate-900"
         }`}
       >
-        {/* Color accent bar matching Camisa 7 color palette */}
+        {/* Color accent bar matching Mini Kids color palette */}
         <div className="h-1.5 w-full bg-gradient-to-r from-red-600 via-rose-500 to-red-800" />
 
         {/* Close Button */}
@@ -80,13 +80,13 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
               <Smartphone className="w-6 h-6 animate-pulse" />
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight uppercase font-sans">Atalho Camisa 7</h3>
+              <h3 className="text-lg font-black tracking-tight uppercase font-sans">Atalho Mini Kids</h3>
               <p className="text-xs text-zinc-400 font-mono">LOJA SEMPRE NO SEU CELULAR</p>
             </div>
           </div>
 
           <p className={`text-sm leading-relaxed mb-5 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
-            Buscando carregar a loja ainda mais rápido? Crie um atalho exclusivo na sua tela inicial para acessar os mantos com apenas um clique!
+            Buscando carregar a loja ainda mais rápido? Crie um atalho exclusivo na sua tela inicial para acessar os lookinhos com apenas um clique!
           </p>
 
           {/* Native PWA install button when applicable */}
@@ -204,7 +204,7 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
                 <div className="flex gap-3 items-start">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[10px] font-mono text-white font-bold">2</span>
                   <p className="leading-normal">
-                    Confirme o prompt clicando em <strong>"Instalar"</strong> para abrir a Camisa 7 em modo de janela cheia autônomo sem molduras de navegador.
+                    Confirme o prompt clicando em <strong>"Instalar"</strong> para abrir a Mini Kids em modo de janela cheia autônomo sem molduras de navegador.
                   </p>
                 </div>
               </>
@@ -216,7 +216,7 @@ export const MobileShortcutModal: React.FC<MobileShortcutModalProps> = ({
         <div className={`p-4 text-center border-t text-[10px] font-mono uppercase tracking-widest ${
           isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-500' : 'bg-zinc-50 border-zinc-200 text-zinc-400'
         }`}>
-          Camisa 7 Store • Versão Mobile Otimizada
+          Mini Kids • Versão Mobile Otimizada
         </div>
       </div>
     </div>

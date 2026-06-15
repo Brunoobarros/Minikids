@@ -3,7 +3,7 @@
 Este documento serve como a "Fonte Única da Verdade" para o estado técnico e arquitetural da aplicação.
 
 ## 🚀 Visão Geral
-E-commerce de mantos esportivos premium.
+E-commerce de lookinhos esportivos premium.
 - **Frontend:** React + Tailwind CSS + Vite.
 - **Backend:** Node.js + Express (Serverless no Vercel).
 - **Banco de Dados:** Supabase (PostgreSQL).

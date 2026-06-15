@@ -88,7 +88,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     setPhoneError(false);
 
     if (cart.length === 0) {
-      triggerNotification("Carrinho Vazio", "Selecione alguma camisa do catálogo para prosseguir.", "alert");
+      triggerNotification("Carrinho Vazio", "Selecione algum produto do catálogo para prosseguir.", "alert");
       return;
     }
 
@@ -159,7 +159,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="flex items-center gap-2">
               <ShoppingBag className="text-red-600 w-5 h-5 animate-pulse" />
               <h3 className={`text-sm font-black tracking-widest uppercase font-mono ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                SACOLA DE LOOKINHOS <span className="text-xs text-red-600">// MINI KIDS</span>
+                SACOLA <span className="text-xs text-red-600">// MINI KIDS</span>
               </h3>
             </div>
             
@@ -324,7 +324,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="space-y-2">
                 <span className={`block text-[10px] uppercase font-mono font-black tracking-wider ${
                   isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
-                }`}>Como prefere pagar o seu manto?</span>
+                }`}>Como prefere pagar o seu lookinho?</span>
                 
                 <div className="grid grid-cols-3 gap-1.5 bg-black/10 p-1 rounded-lg border border-zinc-500/10">
                   <button

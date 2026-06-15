@@ -2,8 +2,8 @@ import React from 'react';
 import { Shirt, ClipboardList, History, Settings } from 'lucide-react';
 
 interface BottomMenuProps {
-  currentTab: 'camisas' | 'pedidos' | 'historico';
-  setTab: (tab: 'camisas' | 'pedidos' | 'historico') => void;
+  currentTab: 'lookinhos' | 'pedidos' | 'historico';
+  setTab: (tab: 'lookinhos' | 'pedidos' | 'historico') => void;
   isAdminMode: boolean;
   setAdminMode: (active: boolean) => void;
   activeOrdersCount: number;
@@ -23,14 +23,14 @@ export const BottomMenu: React.FC<BottomMenuProps> = ({
       isDarkMode ? 'bg-zinc-950 border-zinc-900 text-white' : 'bg-white border-zinc-200 text-slate-900'
     }`}>
       <div className="max-w-md mx-auto flex items-center justify-around py-3 px-2">
-        {/* Camisas Tab */}
+        {/* Lookinhos Tab */}
         <button
           onClick={() => {
-            setTab('camisas');
+            setTab('lookinhos');
             setAdminMode(false);
           }}
           className={`flex flex-col items-center gap-1 transition-all cursor-pointer ${
-            currentTab === 'camisas' && !isAdminMode 
+            currentTab === 'lookinhos' && !isAdminMode 
               ? 'text-red-600 scale-105 font-bold' 
               : (isDarkMode ? 'text-zinc-500 hover:text-white' : 'text-zinc-400 hover:text-slate-900')
           }`}
