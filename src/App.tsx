@@ -1745,17 +1745,11 @@ export default function App() {
       <div className="fixed bottom-20 right-6 z-40 flex flex-col items-end gap-2.5">
         
 
-        {/* SOLZINHO AI FLOATING MASCOT BUTTON */}
+        {/* SOL MASCOT MOBILE SHORTCUT BUTTON */}
         <button
-          onClick={() => {
-            if (window.innerWidth < 768) {
-              setShowShortcutModal(true);
-            } else {
-              setShowSupportWidget(!showSupportWidget);
-            }
-          }}
+          onClick={() => setShowShortcutModal(true)}
           className="p-2 bg-gradient-to-tr from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white rounded-full shadow-2xl transition-all transform hover:scale-108 active:scale-[0.93] flex items-center justify-center relative cursor-pointer group"
-          aria-label="Solzinho AI / Atalho"
+          aria-label="Atalho Mobile"
         >
           <svg className="w-9 h-9 select-none animate-[spin_20s_linear_infinite] origin-center" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="18" stroke="#F5A623" strokeWidth="4" fill="#FFEB3B"/>
@@ -1764,8 +1758,7 @@ export default function App() {
             <path d="M24,24 L18,18 M76,76 L70,70 M24,76 L18,82 M76,24 L70,18" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
           </svg>
           <span className="absolute right-14 bg-zinc-950 border border-white/10 px-2.5 py-1 rounded text-[10px] font-mono tracking-widest text-white uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
-            <span className="hidden md:inline">Falar com o Sol AI! ☀️</span>
-            <span className="inline md:hidden">Instalar Atalho 📱</span>
+            Atalho Mobile 📱
           </span>
           {/* Subtle pulsing indicator */}
           <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
@@ -1774,79 +1767,6 @@ export default function App() {
           </span>
         </button>
       </div>
-
-      {/* SOLZINHO AI CHAT WIDGET OVERLAY */}
-      {showSupportWidget && (
-        <div className={`fixed bottom-24 right-6 w-80 max-w-[90vw] h-[450px] border rounded-2xl p-4 shadow-2xl flex flex-col z-50 animate-zoom-in transition-all duration-300 ${
-          isDarkMode 
-            ? "bg-zinc-950 border-zinc-850 text-white" 
-            : "bg-white border-zinc-200 text-slate-900"
-        }`}>
-          {/* Header */}
-          <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
-            <div className="flex items-center gap-2">
-              <svg className="w-7 h-7 select-none animate-[spin_16s_linear_infinite] origin-center" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="18" stroke="#F5A623" strokeWidth="4" fill="#FFEB3B"/>
-                <path d="M50,50 Q48,46 52,44 Q56,46 53,52 Q47,56 43,49 Q42,40 52,37" stroke="#D07A00" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-                <path d="M50,14 L50,4 M50,96 L50,86 M14,50 L4,50 M96,50 L86,50" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
-                <path d="M24,24 L18,18 M76,76 L70,70 M24,76 L18,82 M76,24 L70,18" stroke="#F5A623" strokeWidth="4" strokeLinecap="round"/>
-              </svg>
-              <div>
-                <h4 className="font-bold text-xs uppercase tracking-wider text-amber-500 font-display">Solzinho AI ☀️</h4>
-                <span className="text-[9px] text-zinc-400 block font-mono">ASSISTENTE MINI KIDS</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setShowSupportWidget(false)}
-              className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
-            >
-              <X className="w-4 h-4 text-zinc-400 hover:text-red-500" />
-            </button>
-          </div>
-
-          {/* Chat Messages */}
-          <div className="flex-grow overflow-y-auto py-3 space-y-2 pr-1 scrollbar-thin flex flex-col">
-            <div className="space-y-2.5 flex-1">
-              {supportChat.map((msg, i) => (
-                <div key={i} className={`p-2.5 rounded-xl max-w-[85%] text-xs leading-relaxed ${
-                  msg.sender === 'bot' 
-                    ? (isDarkMode ? 'bg-zinc-900 border border-zinc-850 text-zinc-100 mr-auto' : 'bg-zinc-100 border border-zinc-200 text-zinc-800 mr-auto') 
-                    : (isDarkMode ? 'bg-pink-950/40 text-pink-200 border border-pink-900/40 ml-auto' : 'bg-pink-50 text-pink-900 border border-pink-200 ml-auto')
-                }`}>
-                  {msg.text}
-                </div>
-              ))}
-              {isTypingSupport && (
-                <div className="text-[10px] text-zinc-400 font-mono animate-pulse uppercase">
-                  Solzinho AI está pensando... ☀️✨
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Chat Form */}
-          <form onSubmit={handleSupportWidgetSubmit} className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
-            <input
-              type="text"
-              placeholder="Pergunte sobre lookinhos e cupons..."
-              value={supportMessage}
-              onChange={(e) => setSupportMessage(e.target.value)}
-              className={`flex-1 text-xs border rounded-xl px-3 py-2.5 focus:outline-none transition-colors ${
-                isDarkMode 
-                  ? "bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500 focus:border-pink-500" 
-                  : "bg-white border-zinc-200 text-slate-900 placeholder-zinc-400 focus:border-pink-500"
-              }`}
-            />
-            <button
-              type="submit"
-              disabled={isTypingSupport}
-              className="p-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-all active:scale-95 cursor-pointer"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
-      )}
 
       {/* MOBILE SHORTCUT GUIDE / INSTALL PROMPT MODAL */}
       <MobileShortcutModal

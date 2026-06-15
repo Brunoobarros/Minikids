@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, User, LogOut, Check, Sliders, Sun, Moon } from 'lucide-react';
-import { CarrinhoInfantilIcon } from './CarrinhoInfantilIcon';
+import { Search, User, LogOut, Check, Sliders, Sun, Moon, ShoppingBag } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery: string;
@@ -135,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
                 isDarkMode ? "hover:bg-zinc-900 text-white" : "hover:bg-zinc-100 text-zinc-800"
               }`}
             >
-              <CarrinhoInfantilIcon className="w-5 h-5" />
+              <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white font-mono text-[9px] w-5 h-5 rounded-full flex items-center justify-center border border-white animate-pulse">
                   {cartCount}
@@ -209,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
               isDarkMode ? "hover:bg-zinc-900" : "hover:bg-zinc-100"
             }`}
           >
-            <CarrinhoInfantilIcon className={`w-5.5 h-5.5 ${isDarkMode ? "text-white" : "text-zinc-800"}`} />
+            <ShoppingBag className={`w-5.5 h-5.5 ${isDarkMode ? "text-white" : "text-zinc-800"}`} />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-600 text-white font-mono text-[10px] w-5.5 h-5.5 rounded-full flex items-center justify-center border border-white animate-pulse">
                 {cartCount}
