@@ -39,10 +39,14 @@ export const Header: React.FC<HeaderProps> = ({
   const [simulatedRole, setSimulatedRole] = useState<'customer' | 'admin'>('customer');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const clickedDesktop = dropdownRef.current && dropdownRef.current.contains(event.target as Node);
+      const clickedMobile = mobileDropdownRef.current && mobileDropdownRef.current.contains(event.target as Node);
+      
+      if (!clickedDesktop && !clickedMobile) {
         setShowAuthDropdown(false);
       }
     };
@@ -386,9 +390,12 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Authentication dropdown inside navigation flow */}
       {showAuthDropdown && (
-        <div className={`md:hidden border-b p-4 ${
-          isDarkMode ? "bg-zinc-950 border-zinc-900 text-white" : "bg-white border-zinc-200 text-slate-900"
-        }`}>
+        <div 
+          ref={mobileDropdownRef}
+          className={`md:hidden border-b p-4 ${
+            isDarkMode ? "bg-zinc-950 border-zinc-900 text-white" : "bg-white border-zinc-200 text-slate-900"
+          }`}
+        >
           {currentUser ? (
             <div className="flex items-center justify-between">
               <div>
